@@ -2,6 +2,7 @@ import React from "react"
 import App from "./App";
 import { Home } from "./pages/Home";
 import { createBrowserRouter } from "react-router-dom"
+import { Loans } from "./components/NavBar/Loans";
 
 export const routes = [
     {
@@ -10,6 +11,10 @@ export const routes = [
             {
                 index: true,
                 element: <Home />
+            },
+            {
+                path: "prestamos",
+                element: <Loans />
             }
         ]
     }
