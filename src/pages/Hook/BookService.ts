@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BookObj } from "./BookObj";
+import { BookObj } from "../BooksModule/Services/BookObj";
 
 
 const API = 'http://localhost:80/BookModule/';

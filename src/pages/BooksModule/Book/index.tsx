@@ -10,11 +10,11 @@ import {
     Card,
     CardContent
   } from '@mui/material';
-import { getBook, getBooksByAuthor } from "../Services/BookService";
+import { getBook, getBooksByAuthor } from "../../Hook/BookService";
 import { BookObj } from "../Services/BookObj";
 import { ArrowBack } from "@mui/icons-material";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import { CardInformation } from "../Card";
+import { CardInformation } from "../../../components/BookCard";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 export function Book(): ReactElement  {
@@ -27,7 +27,7 @@ export function Book(): ReactElement  {
     },[]);
 
     const getABook = async () => {
-        const answer = await getBook("6e0ed44b-b7e1-4f52-b8b0-278f76080d81");
+        const answer = await getBook("c099b1b2-62be-43c1-a0f5-d7b6752efd2c");
         if (answer){
             setBook(answer.data);
             setNumberCopies(answer.data.copies.length);

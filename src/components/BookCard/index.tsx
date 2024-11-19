@@ -7,7 +7,7 @@ import {
     Card,
     CardContent
   } from '@mui/material';
-import { BookObj } from "../Services/BookObj";
+import { BookObj } from "../../pages/BooksModule/Services/BookObj";
 
 const booksPerPage = 3; 
   type Props = {
