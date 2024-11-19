@@ -11,34 +11,21 @@ import {
     Toolbar,
     Tooltip,
     Typography,
-    TextField,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
-import PrestamosActivos from './PrestamosActivos'; 
+import PrestamosActivos from './PrestamosActivos';
+import BusquedaLibro from './BusquedaLibro';
+import { Loans } from './Loans';
 
-
-// Definir los componentes de las secciones y configuraciones
 const pages = ['Prestamos', 'Libros', 'Estudiantes'];
-const settings = ['Perfil', 'Logout'];
 
 export function NavBar() {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const [activeSection, setActiveSection] = useState<string | null>(null);
-    const [openForm, setOpenForm] = useState(false);
-    const [openBusqueda, setOpenBusqueda] = useState(false);
-    const [codigoEstudiante, setCodigoEstudiante] = useState('');
-    const [codigoLibro, setCodigoLibro] = useState('');
     const [openPrestamos, setOpenPrestamos] = useState(false);
-    const [terminoBusqueda, setTerminoBusqueda] = useState('');
-    const [resultadoBusqueda, setResultadoBusqueda] = useState<string | null>(null);
+    const [openLoans, setOpenLoans] = useState(false);
 
-    // Funciones de apertura y cierre de menús y formularios
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
     };
@@ -48,35 +35,22 @@ export function NavBar() {
     };
 
     const handleSectionClick = (section: string) => {
-        setActiveSection(section === activeSection ? null : section); // Alterna entre activar/desactivar sección
-    };
-
-    const handleOpenForm = () => setOpenForm(true);
-    const handleCloseForm = () => setOpenForm(false);
-
-    const handleOpenBusqueda = () => setOpenBusqueda(true);
-    const handleCloseBusqueda = () => setOpenBusqueda(false);
-
-    const handleBusqueda = () => {
-        if (terminoBusqueda === '123' || terminoBusqueda === '125') {
-            setResultadoBusqueda('El libro está disponible.');
-        } else {
-            setResultadoBusqueda('El libro no está disponible o no existe.');
-        }
-    };
-
-    const handleSubmit = () => {
-        console.log("Código del estudiante:", codigoEstudiante);
-        console.log("Código del libro:", codigoLibro);
-        setOpenForm(false);
+        setActiveSection(section === activeSection ? null : section);
     };
 
     const handleOpenPrestamosActivos = () => setOpenPrestamos(true);
     const handleClosePrestamosActivos = () => setOpenPrestamos(false);
 
+    const handleOpenLoansDialog = () => setOpenLoans(true);
+    const handleCloseLoansDialog = () => setOpenLoans(false);
+
+    const handleLoansSuccess = () => {
+        setActiveSection('Prestamos');
+    };
+
     return (
         <>
-            <AppBar position="static">
+            <AppBar position="static" sx={{ backgroundColor: '#0271df' }}>
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
                         <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -119,10 +93,7 @@ export function NavBar() {
                                 sx={{ display: { xs: 'block', md: 'none' } }}
                             >
                                 {pages.map((page) => (
-                                    <MenuItem
-                                        key={page}
-                                        onClick={() => handleSectionClick(page)}
-                                    >
+                                    <MenuItem key={page} onClick={() => handleSectionClick(page)}>
                                         <Typography>{page}</Typography>
                                     </MenuItem>
                                 ))}
@@ -150,21 +121,21 @@ export function NavBar() {
                 </Container>
             </AppBar>
 
-            {/* Opciones de Préstamos */}
             {activeSection === 'Prestamos' && (
                 <Box sx={{ p: 3 }}>
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={handleOpenForm}
+                        onClick={handleOpenLoansDialog}
+                        sx={{ mb: 2 }}
                     >
                         Registrar Préstamo
                     </Button>
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={handleOpenBusqueda}
-                        sx={{ ml: 2 }}
+                        onClick={() => setActiveSection('BusquedaLibro')}
+                        sx={{ mb: 2, ml: 2 }}
                     >
                         Buscar Disponibilidad del Libro
                     </Button>
@@ -172,69 +143,18 @@ export function NavBar() {
                         variant="contained"
                         color="success"
                         onClick={handleOpenPrestamosActivos}
-                        sx={{ ml: 2 }}
+                        sx={{ mb: 2, ml: 2 }}
                     >
                         Mirar Préstamos Activos
                     </Button>
                 </Box>
             )}
 
-            {/* Prestamos activos */}
-            <PrestamosActivos
-                open={openPrestamos}
-                onClose={handleClosePrestamosActivos}
-            />
-
-            {/* Formulario de búsqueda */}
-            <Dialog open={openBusqueda} onClose={handleCloseBusqueda}>
-                <DialogTitle>Buscar Disponibilidad del Libro</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label="Código, ISBN o Nombre del Libro"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        value={terminoBusqueda}
-                        onChange={(e) => setTerminoBusqueda(e.target.value)}
-                    />
-                    {resultadoBusqueda && (
-                        <Box sx={{ mt: 2 }}>
-                            <Typography>{resultadoBusqueda}</Typography>
-                        </Box>
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseBusqueda}>Cancelar</Button>
-                    <Button onClick={handleBusqueda}>Buscar</Button>
-                </DialogActions>
-            </Dialog>
-
-            {/* Formulario de registro de préstamo */}
-            <Dialog open={openForm} onClose={handleCloseForm}>
-                <DialogTitle>Registrar Préstamo</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label="Código del Estudiante"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        value={codigoEstudiante}
-                        onChange={(e) => setCodigoEstudiante(e.target.value)}
-                    />
-                    <TextField
-                        label="Código del Libro"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        value={codigoLibro}
-                        onChange={(e) => setCodigoLibro(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseForm}>Cancelar</Button>
-                    <Button onClick={handleSubmit}>Registrar</Button>
-                </DialogActions>
-            </Dialog>
+            {activeSection === 'RegistroPréstamo' && (
+                <Loans open={openLoans} onClose={handleCloseLoansDialog} onSuccess={handleLoansSuccess} />
+            )}
+            {activeSection === 'BusquedaLibro' && <BusquedaLibro />}
+            <PrestamosActivos open={openPrestamos} onClose={handleClosePrestamosActivos} />
         </>
     );
 }

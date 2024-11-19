@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import { TextField, Button, Box, Typography, FormControl, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import '../../styles/BusquedaLibro.css';
 
 const BusquedaLibro = () => {
     const [terminoBusqueda, setTerminoBusqueda] = useState('');
     const [resultado, setResultado] = useState<string | null>(null);
+    const [tipoBusqueda, setTipoBusqueda] = useState<'isbn' | 'nombre' | 'codigo' | null>(null);
     
     const libros = [
         { isbn: '978-3-16-148410-0', nombre: 'Libro A', codigo: '123', disponible: true },
@@ -13,12 +15,23 @@ const BusquedaLibro = () => {
 
     const manejarBusqueda = () => {
         try {
-            const libroEncontrado = libros.find(
-                (libro) =>
-                    libro.isbn.includes(terminoBusqueda) ||
-                    libro.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
-                    libro.codigo.includes(terminoBusqueda)
-            );
+            if (!tipoBusqueda) {
+                setResultado('Por favor, selecciona un tipo de búsqueda.');
+                return;
+            }
+
+            const libroEncontrado = libros.find((libro) => {
+                switch (tipoBusqueda) {
+                    case 'isbn':
+                        return libro.isbn.includes(terminoBusqueda);
+                    case 'nombre':
+                        return libro.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase());
+                    case 'codigo':
+                        return libro.codigo.includes(terminoBusqueda);
+                    default:
+                        return false;
+                }
+            });
 
             if (libroEncontrado) {
                 setResultado(
@@ -33,25 +46,46 @@ const BusquedaLibro = () => {
     };
 
     return (
-        <Box sx={{ p: 3 }}>
-            <TextField
-                label="Buscar por ISBN, nombre o código"
-                variant="outlined"
-                fullWidth
-                value={terminoBusqueda}
-                onChange={(e) => setTerminoBusqueda(e.target.value)}
-            />
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={manejarBusqueda}
-                sx={{ mt: 2 }}
-            >
-                Buscar
-            </Button>
+        <Box className="container">
+            {tipoBusqueda === null ? (
+                <Box>
+                    <Typography variant="h6" className="typography-header">
+                        ¿Cómo deseas buscar?
+                    </Typography>
+                    <FormControl component="fieldset" className="form-control">
+                        <RadioGroup
+                            onChange={(e) => setTipoBusqueda(e.target.value as 'isbn' | 'nombre' | 'codigo')}
+                            row
+                        >
+                            <FormControlLabel value="isbn" control={<Radio />} label="Por ISBN" className="radio-label" />
+                            <FormControlLabel value="nombre" control={<Radio />} label="Por Nombre" className="radio-label" />
+                            <FormControlLabel value="codigo" control={<Radio />} label="Por Código" className="radio-label" />
+                        </RadioGroup>
+                    </FormControl>
+                </Box>
+            ) : (
+                <Box>
+                    <TextField
+                        label={`Buscar por ${tipoBusqueda}`}
+                        variant="outlined"
+                        fullWidth
+                        value={terminoBusqueda}
+                        onChange={(e) => setTerminoBusqueda(e.target.value)}
+                        className="text-field"
+                    />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={manejarBusqueda}
+                        className="search-button"
+                    >
+                        Buscar
+                    </Button>
+                </Box>
+            )}
 
             {resultado && (
-                <Typography sx={{ mt: 2 }}>
+                <Typography className="result">
                     {resultado}
                 </Typography>
             )}
@@ -60,5 +94,3 @@ const BusquedaLibro = () => {
 };
 
 export default BusquedaLibro;
-
-export {}

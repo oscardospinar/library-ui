@@ -1,0 +1,54 @@
+.container {
+    padding: 24px;
+    background-color: #f4f9fd;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .typography-header {
+    text-align: center;
+    font-size: 20px;
+    color: #0271df;
+    font-weight: bold;
+  }
+  
+  .form-control {
+    margin-top: 16px;
+  }
+  
+  .radio-group {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .radio-label {
+    color: #0271df;
+  }
+  
+  .text-field {
+    margin-bottom: 16px;
+    width: 100%;
+  }
+  
+  .search-button {
+    background-color: #0271df;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+  }
+  
+  .search-button:hover {
+    background-color: #005bb5;
+  }
+  
+  .result {
+    margin-top: 16px;
+    color: #0271df;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
