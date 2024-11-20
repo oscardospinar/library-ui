@@ -11,12 +11,13 @@ import {
     Toolbar,
     Tooltip,
     Typography,
+    Dialog,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 import PrestamosActivos from './PrestamosActivos';
 import BusquedaLibro from './BusquedaLibro';
-import { Loans } from './Loans';
+import Loans from './Loans';
 
 const pages = ['Prestamos', 'Libros', 'Estudiantes'];
 
@@ -25,27 +26,38 @@ export function NavBar() {
     const [activeSection, setActiveSection] = useState<string | null>(null);
     const [openPrestamos, setOpenPrestamos] = useState(false);
     const [openLoans, setOpenLoans] = useState(false);
+    const [openBusquedaLibro, setOpenBusquedaLibro] = useState(false);  
 
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>): void => {
         setAnchorElNav(event.currentTarget);
     };
 
-    const handleCloseNavMenu = () => {
+    const handleCloseNavMenu = (): void => {
         setAnchorElNav(null);
     };
 
-    const handleSectionClick = (section: string) => {
+    const handleSectionClick = (section: string): void => {
         setActiveSection(section === activeSection ? null : section);
     };
 
-    const handleOpenPrestamosActivos = () => setOpenPrestamos(true);
-    const handleClosePrestamosActivos = () => setOpenPrestamos(false);
+    const handleOpenPrestamosActivos = (): void => setOpenPrestamos(true);
+    const handleClosePrestamosActivos = (): void => setOpenPrestamos(false);
 
-    const handleOpenLoansDialog = () => setOpenLoans(true);
-    const handleCloseLoansDialog = () => setOpenLoans(false);
+    const handleOpenLoans = (): void => setOpenLoans(true);
+    const handleCloseLoans = (): void => setOpenLoans(false);
 
-    const handleLoansSuccess = () => {
+    const handleLoansSuccess = (): void => {
         setActiveSection('Prestamos');
+        setOpenLoans(false);
+    };
+
+    const handleOpenBusquedaLibro = (): void => {
+        setOpenBusquedaLibro(true);  
+        setActiveSection(null);  
+    };
+
+    const handleCloseBusquedaLibro = (): void => {
+        setOpenBusquedaLibro(false);  
     };
 
     return (
@@ -126,7 +138,7 @@ export function NavBar() {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={handleOpenLoansDialog}
+                        onClick={handleOpenLoans}
                         sx={{ mb: 2 }}
                     >
                         Registrar Préstamo
@@ -134,7 +146,7 @@ export function NavBar() {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => setActiveSection('BusquedaLibro')}
+                        onClick={handleOpenBusquedaLibro}  
                         sx={{ mb: 2, ml: 2 }}
                     >
                         Buscar Disponibilidad del Libro
@@ -150,10 +162,14 @@ export function NavBar() {
                 </Box>
             )}
 
-            {activeSection === 'RegistroPréstamo' && (
-                <Loans open={openLoans} onClose={handleCloseLoansDialog} onSuccess={handleLoansSuccess} />
+    
+            <Dialog open={openBusquedaLibro} onClose={handleCloseBusquedaLibro}>
+                <BusquedaLibro open={openBusquedaLibro} onClose={handleCloseBusquedaLibro} />
+            </Dialog>
+
+            {openLoans && (
+                <Loans open={openLoans} onClose={handleCloseLoans} onSuccess={handleLoansSuccess} />
             )}
-            {activeSection === 'BusquedaLibro' && <BusquedaLibro />}
             <PrestamosActivos open={openPrestamos} onClose={handleClosePrestamosActivos} />
         </>
     );
