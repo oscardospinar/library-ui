@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import '../../styles/Loans.css';
 
 interface LoansProps {
     open: boolean;
@@ -7,7 +8,7 @@ interface LoansProps {
     onSuccess: () => void;
 }
 
-export function Loans({ open, onClose, onSuccess }: LoansProps) {
+const Loans = ({ open, onClose, onSuccess }: LoansProps) => {
     const [codigoEstudiante, setCodigoEstudiante] = useState('');
     const [codigoLibro, setCodigoLibro] = useState('');
 
@@ -42,7 +43,7 @@ export function Loans({ open, onClose, onSuccess }: LoansProps) {
                             onChange={(e) => setCodigoLibro(e.target.value)}
                         />
                         <DialogActions>
-                            <Button onClick={onClose} color="secondary">
+                            <Button onClick={onClose} color="primary">
                                 Cancelar
                             </Button>
                             <Button type="submit" variant="contained" color="primary">
@@ -54,4 +55,6 @@ export function Loans({ open, onClose, onSuccess }: LoansProps) {
             </DialogContent>
         </Dialog>
     );
-}
+};
+
+export default Loans;
