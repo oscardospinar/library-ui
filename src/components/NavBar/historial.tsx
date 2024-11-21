@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
-import '../../styles/PrestamosActivos.css';
 
 interface Prestamo {
     codigoEstudiante: string;
@@ -11,41 +10,48 @@ interface Prestamo {
     fechaDevolucion: string;
 }
 
-const PrestamosActivos = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+const HistorialPrestamos = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
     const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const obtenerPrestamosActivos = async () => {
+    const obtenerHistorialPrestamos = async () => {
         setLoading(true);
         setError(null);
         try {
             const response = await fetch("https://bibliosoftloanback-ahecc7fydjdze0ar.canadacentral-01.azurewebsites.net/loans");
             if (!response.ok) {
-                throw new Error('No se pudieron cargar los préstamos activos.');
+                throw new Error('No se pudieron cargar los préstamos del historial.');
             }
             const data = await response.json();
             setPrestamos(data);
         } catch (err) {
-            setError('Error al cargar los préstamos activos. Intenta nuevamente más tarde.');
+            setError('Error al cargar los préstamos del historial. Intenta nuevamente más tarde.');
         } finally {
             setLoading(false);
         }
     };
 
+    const obtenerEstadoPrestamo = (fechaDevolucion: string) => {
+        const fechaActual = new Date();
+        const fechaDevolucionDate = new Date(fechaDevolucion);
+
+        return fechaDevolucionDate < fechaActual ? "Vencido" : "Activo";
+    };
+
     useEffect(() => {
         if (open) {
-            obtenerPrestamosActivos();
+            obtenerHistorialPrestamos();
         }
     }, [open]);
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-            <DialogTitle className="dialog-title">Préstamos Activos</DialogTitle>
+            <DialogTitle className="dialog-title">Historial de Préstamos</DialogTitle> {/* Título actualizado */}
             <DialogContent className="dialog-content">
                 <Box>
                     <Typography variant="h6" sx={{ marginBottom: 2, textAlign: 'center' }}>
-                        Lista de Préstamos Activos
+                        Historial Completo de Préstamos
                     </Typography>
                     {loading ? (
                         <Box className="table-loading">
@@ -60,36 +66,25 @@ const PrestamosActivos = ({ open, onClose }: { open: boolean; onClose: () => voi
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell className="table-header-cell" align="center">Código Estudiante</TableCell>
-                                        <TableCell className="table-header-cell" align="center">Código Libro</TableCell>
-                                        <TableCell className="table-header-cell" align="center">Fecha Préstamo</TableCell>
-                                        <TableCell className="table-header-cell" align="center">Fecha Devolución</TableCell>
+                                        <TableCell className="table-header-cell" align="center">Nombre</TableCell>
                                         <TableCell className="table-header-cell" align="center">Estado</TableCell>
-                                        <TableCell className="table-header-cell" align="center">Devolución</TableCell>
+                                        <TableCell className="table-header-cell" align="center">Fecha Préstamo</TableCell>
+                        
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {prestamos.length === 0 ? (
                                         <TableRow>
                                             <TableCell colSpan={5} align="center">
-                                                No hay préstamos activos.
+                                                No hay historial.
                                             </TableCell>
                                         </TableRow>
                                     ) : (
                                         prestamos.map((prestamo, index) => (
                                             <TableRow key={index} className="table-row">
-                                                <TableCell align="center">{prestamo.codigoEstudiante}</TableCell>
-                                                <TableCell align="center">{prestamo.codigoLibro}</TableCell>
+                                                <TableCell align="center">{prestamo.nombreEstudiante}</TableCell>
+                                                <TableCell align="center">{prestamo.nombreLibro}</TableCell>
                                                 <TableCell align="center">{prestamo.fechaPrestamo}</TableCell>
-                                                <TableCell align="center">{prestamo.fechaDevolucion}</TableCell>
-                                                <TableCell align="center">Activo</TableCell>
-                                                <TableCell align="center">
-
-                                                <Button type="submit" variant="contained" color="primary">
-                                                     devolver
-                                                 </Button>
-
-                                                </TableCell>
                                             </TableRow>
                                         ))
                                     )}
@@ -108,4 +103,4 @@ const PrestamosActivos = ({ open, onClose }: { open: boolean; onClose: () => voi
     );
 };
 
-export default PrestamosActivos;
+export default HistorialPrestamos;

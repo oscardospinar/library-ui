@@ -50,6 +50,7 @@ const Loans = ({ open, onClose, onSuccess }: LoansProps) => {
                                 Registrar Préstamo
                             </Button>
                         </DialogActions>
+                        
                     </form>
                 </Box>
             </DialogContent>
