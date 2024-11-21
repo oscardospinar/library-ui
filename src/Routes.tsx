@@ -3,6 +3,7 @@ import App from "./App";
 import { Home } from "./pages/Home";
 import { createBrowserRouter } from "react-router-dom"
 import { Book } from "./pages/BooksModule/Book";
+import { LoadBooks } from "./pages/BooksModule/LoadBooks";
 
 export const routes = [
     {
@@ -14,6 +15,10 @@ export const routes = [
             },
             {
                 path: "libros",
+                element: <LoadBooks />
+            },
+            {
+                path: ":id",
                 element: <Book />
             }
         ]

@@ -6,41 +6,95 @@ import {
     Chip,
     Box,
     Paper,
-    Container,
-    Card,
-    CardContent
+    Container
   } from '@mui/material';
 import { getBook, getBooksByAuthor } from "../../Hook/BookService";
 import { BookObj } from "../Services/BookObj";
 import { ArrowBack } from "@mui/icons-material";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import { CardInformation } from "../../../components/BookCard";
+import { BookPagination } from "../../../components/BookPagination/BookPagination";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { useParams } from "react-router-dom";
+import { BookCard } from "../../../components/BookCard/BookCard";
+import { styled } from '@mui/material/styles';
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
+import MuiAccordionSummary, {
+  AccordionSummaryProps,
+} from '@mui/material/AccordionSummary';
+import MuiAccordionDetails from '@mui/material/AccordionDetails';
+
+const Accordion = styled((props: AccordionProps) => (
+  <MuiAccordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  '&:not(:last-child)': {
+    borderBottom: 0,
+  },
+  '&::before': {
+    display: 'none',
+  },
+}));
+
+const AccordionSummary = styled((props: AccordionSummaryProps) => (
+  <MuiAccordionSummary
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
+    {...props}
+  />
+))(({ theme }) => ({
+  backgroundColor: 'rgba(0, 0, 0, .03)',
+  flexDirection: 'row-reverse',
+  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+    transform: 'rotate(90deg)',
+  },
+  '& .MuiAccordionSummary-content': {
+    marginLeft: theme.spacing(1),
+  },
+  ...theme.applyStyles('dark', {
+    backgroundColor: 'rgba(255, 255, 255, .05)',
+  }),
+}));
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+  padding: theme.spacing(2),
+  borderTop: '1px solid rgba(0, 0, 0, .125)',
+}));
 
 export function Book(): ReactElement  {
     const [book, setBook] = useState<BookObj>();
     const [numberCopies, setNumberCopies] = useState(0);
     const [books, setBooks] = useState<BookObj[]>([]);
+    const { id } = useParams<{ id: string }>();
+
+    const [expanded, setExpanded] = React.useState<string | false>('panel1');
+
+    const handleChange =
+    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+      setExpanded(newExpanded ? panel : false);
+    };
+
     useEffect (() => {
       getABook();
       getBooks();
-    },[]);
+    },[id]);
 
     const getABook = async () => {
-        const answer = await getBook("c099b1b2-62be-43c1-a0f5-d7b6752efd2c");
+      if(id){
+        const answer = await getBook(id);
         if (answer){
-            setBook(answer.data);
-            setNumberCopies(answer.data.copies.length);
+            setBook(answer.data.body[0]);
+            setNumberCopies(answer.data.body[0].copies.length);
         }
+      }
     };
 
     const getBooks = async () => {
-      if (book && book.bookId){
+      if (book && id){
         console.log(book);
-        const answer = await getBooksByAuthor(book.bookId, book.author);
-        if (answer && answer.data){
+        const answer = await getBooksByAuthor(id, book.author);
+        if (answer){
           console.log(answer.data);
-            setBooks(answer.data);
+            setBooks(answer.data.body);
         }
       }
     };
@@ -50,6 +104,7 @@ export function Book(): ReactElement  {
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
           {book ? (
+            <Container>
               <Paper elevation={3}>
               <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 2fr' }} gap={2}>
                 <Box>
@@ -97,7 +152,7 @@ export function Book(): ReactElement  {
                     <Box display="flex" alignItems="center" >
                     <MenuBookIcon sx={{ mr: 1, color: "primary.contrastText"}} />
                       <Typography variant="h5" color = 'primary.contrastText' >
-                        {numberCopies} {numberCopies === 1 ? 'ejemplar disponible' : 'ejemplares disponibles'}
+                        {numberCopies} {numberCopies === 1 ? 'copia disponible' : 'copias disponibles'}
                       </Typography>
                     </Box>
                   </Paper>
@@ -111,8 +166,24 @@ export function Book(): ReactElement  {
                   </Box>
                 </Box>
               </Box>
-              <CardInformation title="Otros libros del autor" books={books} />
+              <div>
+                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                  <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                    <Typography>Informacion adicional</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+                      malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum dolor
+                      sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                      sit amet blandit leo lobortis eget.
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
+              </div>
               </Paper>
+              <BookPagination title="Más libros del autor" books={books}/>
+              </Container>
           ) : (
             <Box sx={{ p: 3 }}>
               <Typography variant="h6" color="error">
@@ -120,6 +191,7 @@ export function Book(): ReactElement  {
               </Typography>
             </Box>
           )}
+
         </Container>
       );      
 }
