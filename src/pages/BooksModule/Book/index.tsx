@@ -156,7 +156,6 @@ export function Book(): ReactElement  {
                         {numberCopies} {numberCopies === 1 ? 'copia disponible' : 'copias disponibles'}
                       </Typography>
                     </Box>
-                    <BookEditor book = {book}/>
                   </Paper>
                 
                   <Box>
@@ -176,14 +175,12 @@ export function Book(): ReactElement  {
                   </AccordionSummary>
                   <AccordionDetails>
                     <Typography>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                      malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum dolor
-                      sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                      sit amet blandit leo lobortis eget.
+                    <BookEditor book={book} />
                     </Typography>
                   </AccordionDetails>
                 </Accordion>
               </div>
+              
               </Paper>
               <BookPagination title="Más libros del autor" books={books}/>
               </Container>
