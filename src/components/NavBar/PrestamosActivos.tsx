@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
 import '../../styles/PrestamosActivos.css';
+import ReturnLoan from './ReturnLoan'; // Asegúrate de importar el componente de devolución
 
 interface Prestamo {
     codigoEstudiante: string;
@@ -15,6 +16,8 @@ const PrestamosActivos = ({ open, onClose }: { open: boolean; onClose: () => voi
     const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false); // Estado para abrir el componente de devolución
+    const [selectedPrestamo, setSelectedPrestamo] = useState<Prestamo | null>(null); // Estado para almacenar el préstamo seleccionado
 
     const obtenerPrestamosActivos = async () => {
         setLoading(true);
@@ -39,72 +42,92 @@ const PrestamosActivos = ({ open, onClose }: { open: boolean; onClose: () => voi
         }
     }, [open]);
 
+    const handleOpenReturnDialog = (prestamo: Prestamo) => {
+        setSelectedPrestamo(prestamo);
+        setOpenReturnDialog(true);
+    };
+
+    const handleCloseReturnDialog = () => {
+        setOpenReturnDialog(false);
+        setSelectedPrestamo(null);
+    };
+
     return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-            <DialogTitle className="dialog-title">Préstamos Activos</DialogTitle>
-            <DialogContent className="dialog-content">
-                <Box>
-                    <Typography variant="h6" sx={{ marginBottom: 2, textAlign: 'center' }}>
-                        Lista de Préstamos Activos
-                    </Typography>
-                    {loading ? (
-                        <Box className="table-loading">
-                            <CircularProgress color="primary" />
-                        </Box>
-                    ) : error ? (
-                        <Typography color="error" sx={{ textAlign: 'center' }}>
-                            {error}
+        <>
+            <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+                <DialogTitle className="dialog-title">Préstamos Activos</DialogTitle>
+                <DialogContent className="dialog-content">
+                    <Box>
+                        <Typography variant="h6" sx={{ marginBottom: 2, textAlign: 'center' }}>
+                            Lista de Préstamos Activos
                         </Typography>
-                    ) : (
-                        <TableContainer component={Paper} className="table-wrapper">
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell className="table-header-cell" align="center">Código Estudiante</TableCell>
-                                        <TableCell className="table-header-cell" align="center">Código Libro</TableCell>
-                                        <TableCell className="table-header-cell" align="center">Fecha Préstamo</TableCell>
-                                        <TableCell className="table-header-cell" align="center">Fecha Devolución</TableCell>
-                                        <TableCell className="table-header-cell" align="center">Estado</TableCell>
-                                        <TableCell className="table-header-cell" align="center">Devolución</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {prestamos.length === 0 ? (
+                        {loading ? (
+                            <Box className="table-loading">
+                                <CircularProgress color="primary" />
+                            </Box>
+                        ) : error ? (
+                            <Typography color="error" sx={{ textAlign: 'center' }}>
+                                {error}
+                            </Typography>
+                        ) : (
+                            <TableContainer component={Paper} className="table-wrapper">
+                                <Table>
+                                    <TableHead>
                                         <TableRow>
-                                            <TableCell colSpan={5} align="center">
-                                                No hay préstamos activos.
-                                            </TableCell>
+                                            <TableCell className="table-header-cell" align="center">Código Estudiante</TableCell>
+                                            <TableCell className="table-header-cell" align="center">Código Libro</TableCell>
+                                            <TableCell className="table-header-cell" align="center">Fecha Préstamo</TableCell>
+                                            <TableCell className="table-header-cell" align="center">Fecha Devolución</TableCell>
+                                            <TableCell className="table-header-cell" align="center">Devolución</TableCell>
                                         </TableRow>
-                                    ) : (
-                                        prestamos.map((prestamo, index) => (
-                                            <TableRow key={index} className="table-row">
-                                                <TableCell align="center">{prestamo.codigoEstudiante}</TableCell>
-                                                <TableCell align="center">{prestamo.codigoLibro}</TableCell>
-                                                <TableCell align="center">{prestamo.fechaPrestamo}</TableCell>
-                                                <TableCell align="center">{prestamo.fechaDevolucion}</TableCell>
-                                                <TableCell align="center">Activo</TableCell>
-                                                <TableCell align="center">
-
-                                                <Button type="submit" variant="contained" color="primary">
-                                                     devolver
-                                                 </Button>
-
+                                    </TableHead>
+                                    <TableBody>
+                                        {prestamos.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={5} align="center">
+                                                    No hay préstamos activos.
                                                 </TableCell>
                                             </TableRow>
-                                        ))
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    )}
-                </Box>
-            </DialogContent>
-            <DialogActions className="dialog-actions">
-                <Button onClick={onClose} color="primary" className="close-button">
-                    Cerrar
-                </Button>
-            </DialogActions>
-        </Dialog>
+                                        ) : (
+                                            prestamos.map((prestamo, index) => (
+                                                <TableRow key={index} className="table-row">
+                                                    <TableCell align="center">{prestamo.codigoEstudiante}</TableCell>
+                                                    <TableCell align="center">{prestamo.codigoLibro}</TableCell>
+                                                    <TableCell align="center">{prestamo.fechaPrestamo}</TableCell>
+                                                    <TableCell align="center">{prestamo.fechaDevolucion}</TableCell>
+                                                    <TableCell align="center">
+                                                        <Button
+                                                            variant="contained"
+                                                            color="primary"
+                                                            onClick={() => handleOpenReturnDialog(prestamo)} 
+                                                        >
+                                                            Devolver
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        )}
+                    </Box>
+                </DialogContent>
+                <DialogActions className="dialog-actions">
+                    <Button onClick={onClose} color="primary" className="close-button">
+                        Cerrar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {selectedPrestamo && (
+                <ReturnLoan
+                    open={openReturnDialog}
+                    onClose={handleCloseReturnDialog}
+                    onSuccess={handleCloseReturnDialog}
+                />
+            )}
+        </>
     );
 };
 
