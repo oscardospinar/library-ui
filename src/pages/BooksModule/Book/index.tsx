@@ -14,9 +14,7 @@ import { ArrowBack } from "@mui/icons-material";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { BookPagination } from "../../../components/BookPagination/BookPagination";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-<<<<<<< HEAD
 import BookEditor from "./bookEditor";
-=======
 import { useParams } from "react-router-dom";
 import { BookCard } from "../../../components/BookCard/BookCard";
 import { styled } from '@mui/material/styles';
@@ -62,7 +60,6 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
->>>>>>> bd7f0151558ccc16630838dd53dad405912ff94b
 
 export function Book(): ReactElement  {
     const [book, setBook] = useState<BookObj>();
