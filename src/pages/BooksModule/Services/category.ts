@@ -1,7 +1,9 @@
+import { BookObj } from "./BookObj";
+
 export type Category = {
     categoryId?: string;
     description: string;
-    books: string[];
+    books: BookObj[];
     subcategories: string[];
 }
 export {};

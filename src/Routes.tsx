@@ -3,7 +3,11 @@ import App from "./App";
 import { Home } from "./pages/Home";
 import { createBrowserRouter } from "react-router-dom"
 import { Book } from "./pages/BooksModule/Book";
+<<<<<<< HEAD
 import BookEditor from "./pages/BooksModule/Book/bookEditor";
+=======
+import { LoadBooks } from "./pages/BooksModule/LoadBooks";
+>>>>>>> bd7f0151558ccc16630838dd53dad405912ff94b
 
 export const routes = [
     {
@@ -15,6 +19,10 @@ export const routes = [
             },
             {
                 path: "libros",
+                element: <LoadBooks />
+            },
+            {
+                path: ":id",
                 element: <Book />
                 
             }
