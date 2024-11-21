@@ -34,4 +34,15 @@ export const getBooksByAuthor = async (idBook:string, author: string) => {
     } catch (error) {
         alert(error);
     }
+
+    
+}
+
+export const updateBook = async (book:BookObj) => {
+    try{
+        var answer = axios.post<any>(API+'updateBook',book);
+        return answer;
+        } catch (error) {
+        alert(error);
+ } 
 }

@@ -16,6 +16,7 @@ import { ArrowBack } from "@mui/icons-material";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { CardInformation } from "../../../components/BookCard";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookEditor from "./bookEditor";
 
 export function Book(): ReactElement  {
     const [book, setBook] = useState<BookObj>();
@@ -100,7 +101,9 @@ export function Book(): ReactElement  {
                         {numberCopies} {numberCopies === 1 ? 'ejemplar disponible' : 'ejemplares disponibles'}
                       </Typography>
                     </Box>
+                    <BookEditor book = {book}/>
                   </Paper>
+                
                   <Box>
                     <Typography variant="subtitle1" gutterBottom>
                       Subcategorías:
