@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Paper,
@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { AccessTime, Search, Assignment } from "@mui/icons-material";
 import { motion } from "framer-motion"; 
-import Loans from "./Loans";
+import Prestamos from "./Prestamos";
 import BusquedaLibro from "./BusquedaLibro";
 import PrestamosActivos from "./PrestamosActivos";
 import HistorialPrestamos from "./historial";
@@ -32,16 +32,37 @@ type PrestamosPageProps = {
 };
 
 const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
-  const [selectedOption, setSelectedOption] = React.useState<Option | null>(null);
+  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+  const [openPrestamoDialog, setOpenPrestamoDialog] = useState(false);
 
   const handleLoanSuccess = () => {
     console.log("El préstamo fue exitoso");
+    setOpenPrestamoDialog(false); 
   };
 
   const renderSelectedOption = () => {
     switch (selectedOption) {
       case Option.RegistrarPréstamo:
-        return <Loans open={true} onClose={onClose} onSuccess={handleLoanSuccess} />;
+        return (
+          <Dialog
+            open={openPrestamoDialog}
+            onClose={() => setOpenPrestamoDialog(false)}
+            fullWidth
+            maxWidth="sm"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            
+            <DialogContent sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <Box sx={{ width: '100%', maxWidth: 600 }}>
+                <Prestamos onSuccess={handleLoanSuccess} />
+              </Box>
+            </DialogContent>
+          </Dialog>
+        );
       case Option.BuscarDisponibilidad:
         return <BusquedaLibro open={true} onClose={onClose} />;
       case Option.MirarPrestamosActivos:
@@ -89,7 +110,10 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
                     </IconButton>
                   </CardContent>
                   <CardActions>
-                    <Button variant="contained" color="primary" fullWidth onClick={() => setSelectedOption(Option.RegistrarPréstamo)}>
+                    <Button variant="contained" color="primary" fullWidth onClick={() => {
+                      setSelectedOption(Option.RegistrarPréstamo);
+                      setOpenPrestamoDialog(true);
+                    }}>
                       Ir a Registrar
                     </Button>
                   </CardActions>

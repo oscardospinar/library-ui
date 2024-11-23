@@ -96,7 +96,6 @@ export default function DashboardLayoutBasic(props: any) {
 
   const router = useDemoRouter("/dashboard");
 
-  // Definimos el valor de demoWindow solo si 'window' está disponible
   const demoWindow = window ? window() : undefined;
 
   return (
@@ -104,11 +103,10 @@ export default function DashboardLayoutBasic(props: any) {
       navigation={NAVIGATION}
       router={router}
       theme={demoTheme}
-      window={demoWindow} // Pasamos el prop 'window' si está disponible
-    >
+      window={demoWindow} 
+      >
       <DashboardLayout>
         <PageContainer>
-          {/* Aquí va el contenido de la página */}
           <Grid container spacing={1}>
             <Grid size={5} />
             <Grid size={12}>

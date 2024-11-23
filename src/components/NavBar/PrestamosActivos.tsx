@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
 import '../../styles/PrestamosActivos.css';
-import ReturnLoan from './ReturnLoan'; // Asegúrate de importar el componente de devolución
+import ReturnLoan from './ReturnLoan'; 
+import Loading from './Loading';
 
 interface Prestamo {
     codigoEstudiante: string;
@@ -16,8 +17,8 @@ const PrestamosActivos = ({ open, onClose }: { open: boolean; onClose: () => voi
     const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false); // Estado para abrir el componente de devolución
-    const [selectedPrestamo, setSelectedPrestamo] = useState<Prestamo | null>(null); // Estado para almacenar el préstamo seleccionado
+    const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false); 
+    const [selectedPrestamo, setSelectedPrestamo] = useState<Prestamo | null>(null); 
 
     const obtenerPrestamosActivos = async () => {
         setLoading(true);
@@ -63,7 +64,7 @@ const PrestamosActivos = ({ open, onClose }: { open: boolean; onClose: () => voi
                         </Typography>
                         {loading ? (
                             <Box className="table-loading">
-                                <CircularProgress color="primary" />
+                                <Loading />
                             </Box>
                         ) : error ? (
                             <Typography color="error" sx={{ textAlign: 'center' }}>

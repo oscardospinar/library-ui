@@ -1,6 +1,19 @@
-import React, { useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Box, Typography, FormControl, RadioGroup, FormControlLabel, Radio } from '@mui/material';
-import '../../styles/BusquedaLibro.css';
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Button,
+  Box,
+  Typography,
+  FormControl,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from "@mui/material";
+import "../../styles/BusquedaLibro.css";
 
 interface BusquedaLibroProps {
   open: boolean;
@@ -8,30 +21,49 @@ interface BusquedaLibroProps {
 }
 
 const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
-  const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [terminoBusqueda, setTerminoBusqueda] = useState("");
   const [resultado, setResultado] = useState<string | null>(null);
-  const [tipoBusqueda, setTipoBusqueda] = useState<'isbn' | 'nombre' | 'codigo' | null>(null);
+  const [tipoBusqueda, setTipoBusqueda] = useState<
+    "isbn" | "nombre" | "codigo" | null
+  >(null);
 
   const libros = [
-    { isbn: '978-3-16-148410-0', nombre: 'Libro A', codigo: '123', disponible: true },
-    { isbn: '978-1-234-56789-0', nombre: 'Libro B', codigo: '124', disponible: false },
-    { isbn: '978-0-123-45678-9', nombre: 'Libro C', codigo: '125', disponible: true },
+    {
+      isbn: "978-3-16-148410-0",
+      nombre: "Libro A",
+      codigo: "123",
+      disponible: true,
+    },
+    {
+      isbn: "978-1-234-56789-0",
+      nombre: "Libro B",
+      codigo: "124",
+      disponible: false,
+    },
+    {
+      isbn: "978-0-123-45678-9",
+      nombre: "Libro C",
+      codigo: "125",
+      disponible: true,
+    },
   ];
 
   const manejarBusqueda = () => {
     try {
       if (!tipoBusqueda) {
-        setResultado('Por favor, selecciona un tipo de búsqueda.');
+        setResultado("Por favor, selecciona un tipo de búsqueda.");
         return;
       }
 
       const libroEncontrado = libros.find((libro) => {
         switch (tipoBusqueda) {
-          case 'isbn':
+          case "isbn":
             return libro.isbn.includes(terminoBusqueda);
-          case 'nombre':
-            return libro.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase());
-          case 'codigo':
+          case "nombre":
+            return libro.nombre
+              .toLowerCase()
+              .includes(terminoBusqueda.toLowerCase());
+          case "codigo":
             return libro.codigo.includes(terminoBusqueda);
           default:
             return false;
@@ -40,19 +72,22 @@ const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
 
       if (libroEncontrado) {
         setResultado(
-          `Libro encontrado: ${libroEncontrado.nombre} (${libroEncontrado.isbn}) - ${libroEncontrado.disponible ? 'Disponible' : 'No disponible'}`
+          `Libro encontrado: ${libroEncontrado.nombre} (${libroEncontrado.isbn}) - ${libroEncontrado.disponible ? "Disponible" : "No disponible"}`
         );
       } else {
-        setResultado('No se encontró ningún libro con ese término de búsqueda.');
+        setResultado(
+          "No se encontró ningún libro con ese término de búsqueda."
+        );
       }
     } catch (error) {
-      setResultado('Error al realizar la búsqueda. Intenta nuevamente más tarde.');
+      setResultado(
+        "Error al realizar la búsqueda. Intenta nuevamente más tarde."
+      );
     }
   };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Buscar Libro</DialogTitle>
       <DialogContent className="dialog-content">
         <Box className="container">
           {tipoBusqueda === null ? (
@@ -62,13 +97,32 @@ const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
               </Typography>
               <FormControl component="fieldset" className="form-control">
                 <RadioGroup
-                  onChange={(e) => setTipoBusqueda(e.target.value as 'isbn' | 'nombre' | 'codigo')}
+                  onChange={(e) =>
+                    setTipoBusqueda(
+                      e.target.value as "isbn" | "nombre" | "codigo"
+                    )
+                  }
                   row
                   className="radio-group"
                 >
-                  <FormControlLabel value="isbn" control={<Radio />} label="Por ISBN" className="radio-label" />
-                  <FormControlLabel value="nombre" control={<Radio />} label="Por Nombre" className="radio-label" />
-                  <FormControlLabel value="codigo" control={<Radio />} label="Por Código" className="radio-label" />
+                  <FormControlLabel
+                    value="isbn"
+                    control={<Radio />}
+                    label="Por ISBN"
+                    className="radio-label"
+                  />
+                  <FormControlLabel
+                    value="nombre"
+                    control={<Radio />}
+                    label="Por Nombre"
+                    className="radio-label"
+                  />
+                  <FormControlLabel
+                    value="codigo"
+                    control={<Radio />}
+                    label="Por Código"
+                    className="radio-label"
+                  />
                 </RadioGroup>
               </FormControl>
             </Box>
@@ -93,18 +147,9 @@ const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
             </Box>
           )}
 
-          {resultado && (
-            <Typography className="result">
-              {resultado}
-            </Typography>
-          )}
+          {resultado && <Typography className="result">{resultado}</Typography>}
         </Box>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="primary">
-          Cerrar
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

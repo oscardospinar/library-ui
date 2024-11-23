@@ -1,23 +1,27 @@
-import React from "react"
+import React from "react";
 import App from "./App";
 import { Home } from "./pages/Home";
-import { createBrowserRouter } from "react-router-dom"
-
+import Notfound from "./components/NavBar/NotFound";
+import { createBrowserRouter } from "react-router-dom";
 
 export const routes = [
-    {
-        element: <App />,
-        children: [
-            {
-                index: true,
-                element: <Home />
-            }
-        ]
-    }
-]
+  {
+    element: <App />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "*",
+        element: <Notfound />,
+      },
+    ],
+  },
+];
 
-export const router = createBrowserRouter( routes, {
-    future: {
-        v7_relativeSplatPath: true,
-    }
-})
+export const router = createBrowserRouter(routes, {
+  future: {
+    v7_relativeSplatPath: true,
+  },
+});
