@@ -83,14 +83,6 @@ export default function BookEditor({
             fullWidth
           />
           <TextField
-            label="Año de publicación"
-            name="year"
-            value={editedBook.year}
-            onChange={handleChange}
-            type="number"
-            fullWidth
-          />
-          <TextField
             label="Edición"
             name="edition"
             value={editedBook.edition}
@@ -111,13 +103,6 @@ export default function BookEditor({
             onChange={handleChange}
             multiline
             rows={4}
-            fullWidth
-          />
-          <TextField
-            label="Categoría"
-            name="category"
-            value={editedBook.category}
-            onChange={handleChange}
             fullWidth
           />
           <TextField

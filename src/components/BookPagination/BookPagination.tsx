@@ -5,7 +5,7 @@ import {
     Box,
     Pagination,
     Card,
-    CardContent
+    CardContent, Chip
   } from '@mui/material';
 import { BookObj } from "../../pages/BooksModule/Services/BookObj";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -54,11 +54,18 @@ export function BookPagination(props: Props): ReactElement {
       
 
 return (<Box p={2}>
-            <Box sx={{ display: 'flex', alignItems: 'center', alignContent: 'space-between'}}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
               <Typography variant="h5"  gutterBottom color='primary'>
                 {title}
               </Typography>
-              <Typography>Ver todo</Typography>
+              <Chip
+              label="Ver todo"
+              component="a"
+              href=""
+              variant="outlined"
+              clickable
+              color="primary"
+            />
             </Box>
               <Box display="grid" gridTemplateColumns={{
                   xs: "repeat(auto-fill, minmax(120px, 1fr))",
