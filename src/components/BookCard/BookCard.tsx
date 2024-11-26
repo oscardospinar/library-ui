@@ -52,7 +52,7 @@ return (<>
                 <Typography variant="body2" color="text.secondary">
                             {book.author}
                 </Typography>
-                <Typography variant="body2"  sx={{ mt: 1, color: book.copies.length < 3 ? '#ff0000' : 'text.secondary'}}>
+                <Typography variant="body2"  sx={{ mt: 1, color: book.copies.length === 0 ? '#ff0000' : 'text.secondary'}}>
                             Copias disponibles: {book.copies.length}
                 </Typography>
             </CardContent>

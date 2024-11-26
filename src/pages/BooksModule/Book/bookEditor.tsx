@@ -43,22 +43,6 @@ export default function BookEditor({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, maxWidth: '1000px', margin: 'auto', padding: 3 }}>
-      {/* Portada */}
-      <Box sx={{
-        width: { xs: '100%', md: '33%' }, 
-        marginBottom: { xs: 2, md: 0 } }}>
-        <Box sx={{ 
-            position: 'relative',aspectRatio: '3/4',
-            overflow: 'hidden', borderRadius: 1 }}>
-          <Image
-            src={editedBook.imgPath || "/placeholder.svg"}
-            alt={`Portada de ${editedBook.title}`}
-            layout="fill"
-            objectFit="cover"
-            priority
-          />
-        </Box>
-      </Box>
 
       {/* Formulario */}
       <Box sx={{ flex: 1 }}>
@@ -99,14 +83,6 @@ export default function BookEditor({
             fullWidth
           />
           <TextField
-            label="Año de publicación"
-            name="year"
-            value={editedBook.year}
-            onChange={handleChange}
-            type="number"
-            fullWidth
-          />
-          <TextField
             label="Edición"
             name="edition"
             value={editedBook.edition}
@@ -127,13 +103,6 @@ export default function BookEditor({
             onChange={handleChange}
             multiline
             rows={4}
-            fullWidth
-          />
-          <TextField
-            label="Categoría"
-            name="category"
-            value={editedBook.category}
-            onChange={handleChange}
             fullWidth
           />
           <TextField

@@ -10,7 +10,7 @@ import {
     Card,
     CardContent
   } from '@mui/material';
-import { getCategories } from "../../Hook/BookService";
+import { getBookByCategory, getCategories } from "../../Hook/BookService";
 import { BookObj } from "../Services/BookObj";
 import { ArrowBack } from "@mui/icons-material";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
@@ -19,26 +19,64 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { Category } from "../Services/category";
 
 export function LoadBooks(): ReactElement  {
-    const [categories, setCategories] = useState<Category[]>([]);
+    //const [categories, setCategories] = useState<Category[]>([]);
+    const [allCategories, setHashmap] = useState<Record<string, BookObj[]>>({});
     useEffect (() => {
-      getBooks();
+      getAllCategories();
+      console.log(allCategories);
     },[]);
 
 
-    const getBooks = async () => {
+    const getAllCategories = async () => {
         const answer = await getCategories();
-        if (answer && answer.data){
-          setCategories(answer.data.body);
+        if (answer && answer.data && answer.data.body.length > 0){
+          if(answer.data.body){
+            const categories = answer.data.body;
+            for(const item of categories) {
+              if(item.categoryId){
+                let answerBook = await getBookByCategory(item.categoryId);
+                if (answerBook && answerBook.data){
+                    let books= answerBook.data.body;
+                    if (books.length > 0){
+                      setHashmap((prevHashmap) => ({
+                        ...prevHashmap,
+                        [item.description]: books, 
+                      }));
+                    }
+                }
+              }
+            }
+          }   
         }
     };
 
-    const toggleDetalle = () => alert("prueba");
+    /*const getBooks = async () => {
+      if(categories){
+        for(const item of categories) {
+          if(item.categoryId){
+            let answer = await getBookByCategory(item.categoryId);
+            if (answer && answer.data){
+                let books= answer.data.body;
+                setHashmap((prevHashmap) => ({
+                  ...prevHashmap,
+                  [item.categoryId]: books, 
+                }));
+            }
+          }
+        }
+      }   
+    };*/
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-            {categories.map((category) =>
-            <BookPagination key={category.categoryId} title={category.description} books={category.books} />
-            ) }
-        </Container>
-      );      
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        {Object.entries(allCategories).map(([key, value]) => (
+          <BookPagination 
+            key={key} 
+            title={key}
+            books={value} 
+          />
+        ))}
+      </Container>
+    );
+        
 }

@@ -46,8 +46,15 @@ export const getCategories = async () => {
     } catch (error) {
         alert(error);
     }
+}
 
-    
+export const getBookByCategory = async (idCategory: string) => {
+    try{
+        var answer = axios.get<BookResponse>(APICategory+'getBooks?idCategory='+idCategory);        
+        return answer;
+    } catch (error) {
+        alert(error);
+    }
 }
 
 export const updateBook = async (book:BookObj) => {
