@@ -5,10 +5,10 @@ import {
     Card,
     CardContent
   } from '@mui/material';
-import { BookObj } from "../../pages/BooksModule/Services/BookObj";
+import { BasicBook } from "../../pages/BooksModule/Services/BasicBook";
 import { Navigate, useNavigate } from "react-router-dom";
   type Props = {
-    book: BookObj;
+    book: BasicBook;
 };
 
 export function BookCard(props: Props): ReactElement {
@@ -38,7 +38,6 @@ return (<>
             <CardMedia
                       component="img"
                       height="200"
-                      image={`http://localhost:80/${book.imgPath}`}
                       alt={`Portada de ${book.title}`}
                     />
             <CardContent sx={{ flexGrow: 1 }}>
@@ -52,8 +51,8 @@ return (<>
                 <Typography variant="body2" color="text.secondary">
                             {book.author}
                 </Typography>
-                <Typography variant="body2"  sx={{ mt: 1, color: book.copies.length === 0 ? '#ff0000' : 'text.secondary'}}>
-                            Copias disponibles: {book.copies.length}
+                <Typography variant="body2"  color="text.secondary">
+                            {book.recommendedAges}
                 </Typography>
             </CardContent>
                   </Card>

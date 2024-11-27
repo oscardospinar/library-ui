@@ -8,7 +8,7 @@ import {
     Paper,
     Container
   } from '@mui/material';
-import { getBook, getBooksByAuthor } from "../../Hook/BookService";
+import { getBook } from "../../Hook/BookService";
 import { BookObj } from "../Services/BookObj";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
@@ -17,11 +17,12 @@ import { useParams } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
-import { ArrowBack, Language, CollectionsBookmark, Category } from '@mui/icons-material';
+import { ArrowBack, Category } from '@mui/icons-material';
 import MuiAccordionSummary, {
   AccordionSummaryProps,
 } from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
+import { Copy } from "../Services/Copy";
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -79,9 +80,16 @@ export function Book(): ReactElement  {
     const getABook = async () => {
       if(id){
         const answer = await getBook(id);
-        if (answer){
-            setBook(answer.data.body[0]);
-            setNumberCopies(answer.data.body[0].copies.length);
+        if (answer) {
+          const book: BookObj | undefined = answer.data.body && answer.data.body.length === 1 
+            ? answer.data.body[0] 
+            : undefined;
+          if (book) {
+            setBook(book);
+            const availableCopies = book.copies.filter((copy: Copy) => copy.disponibility === "AVAILABLE");
+            console.log(availableCopies);
+            setNumberCopies(availableCopies.length);
+          }
         }
       }
     };

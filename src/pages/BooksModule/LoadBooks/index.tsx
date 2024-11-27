@@ -37,6 +37,7 @@ export function LoadBooks(): ReactElement  {
                 let answerBook = await getBookByCategory(item.categoryId);
                 if (answerBook && answerBook.data){
                     let books= answerBook.data.body;
+                    console.log(books);
                     if (books.length > 0){
                       setHashmap((prevHashmap) => ({
                         ...prevHashmap,
