@@ -14,7 +14,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 
-const pages = ['Prestamos', 'Libros', 'Estudiantes'];
+const pages = ['Prestamos', 'Libros', 'Estudiantes','Login'];
 const settings = ['Perfil', 'Logout'];
 
 export function NavBar(): ReactElement {
