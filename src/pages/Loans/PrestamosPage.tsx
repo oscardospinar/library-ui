@@ -14,11 +14,11 @@ import {
   DialogContent,
 } from "@mui/material";
 import { AccessTime, Search, Assignment } from "@mui/icons-material";
-import { motion } from "framer-motion"; 
-import Prestamos from "./Prestamos";
-import BusquedaLibro from "./BusquedaLibro";
-import PrestamosActivos from "./PrestamosActivos";
-import HistorialPrestamos from "./historial";
+import { motion } from "framer-motion";
+import Prestamos from "../../components/Loans/Loan/Prestamos";
+import BusquedaLibro from "../../components/Loans/BookSearch/BusquedaLibro";
+import PrestamosActivos from "../../components/Loans/ActiveLoan/PrestamosActivos";
+import HistorialPrestamos from "../../components/Loans/History/historial";
 
 enum Option {
   RegistrarPréstamo = "RegistrarPréstamo",
@@ -37,7 +37,7 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
 
   const handleLoanSuccess = () => {
     console.log("El préstamo fue exitoso");
-    setOpenPrestamoDialog(false); 
+    setOpenPrestamoDialog(false);
   };
 
   const renderSelectedOption = () => {
@@ -55,9 +55,14 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
               alignItems: "center",
             }}
           >
-            
-            <DialogContent sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-              <Box sx={{ width: '100%', maxWidth: 600 }}>
+            <DialogContent
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ width: "100%", maxWidth: 600 }}>
                 <Prestamos onSuccess={handleLoanSuccess} />
               </Box>
             </DialogContent>
@@ -80,7 +85,7 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
       onClose={onClose}
       fullWidth
       maxWidth="lg"
-      sx={{ minWidth: '80%' }}
+      sx={{ minWidth: "80%" }}
     >
       <DialogTitle>Gestión de Préstamos de Libros</DialogTitle>
       <DialogContent>
@@ -90,19 +95,27 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
               Gestión de Préstamos de Libros
             </Typography>
             <Typography variant="body1" align="center" color="text.secondary">
-              Administración de las operaciones de préstamo de libros de manera eficiente y rápida.
+              Administración de las operaciones de préstamo de libros de manera
+              eficiente y rápida.
             </Typography>
           </Paper>
 
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid item xs={12} sm={6} md={3}>
-              <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300 }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
                 <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
                   <CardContent>
                     <Typography variant="h6" component="div">
                       Registrar Préstamo
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2 }}
+                    >
                       Realiza nuevos prestamos para Estudiantes
                     </Typography>
                     <IconButton color="primary" sx={{ fontSize: 50 }}>
@@ -110,10 +123,15 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
                     </IconButton>
                   </CardContent>
                   <CardActions>
-                    <Button variant="contained" color="primary" fullWidth onClick={() => {
-                      setSelectedOption(Option.RegistrarPréstamo);
-                      setOpenPrestamoDialog(true);
-                    }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      onClick={() => {
+                        setSelectedOption(Option.RegistrarPréstamo);
+                        setOpenPrestamoDialog(true);
+                      }}
+                    >
                       Ir a Registrar
                     </Button>
                   </CardActions>
@@ -122,13 +140,20 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
-              <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300 }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
                 <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
                   <CardContent>
                     <Typography variant="h6" component="div">
                       Historial de Préstamos
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2 }}
+                    >
                       Consulta el historial completo de préstamos de libros.
                     </Typography>
                     <IconButton color="primary" sx={{ fontSize: 50 }}>
@@ -136,7 +161,12 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
                     </IconButton>
                   </CardContent>
                   <CardActions>
-                    <Button variant="contained" color="primary" fullWidth onClick={() => setSelectedOption(Option.Historial)}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      onClick={() => setSelectedOption(Option.Historial)}
+                    >
                       Ver Historial
                     </Button>
                   </CardActions>
@@ -145,13 +175,20 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
-              <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300 }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
                 <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
                   <CardContent>
                     <Typography variant="h6" component="div">
                       Buscar Disponibilidad
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2 }}
+                    >
                       Consulta la disponibilidad de libros para préstamo.
                     </Typography>
                     <IconButton color="primary" sx={{ fontSize: 50 }}>
@@ -159,7 +196,14 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
                     </IconButton>
                   </CardContent>
                   <CardActions>
-                    <Button variant="contained" color="primary" fullWidth onClick={() => setSelectedOption(Option.BuscarDisponibilidad)}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      onClick={() =>
+                        setSelectedOption(Option.BuscarDisponibilidad)
+                      }
+                    >
                       Buscar Disponibilidad
                     </Button>
                   </CardActions>
@@ -168,13 +212,20 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
-              <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300 }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
                 <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
                   <CardContent>
                     <Typography variant="h6" component="div">
                       Ver Préstamos Activos
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2 }}
+                    >
                       Consulta los préstamos activos y su estado actual.
                     </Typography>
                     <IconButton color="primary" sx={{ fontSize: 50 }}>
@@ -182,7 +233,14 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
                     </IconButton>
                   </CardContent>
                   <CardActions>
-                    <Button variant="contained" color="primary" fullWidth onClick={() => setSelectedOption(Option.MirarPrestamosActivos)}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      onClick={() =>
+                        setSelectedOption(Option.MirarPrestamosActivos)
+                      }
+                    >
                       Ver Activos
                     </Button>
                   </CardActions>

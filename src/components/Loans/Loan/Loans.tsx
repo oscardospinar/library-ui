@@ -9,7 +9,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import "../../styles/Loans.css";
+import "./Loans.css";
 
 interface LoansProps {
   open: boolean;

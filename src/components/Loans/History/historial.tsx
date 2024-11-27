@@ -15,8 +15,8 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import Loading from "./Loading";
-import "../../styles/historial.css";
+import Loading from "../Loading/Loading";
+import "./historial.css";
 
 interface Prestamo {
   codigoEstudiante: string;

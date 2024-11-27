@@ -13,7 +13,7 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
-import "../../styles/BusquedaLibro.css";
+import "./BusquedaLibro.css";
 
 interface BusquedaLibroProps {
   open: boolean;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/Prestamos.css';
+import './Prestamos.css';
 
 interface PrestamosProps {
   onSuccess: () => void;

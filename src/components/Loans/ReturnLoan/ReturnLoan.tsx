@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import '../../styles/Loans.css';
+import '../Loan/Loans.css';
 
 interface ReturnLoanProps {
     open: boolean;

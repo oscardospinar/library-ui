@@ -13,7 +13,7 @@ import {
   Avatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import PrestamosDialog from "./PrestamosDialog";
+import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
 
 const pages = ["Prestamos", "Libros", "Estudiantes"];
 
