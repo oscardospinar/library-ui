@@ -32,7 +32,7 @@ const FormularioRegistro: React.FC = () => {
   const navigate = useNavigate();
 
   const handlePrincipal = () => {
-    navigate('/App');
+
   };
 
   const [formulario, setFormulario] = useState<Formulario>({
@@ -129,6 +129,8 @@ const FormularioRegistro: React.FC = () => {
 
     alert('Formulario enviado correctamente');
     console.log(formulario);
+    
+    navigate('/navar')
   };
 
   const todosCamposLlenos = (): boolean => {
