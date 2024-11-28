@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Button, Container, TextField, Typography } from '@mui/material';
+import { Box, Container, TextField, Typography } from '@mui/material';
 import ReCAPTCHA from 'react-google-recaptcha';
+import Boton from '../Boton/Boton';
+
 
 function Login() {
-  const [userAnswer, setUserAnswer] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [captchaValido, setCaptchaValido] = useState(false);
 
   const manejarCaptcha = (value: string | null) => {
@@ -12,9 +15,43 @@ function Login() {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    alert('Inicio de sesión exitoso');
+    if (captchaValido) {
+      try {
+        const response = await fetch('http://localhost:8081/usuario/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            nombreUsuario: username,
+            contrasena: password,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // Guardar datos en localStorage
+          localStorage.setItem(
+            'user',
+            JSON.stringify({
+              nombreUsuario: data.nombreUsuario,
+              rol: data.rol,
+              token: data.token,
+            })
+          );
+          alert('Inicio de sesión exitoso');
+        } else {
+          alert('Error en el inicio de sesión. Código: ' + response.status);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error en el inicio de sesión: ' + error);
+      }
+    } else {
+      alert('Por favor, complete el captcha');
+    }
   };
 
   return (
@@ -41,6 +78,8 @@ function Login() {
             fullWidth
             margin="normal"
             required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
             label="Contraseña"
@@ -49,6 +88,8 @@ function Login() {
             fullWidth
             margin="normal"
             required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Box
             sx={{
@@ -62,16 +103,19 @@ function Login() {
               onChange={manejarCaptcha}
             />
           </Box>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            disabled={!captchaValido}
-            sx={{ mt: 2 }}
-          >
-            Ingresar
-          </Button>
+          <Boton
+            label="Ingresar"
+            onClick={() => {}}
+            style={{
+              width: '100%',
+              padding: '10px',
+              backgroundColor: captchaValido ? '#1976d2' : '#d3d3d3',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: captchaValido ? 'pointer' : 'not-allowed',
+            }}
+          />
         </form>
       </Box>
     </Container>
