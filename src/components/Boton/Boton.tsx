@@ -1,10 +1,9 @@
 import React from 'react';
 
-// Definir las props usando TypeScript
 interface BotonProps {
-  label: string; // Etiqueta del botón
-  onClick: () => void; // Función que se ejecuta al hacer clic
-  style?: React.CSSProperties; // Estilo opcional del botón
+  label: string;
+  onClick: () => void;
+  style?: React.CSSProperties;
 }
 
 const Boton: React.FC<BotonProps> = ({ label, onClick, style }) => {

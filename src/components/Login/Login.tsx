@@ -44,7 +44,7 @@ function Login() {
             })
           );
           alert('Inicio de sesión exitoso');
-          navigate('/navar'); // Redirige a NavBar
+          navigate('/navar');
         } else {
           alert('Error en el inicio de sesión. Código: ' + response.status);
         }
