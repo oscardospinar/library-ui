@@ -2,6 +2,8 @@ import React from "react"
 import App from "./App";
 import { Home } from "./pages/Home";
 import { createBrowserRouter } from "react-router-dom"
+import MainSearch from "./components/Mainsearch/Mainsearch";
+import SearchResults from "./components/SearchResults/SearchResults";
 
 export const routes = [
     {
@@ -10,6 +12,14 @@ export const routes = [
             {
                 index: true,
                 element: <Home />
+            }
+            ,{
+                path: "busqueda",
+                element: <MainSearch />
+            }
+            ,{
+                path: "results",
+                element: <SearchResults />
             }
         ]
     }
