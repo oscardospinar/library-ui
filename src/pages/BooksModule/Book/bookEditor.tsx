@@ -1,9 +1,10 @@
-import React from 'react';
-import { Box, Typography, TextField, Button, Chip, IconButton } from '@mui/material';
+import { Box, Typography, TextField, Button, Chip, IconButton, Select, MenuItem,} from '@mui/material';
 import Image from 'next/image' ;
 import { BookObj } from "../Services/BookObj";
 import { updateBook } from "../../Hook/BookService";
-
+import { getCategories } from '../../Hook/BookService';
+import React, { ReactElement, useEffect, useState } from "react";
+import { Category } from '../Services/category';
 export default function BookEditor({ 
     book
      }: {
@@ -11,6 +12,7 @@ export default function BookEditor({
 
 }) {
 {/*estado inical del libro */}
+  const [categories, setCategories] = React.useState<Category[]>([]);
   const [editedBook, setEditedBook] = React.useState<BookObj>({
     ...book,
     subcategories: book.subcategories || ''
@@ -33,11 +35,38 @@ export default function BookEditor({
     }
     /*onSave(editedBook);*/
   };
+  const handleCategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const category = event.target.value as string;
+    setEditedBook((prev) => ({
+      ...prev,
+      category,
+      subcategories: [] 
+    }));
+  };
+
+  const handleSubcategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setEditedBook((prev) => ({
+      ...prev,
+      subcategories: event.target.value as string[]
+    }));
+  };
+
+  
 
   const updateNewBook = async()=>{ 
     const answer = await updateBook(editedBook);
     if(answer){ 
         alert("hola")
+    }
+  }
+  useEffect (() => {
+    getAllCategories();
+  },[]);
+  const getAllCategories = async () => {
+    const answer = await getCategories();
+    if(answer){ 
+      console.log(answer.data.body);
+      setCategories(answer.data.body);
     }
   }
 
@@ -105,6 +134,17 @@ export default function BookEditor({
             rows={4}
             fullWidth
           />
+          <Select
+            value={editedBook.categories || ''}
+            displayEmpty
+            fullWidth
+          >
+            {categories.map((category, index) => (
+              <MenuItem key={index} value={category.categoryId}>
+                {category.description}
+              </MenuItem>
+            ))}
+        </Select>
           <TextField
             label="Subcategorías"
             name="subcategories"
@@ -113,6 +153,7 @@ export default function BookEditor({
             fullWidth
             helperText="Please,enter subcategories with comma "
           />
+          
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2 }}>
           { /*<Button variant="outlined" onClick={onCancel}>Cancelar</Button>*/}
             {/*<Button variant="contained" onClick={() => onSave(editedBook)}>Guardar cambios</Button>*/}

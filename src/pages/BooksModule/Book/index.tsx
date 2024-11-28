@@ -107,7 +107,7 @@ export function Book(): ReactElement  {
                   <CardMedia
                     component="img"
                     height="100%"
-                    image={`http://localhost:80/${book.imgPath}`}
+                    image={`https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/${book.imgPath}`}
                     alt={`Portada de ${book.title}`}
                     sx={{ objectFit: 'cover' }}
                   />

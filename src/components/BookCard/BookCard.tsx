@@ -38,6 +38,7 @@ return (<>
             <CardMedia
                       component="img"
                       height="200"
+                      image={`https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/${book.imgPath}`}
                       alt={`Portada de ${book.title}`}
                     />
             <CardContent sx={{ flexGrow: 1 }}>

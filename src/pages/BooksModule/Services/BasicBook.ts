@@ -4,5 +4,6 @@ export type BasicBook = {
     author: string;
     recommendedAges: string;
     isbn: number;
+    imgPath: string;
 }
 export {};
