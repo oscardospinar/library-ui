@@ -1,0 +1,235 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #0056b3;
+    padding: 10px 20px;
+    color: white;
+}
+
+/* Centro: logo y búsqueda */
+.navbar-center {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar-logo {
+    height: 50px;
+}
+
+.navbar-search {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-search input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 15px 0 0 15px;
+}
+
+.navbar-search button {
+    padding: 5px 10px;
+    color: #0056b3;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-radius: 0 15px 15px 0;
+    transition: background-color 0.3s;
+}
+
+.navbar-search button:hover {
+    background-color: #ddd;
+}
+
+/* Header */
+.header {
+    background-size: cover;
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+}
+
+/* Content */
+.content {
+    padding: 20px;
+    text-align: center;
+}
+
+.content h2 {
+    color: #333;
+    font-size: 1.8rem;
+}
+
+/* Login Container */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 300px;
+}
+
+.login-form label {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+}
+
+.login-form button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    background-color: #0056b3;
+}
+
+.captcha-container {
+    margin-top: 15px;
+}
+
+.captcha-container label {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+}
+
+.captcha-container input {
+    margin-top: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Form Container */
+.form-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.titulo-contenedor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0056b3;
+    padding: 10px;
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.titulo-imagen {
+    width: 50px;
+    height: 50px;
+    margin: 0 10px;
+}
+
+.titulo-texto {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 10px;
+    color: #555;
+    font-weight: bold;
+}
+
+.form-container input,
+.form-container select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.form-container input:focus,
+.form-container select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.form-container .form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Registro Container */
+.registro-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #e3f2fd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.registro-container h2 {
+    text-align: center;
+    color: #0056b3;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.registro-container label {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.registro-container input,
+.registro-container select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.registro-container button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.registro-container button:hover {
+    background-color: #003f7f;
+}

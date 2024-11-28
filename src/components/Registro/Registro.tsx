@@ -4,6 +4,8 @@ import ListaDesplegable from '../../components/ListaDesplegable/ListaDesplegable
 import ReCAPTCHA from 'react-google-recaptcha';
 import Boton from '../../components/Boton/Boton';
 import { useNavigate } from 'react-router-dom';
+import './style.css';
+
 
 interface Formulario {
   codigoEstudiante: string;
