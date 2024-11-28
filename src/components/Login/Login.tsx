@@ -44,7 +44,13 @@ function Login() {
             })
           );
           alert('Inicio de sesión exitoso');
-          navigate('/navar');
+
+          // Redirigir según el rol
+          if (data.rol === 'Bibliotecario') {
+            navigate('/navar'); // Cambia '/navbar' a la ruta de tu página de Navbar
+          } else {
+            navigate('/navar2'); // Cambia '/hola-mundo' a la ruta de tu página de "Hola Mundo"
+          }
         } else {
           alert('Error en el inicio de sesión. Código: ' + response.status);
         }
