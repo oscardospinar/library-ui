@@ -1,15 +1,12 @@
-import React, {ReactElement} from 'react';
+import React, { ReactElement } from 'react';
 import './App.css';
 import { Box } from "@mui/material";
-import {NavBar} from "./components/NavBar/NavBar";
-import {Outlet} from "react-router-dom";
-import Login from './components/Login/Login';
+import { Outlet } from "react-router-dom";
 
 function App(): ReactElement {
   return (
     <Box>
-      <Login />
-      <Outlet />
+      <Outlet /> {/* Aquí se cargarán los componentes según la ruta */}
     </Box>
   );
 }

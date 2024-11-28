@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Box, Container, TextField, Typography } from '@mui/material';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { useNavigate } from 'react-router-dom';
 import Boton from '../Boton/Boton';
-
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [captchaValido, setCaptchaValido] = useState(false);
+
+  const navigate = useNavigate(); // Hook para redirigir
 
   const manejarCaptcha = (value: string | null) => {
     if (value) {
@@ -42,6 +44,7 @@ function Login() {
             })
           );
           alert('Inicio de sesión exitoso');
+          navigate('/navar'); // Redirige a NavBar
         } else {
           alert('Error en el inicio de sesión. Código: ' + response.status);
         }
