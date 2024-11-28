@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import App from './App';
 import Login from './components/Login/Login';
 import { NavBar } from './components/NavBar/NavBar';
+import Registro from './components/Registro/Registro';
 
 
 const root = ReactDOM.createRoot(
@@ -18,6 +19,7 @@ root.render(
           {/* Rutas principales */}
           <Route index element={<Login />} /> {/* Página inicial */}
           <Route path="/navar" element={<NavBar />} /> {/* Redirigirá al componente NavBar */}
+          <Route path='/Registro' element={<Registro />} /> {}
         </Route>
       </Routes>
     </Router>

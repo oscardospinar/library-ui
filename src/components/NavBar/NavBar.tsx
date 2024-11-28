@@ -5,7 +5,8 @@ import {
     Box,
     Button,
     Container,
-    IconButton, Menu,
+    IconButton,
+    Menu,
     MenuItem,
     Toolbar,
     Tooltip,
@@ -13,6 +14,7 @@ import {
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
+import { useNavigate } from "react-router-dom";
 
 const pages = ['Prestamos', 'Libros', 'Estudiantes', 'Registro'];
 const settings = ['Perfil', 'Logout'];
@@ -20,6 +22,8 @@ const settings = ['Perfil', 'Logout'];
 export function NavBar(): ReactElement {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+    const navigate = useNavigate(); // Hook para navegar entre rutas
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -34,6 +38,19 @@ export function NavBar(): ReactElement {
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
+    };
+
+    // Maneja la navegación según la página seleccionada
+    const handleNavigate = (page: string) => {
+        switch (page) {
+            case 'Registro':
+                navigate('/registro'); // Cambia a la ruta '/registro'
+                break;
+            // Puedes manejar otras páginas aquí si es necesario
+            default:
+                console.log(`Navegando a: ${page}`);
+        }
+        handleCloseNavMenu(); // Cierra el menú
     };
 
     return (
@@ -77,7 +94,7 @@ export function NavBar(): ReactElement {
                             sx={{ display: { xs: 'block', md: 'none' } }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                <MenuItem key={page} onClick={() => handleNavigate(page)}>
                                     <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
                                 </MenuItem>
                             ))}
@@ -106,7 +123,7 @@ export function NavBar(): ReactElement {
                         {pages.map((page) => (
                             <Button
                                 key={page}
-                                onClick={handleCloseNavMenu}
+                                onClick={() => handleNavigate(page)}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 {page}
