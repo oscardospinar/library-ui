@@ -21,7 +21,7 @@ function Login() {
     event.preventDefault();
     if (captchaValido) {
       try {
-        const response = await fetch('http://localhost:8081/usuario/login', {
+        const response = await fetch('https://cvds-project-cnb6c0cuddfyc9fe.mexicocentral-01.azurewebsites.net/usuario/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
