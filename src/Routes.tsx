@@ -2,6 +2,9 @@ import React from "react"
 import App from "./App";
 import { Home } from "./pages/Home";
 import { createBrowserRouter } from "react-router-dom"
+import BookEditor from "./pages/BooksModule/Book/bookEditor";
+import { LoadBooks } from "./pages/BooksModule/LoadBooks";
+
 
 export const routes = [
     {
@@ -10,7 +13,12 @@ export const routes = [
             {
                 index: true,
                 element: <Home />
+            },
+            {
+                path: "libros",
+                element: <LoadBooks />
             }
+            
         ]
     }
 ]

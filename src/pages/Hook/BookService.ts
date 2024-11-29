@@ -4,10 +4,9 @@ import { Category } from "../BooksModule/Services/category";
 import { BookResponse } from "../BooksModule/Services/BookResponse"
 
 
-const API = 'http://localhost:80/BookModule/';
-const APICategory = 'http://localhost:80/CategoryModule/';
-const APISubcategory = 'http://localhost:80/SubcategoryModule/';
-
+const API = 'https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/BookModule/';
+const APICategory = 'https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/CategoryModule/';
+const APISubcategory = 'https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/SubcategoryModule/';
 
 export const getBook = async (idBook:string) => {
     try{

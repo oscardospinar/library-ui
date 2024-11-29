@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
+import { useNavigate } from 'react-router-dom';
 
 const pages = ['Prestamos', 'Libros', 'Estudiantes'];
 const settings = ['Perfil', 'Logout'];
@@ -20,6 +21,7 @@ const settings = ['Perfil', 'Logout'];
 export function NavBar(): ReactElement {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const navigate = useNavigate();
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -35,6 +37,11 @@ export function NavBar(): ReactElement {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+    const handleSectionClick = (section: string): void => {
+        if (section === "Libros") {
+            navigate("/libros");
+        }
+    }
 
     return (
         <AppBar position="static">
@@ -104,13 +111,9 @@ export function NavBar(): ReactElement {
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
+                        <MenuItem key={page} onClick={() => handleSectionClick(page)}>
+                            <Typography>{page}</Typography>
+                          </MenuItem>
                         ))}
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>

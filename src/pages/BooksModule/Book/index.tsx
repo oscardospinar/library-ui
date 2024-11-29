@@ -42,8 +42,8 @@ interface Props {
     >
       {selectedBook && (
         <>
-          <DialogTitle sx={{ m: 0, p: 2, fontWeight: 'bold'}}>
-            {selectedBook.title}
+          <DialogTitle sx={{ m: 0, p: 2}}>
+            Detalles del Libro
             <IconButton
               aria-label="close"
               onClick={onClose}
@@ -61,12 +61,15 @@ interface Props {
             <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 2fr' }} gap={3}>
               <Box>
                 <img
-                  src={`http://localhost:80/${selectedBook.imgPath}`}
+                  src={`https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/${selectedBook.imgPath}`}
                   alt={`Portada de ${selectedBook.title}`}
                   style={{ width: '100%', height: 'auto', marginBottom: '1rem' }}
                 />
               </Box>
               <Box>
+              <Typography variant="h6">
+                    {selectedBook.title}
+              </Typography>
               <Chip icon={<BookmarkIcon></BookmarkIcon>} color="primary" variant="outlined" label={selectedBook.recommendedAges} sx={{ ml: 'auto', mb: 2 }} />
                   <Typography variant="h6" color="text.secondary">
                     {selectedBook.author}
