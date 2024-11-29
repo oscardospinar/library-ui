@@ -70,7 +70,7 @@ return (<Box p={2}>
               <Box display="grid" gridTemplateColumns={{
                   xs: "repeat(auto-fill, minmax(120px, 1fr))",
                   sm: "repeat(auto-fill, minmax(150px, 1fr))",
-                  md: "repeat(auto-fill, minmax(200px, 1fr))",
+                  md: "repeat(auto-fill, minmax(215px, 1fr))",
                 }}
                 gap={1} sx={{paddingTop: 2}} >
                 {Newbooks?.map((book, i) => (

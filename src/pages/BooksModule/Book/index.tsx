@@ -107,7 +107,7 @@ export function Book(): ReactElement  {
                   <CardMedia
                     component="img"
                     height="100%"
-                    image={`https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/${book.imgPath}`}
+                    image={`http://localhost:80/${book.imgPath}`}
                     alt={`Portada de ${book.title}`}
                     sx={{ objectFit: 'cover' }}
                   />
@@ -176,18 +176,6 @@ export function Book(): ReactElement  {
                 </Box>
                 </Box>
               </Box>
-              <div>
-                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-                  <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                    <Typography>Informacion adicional</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography>
-                    <BookEditor book={book} />
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
-              </div>
               </Paper>
               </Container>
           ) : (

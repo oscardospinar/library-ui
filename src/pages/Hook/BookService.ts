@@ -4,8 +4,9 @@ import { Category } from "../BooksModule/Services/category";
 import { BookResponse } from "../BooksModule/Services/BookResponse"
 
 
-const API = 'https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/BookModule/';
-const APICategory = 'https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/CategoryModule/';
+const API = 'http://localhost:80/BookModule/';
+const APICategory = 'http://localhost:80/CategoryModule/';
+const APISubcategory = 'http://localhost:80/SubcategoryModule/';
 
 
 export const getBook = async (idBook:string) => {
@@ -17,27 +18,6 @@ export const getBook = async (idBook:string) => {
     }
 }
 
-export const getAllBooks = async () => {
-    try{
-        var answer = axios.get<BookResponse>(API+'getAllBooks');
-        return answer;
-    } catch (error) {
-        alert(error);
-    }
-}
-
-export const getBooksByAuthor = async (idBook:string, author: string) => {
-    try{
-        var message = {
-            "bookId": idBook,
-            "author": author
-        }
-        var answer = axios.post<BookResponse>(API+'getBooksByAuthor',message);
-        return answer;
-    } catch (error) {
-        alert(error);
-    }
-}
 
 export const getCategories = async () => {
     try{
@@ -51,6 +31,24 @@ export const getCategories = async () => {
 export const getBookByCategory = async (idCategory: string) => {
     try{
         var answer = axios.get<BookResponse>(APICategory+'getBooks?idCategory='+idCategory);        
+        return answer;
+    } catch (error) {
+        alert(error);
+    }
+}
+
+export const getSubcategories = async () => {
+    try{
+        var answer = axios.get<BookResponse>(APISubcategory+'getSubcategories');
+        return answer;
+    } catch (error) {
+        alert(error);
+    }
+}
+
+export const getBooksBySubcategories = async (idSubcategory: string) => {
+    try{
+        var answer = axios.get<BookResponse>(APISubcategory+'getBooks?idSubcategory='+idSubcategory);        
         return answer;
     } catch (error) {
         alert(error);

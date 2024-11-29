@@ -25,7 +25,7 @@ export function BookCard(props: Props): ReactElement {
 
 return (<>
             <Card sx={{ 
-                    maxWidth: 200, 
+                    maxWidth: 218, 
                     cursor: 'pointer', 
                     '&:hover': { 
                       boxShadow: 6,
@@ -33,23 +33,33 @@ return (<>
                     }, 
                     overflow: 'hidden',
                     border: "1px solid rgba(0, 0, 0, 0.2)",
+                    padding: 1 
                   }}
                   onClick={() => handleBook(book?.bookId)} >
             <CardMedia
                       component="img"
-                      height="200"
-                      image={`https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/${book.imgPath}`}
+                      height="220"
+                      image={`http://localhost:80/${book.imgPath}`}
                       alt={`Portada de ${book.title}`}
                     />
             <CardContent sx={{ flexGrow: 1 }}>
                 <Typography gutterBottom variant="h6" component="div" sx={{
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap', 
-                            }}>
+                  display: '-webkit-box', 
+                  WebkitBoxOrient: 'vertical', 
+                  overflow: 'hidden', 
+                  WebkitLineClamp: 2, 
+                  textOverflow: 'ellipsis', 
+                  fontSize:18
+                }}>
                             {book.title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.secondary" sx={{
+                  display: '-webkit-box', 
+                  WebkitBoxOrient: 'vertical', 
+                  overflow: 'hidden', 
+                  WebkitLineClamp: 2, 
+                  textOverflow: 'ellipsis' 
+                }}>
                             {book.author}
                 </Typography>
                 <Typography variant="body2"  color="text.secondary">
