@@ -15,6 +15,7 @@ import { getBook } from "../../Hook/BookService";
 import { BookObj } from "../Services/BookObj";
 import { Copy } from "../Services/Copy";
 import Book from "../Book";
+import AdministrationPanel from "../Administration/AdministrationPanel";
 
 
 
@@ -53,6 +54,7 @@ export function LoadBooks(): ReactElement  {
   
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
+        <AdministrationPanel />
         <AutoStoriesOutlinedIcon color='primary' sx={{ 
           fontSize: 85, 
           display: "block", 

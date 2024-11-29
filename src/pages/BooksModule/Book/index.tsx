@@ -42,7 +42,7 @@ interface Props {
     >
       {selectedBook && (
         <>
-          <DialogTitle sx={{ m: 0, p: 2}}>
+          <DialogTitle sx={{ m: 0, p: 2}} >
             Detalles del Libro
             <IconButton
               aria-label="close"
@@ -67,10 +67,12 @@ interface Props {
                 />
               </Box>
               <Box>
-              <Typography variant="h6">
+                <Box sx={{display:'flex', alignItems:'center', justifyContent:'end', padding:0}}>
+                  <Chip icon={<BookmarkIcon></BookmarkIcon>} color="primary" variant="outlined" label={selectedBook.recommendedAges} sx={{ ml: 'auto', mb: 2 }} />
+                </Box>
+              <Typography gutterBottom variant="h4" component="div" sx={{fontWeight:'bold', fontSize:28, textAlign: "justify"}}>
                     {selectedBook.title}
               </Typography>
-              <Chip icon={<BookmarkIcon></BookmarkIcon>} color="primary" variant="outlined" label={selectedBook.recommendedAges} sx={{ ml: 'auto', mb: 2 }} />
                   <Typography variant="h6" color="text.secondary">
                     {selectedBook.author}
                   </Typography>

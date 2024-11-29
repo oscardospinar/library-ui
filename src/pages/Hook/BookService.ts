@@ -17,6 +17,15 @@ export const getBook = async (idBook:string) => {
     }
 }
 
+export const getAllBooks= async () => {
+    try{
+        var answer = axios.get<BookResponse>(API+'getAllBooks');        
+        return answer;
+    } catch (error) {
+        alert(error);
+    }
+}
+
 
 export const getCategories = async () => {
     try{
