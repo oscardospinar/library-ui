@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
-import { Link } from 'react-router-dom';
 
 const pages = ['Prestamos', 'Libros', 'Estudiantes'];
 const settings = ['Perfil', 'Logout'];
@@ -46,7 +45,7 @@ export function NavBar(): ReactElement {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="/"
+                        href="#app-bar-with-responsive-menu"
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -79,10 +78,7 @@ export function NavBar(): ReactElement {
                         >
                             {pages.map((page) => (
                                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography sx={{ textAlign: 'center' }} >
-                                        <Link to={`/${page.toLowerCase()}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                            {page}
-                                        </Link></Typography>
+                                    <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -113,9 +109,7 @@ export function NavBar(): ReactElement {
                                 onClick={handleCloseNavMenu}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
-                                <Link to={`/${page.toLowerCase()}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    {page}
-                                </Link>
+                                {page}
                             </Button>
                         ))}
                     </Box>
