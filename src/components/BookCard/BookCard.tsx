@@ -7,13 +7,17 @@ import {
   } from '@mui/material';
 import { BasicBook } from "../../pages/BooksModule/Services/BasicBook";
 import { Navigate, useNavigate } from "react-router-dom";
+
+
   type Props = {
     book: BasicBook;
+    onClick: (id: string | undefined) => void;
 };
 
 export function BookCard(props: Props): ReactElement {
     const {
-        book
+        book,
+        onClick
     } = props;
 
     const navigate = useNavigate(); 
@@ -35,7 +39,7 @@ return (<>
                     border: "1px solid rgba(0, 0, 0, 0.2)",
                     padding: 1 
                   }}
-                  onClick={() => handleBook(book?.bookId)} >
+                  onClick={() => onClick(book.bookId)} >
             <CardMedia
                       component="img"
                       height="220"

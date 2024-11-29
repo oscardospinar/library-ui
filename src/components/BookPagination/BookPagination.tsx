@@ -15,12 +15,14 @@ const booksPerPage = 5;
   type Props = {
     title?: string;
     books: BookObj[];
+    showBook: (id: string | undefined) => void;
 };
 
 export function BookPagination(props: Props): ReactElement {
     const {
         title,
-        books
+        books,
+        showBook
     } = props;
 
     const [page, setPage] = useState({
@@ -72,9 +74,9 @@ return (<Box p={2}>
                   sm: "repeat(auto-fill, minmax(150px, 1fr))",
                   md: "repeat(auto-fill, minmax(215px, 1fr))",
                 }}
-                gap={1} sx={{paddingTop: 2}} >
+                gap={1} sx={{paddingTop: 1}} >
                 {Newbooks?.map((book, i) => (
-                  <BookCard book = {book} key={i}/>
+                  <BookCard book = {book} key={i} onClick={showBook}/>
                 ))}
             </Box>
             <Pagination

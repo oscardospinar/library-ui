@@ -5,11 +5,12 @@ import { getBookByCategory, getCategories, getSubcategories,getBooksBySubcategor
 
 
 type Props = {
-    type: string
+    type: string;
+    showBook: (id: string | undefined) => void;
 }
 
 export function LoadCategories(props: Props): ReactElement  {
-    const {type} = props;
+    const {type, showBook} = props;
     const [allBooks, setHashmap] = useState<Record<string, BookObj[]>>({});
 
     useEffect(() => {
@@ -77,6 +78,7 @@ export function LoadCategories(props: Props): ReactElement  {
             key={key} 
             title={key}
             books={value} 
+            showBook={showBook}
           />
         ))}
       </>

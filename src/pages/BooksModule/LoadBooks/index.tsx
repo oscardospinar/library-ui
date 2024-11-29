@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useState } from "react";
 import {
     Typography,
     Box,
@@ -11,6 +11,11 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import { LoadCategories } from "./LoadCategories";
 import * as React from 'react';
+import { getBook } from "../../Hook/BookService";
+import { BookObj } from "../Services/BookObj";
+import { Copy } from "../Services/Copy";
+import Book from "../Book";
+
 
 
 export function LoadBooks(): ReactElement  {
@@ -18,6 +23,32 @@ export function LoadBooks(): ReactElement  {
     
   const handleChange = (event: SelectChangeEvent) => {
     setFilter(event.target.value);
+  };
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<BookObj | null>(null);
+  const [numberCopies, setNumberCopies] = useState(0);
+
+  const getABook = async (id: string | undefined) => {
+    if(id){
+      const answer = await getBook(id);
+      if (answer) {
+        const book: BookObj | undefined = answer.data.body && answer.data.body.length === 1 
+          ? answer.data.body[0] 
+          : undefined;
+        if (book) {
+          setSelectedBook(book);
+          const availableCopies = book.copies.filter((copy: Copy) => copy.disponibility === "AVAILABLE");
+          console.log(availableCopies);
+          setNumberCopies(availableCopies.length);
+          setDialogOpen(true);
+        }
+      }
+    }
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
   };
   
     return (
@@ -28,7 +59,7 @@ export function LoadBooks(): ReactElement  {
           mx: "auto", 
           my: 2, 
         }} />
-        <Typography variant="h4" sx={{ fontWeight: 'bold', textAlign:'center'}}  color='primary' >Libros de la biblioteca</Typography>
+        <Typography variant="h4" sx={{ fontWeight: 'bold', textAlign:'center'}}  color='primary' >Explore la biblioteca</Typography>
         <Box sx={{ minWidth: 120 }}>
           <FormControl fullWidth>
             <InputLabel id="select-label">Filtro</InputLabel>
@@ -44,7 +75,8 @@ export function LoadBooks(): ReactElement  {
             </Select>
           </FormControl>
       </Box>
-      <LoadCategories type = {filter} />
+      <LoadCategories type = {filter} showBook={getABook}/>
+      <Book selectedBook={selectedBook} open={dialogOpen} onClose={closeDialog} copies={numberCopies}/>
       </Container>
     );
         
