@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
+import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
 
 const pages = ["Prestamos", "Libros", "Estudiantes"];
 
@@ -124,6 +125,10 @@ export function NavBar() {
         </Container>
       </AppBar>
 
+      <PrestamosDialog
+        open={openPrestamosDialog}
+        onClose={handleClosePrestamosDialog}
+      />
     </>
   );
 }

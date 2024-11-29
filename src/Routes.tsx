@@ -1,9 +1,10 @@
 import React from "react";
 import App from "./App";
 import { Home } from "./pages/Home";
-
 import { createBrowserRouter } from "react-router-dom";
 import { LoadBooks } from "./pages/BooksModule/LoadBooks";
+import Notfound from "./components/Loans/NotFound/NotFound";
+import { createBrowserRouter } from "react-router-dom";
 
 export const routes = [
   {
@@ -16,6 +17,10 @@ export const routes = [
       {
         path: "/libros",
         element: <LoadBooks />,
+      },
+      {
+        path: "*",
+        element: <Notfound />,
       },
     ],
   },
