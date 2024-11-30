@@ -23,9 +23,7 @@ interface BusquedaLibroProps {
 const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
   const [resultado, setResultado] = useState<string | null>(null);
-  const [tipoBusqueda, setTipoBusqueda] = useState<
-    "isbn" | "nombre" | "codigo" | null
-  >(null);
+  const [tipoBusqueda, setTipoBusqueda] = useState<"isbn" | "nombre" | "codigo" | null>(null);
 
   const libros = [
     {
@@ -60,9 +58,7 @@ const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
           case "isbn":
             return libro.isbn.includes(terminoBusqueda);
           case "nombre":
-            return libro.nombre
-              .toLowerCase()
-              .includes(terminoBusqueda.toLowerCase());
+            return libro.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase());
           case "codigo":
             return libro.codigo.includes(terminoBusqueda);
           default:
@@ -72,22 +68,33 @@ const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
 
       if (libroEncontrado) {
         setResultado(
-          `Libro encontrado: ${libroEncontrado.nombre} (${libroEncontrado.isbn}) - ${libroEncontrado.disponible ? "Disponible" : "No disponible"}`
+          `Libro encontrado: ${libroEncontrado.nombre} (${libroEncontrado.isbn}) - ${
+            libroEncontrado.disponible ? "Disponible" : "No disponible"
+          }`
         );
       } else {
-        setResultado(
-          "No se encontró ningún libro con ese término de búsqueda."
-        );
+        setResultado("No se encontró ningún libro con ese término de búsqueda.");
       }
     } catch (error) {
-      setResultado(
-        "Error al realizar la búsqueda. Intenta nuevamente más tarde."
-      );
+      setResultado("Error al realizar la búsqueda. Intenta nuevamente más tarde.");
     }
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog
+      open={open}
+      onClose={(event, reason) => {
+        if (reason !== "backdropClick") {
+          onClose();
+        }
+      }}
+      fullWidth
+      maxWidth="sm"
+      disableEscapeKeyDown
+      BackdropProps={{
+        onClick: (e) => e.stopPropagation(), // Evita el cierre al hacer clic fuera del diálogo
+      }}
+    >
       <DialogContent className="dialog-content">
         <Box className="container">
           {tipoBusqueda === null ? (
@@ -97,11 +104,7 @@ const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
               </Typography>
               <FormControl component="fieldset" className="form-control">
                 <RadioGroup
-                  onChange={(e) =>
-                    setTipoBusqueda(
-                      e.target.value as "isbn" | "nombre" | "codigo"
-                    )
-                  }
+                  onChange={(e) => setTipoBusqueda(e.target.value as "isbn" | "nombre" | "codigo")}
                   row
                   className="radio-group"
                 >
@@ -150,6 +153,11 @@ const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
           {resultado && <Typography className="result">{resultado}</Typography>}
         </Box>
       </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="primary" className="close-button">
+          Cerrar
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };
