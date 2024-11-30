@@ -32,7 +32,7 @@ export const getCategories = async () => {
         var answer = axios.get<BookResponse>(APICategory+'getCategories');
         return answer;
     } catch (error) {
-        alert(error);
+        console.error("Error al obtener las categorías:", error);
     }
 }
 
