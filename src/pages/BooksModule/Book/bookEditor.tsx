@@ -1,5 +1,4 @@
 import { Box, Typography, TextField, Button, Chip, IconButton, Select, MenuItem,} from '@mui/material';
-import Image from 'next/image' ;
 import { BookObj } from "../Services/BookObj";
 import { updateBook } from "../../Hook/BookService";
 import { getCategories } from '../../Hook/BookService';
