@@ -13,6 +13,7 @@ import {
   Avatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useNavigate } from "react-router-dom";
 import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
 
 const pages = ["Prestamos", "Libros", "Estudiantes"];
@@ -21,6 +22,7 @@ export function NavBar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [openPrestamosDialog, setOpenPrestamosDialog] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorElNav(event.currentTarget);
@@ -33,6 +35,8 @@ export function NavBar() {
   const handleSectionClick = (section: string): void => {
     if (section === "Prestamos") {
       setOpenPrestamosDialog(true);
+    }else if(section === "Libros"){
+      navigate("/libros");
     }
     setActiveSection((prevSection) =>
       section === prevSection ? null : section

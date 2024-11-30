@@ -1,6 +1,8 @@
 import React from "react";
 import App from "./App";
 import { Home } from "./pages/Home";
+import { createBrowserRouter } from "react-router-dom";
+import { LoadBooks } from "./pages/BooksModule/LoadBooks";
 import Notfound from "./components/Loans/NotFound/NotFound";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -11,6 +13,10 @@ export const routes = [
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: "/libros",
+        element: <LoadBooks />,
       },
       {
         path: "*",
