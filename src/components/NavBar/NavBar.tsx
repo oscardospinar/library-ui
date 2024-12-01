@@ -76,6 +76,7 @@ export function NavBar(): ReactElement {
                         LOGO
                     </Typography>
 
+                    {/* Menú de navegación - mobile */}
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <Menu
                             id="menu-appbar"
@@ -119,6 +120,8 @@ export function NavBar(): ReactElement {
                     >
                         LOGO
                     </Typography>
+
+                    {/* Barra de navegación alineada a la izquierda (menú clásico) */}
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
                             <Button
@@ -130,6 +133,8 @@ export function NavBar(): ReactElement {
                             </Button>
                         ))}
                     </Box>
+
+                    {/* Menú de usuario */}
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
