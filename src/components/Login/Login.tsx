@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import './stylesLogin.css'; // Importamos el CSS
+import Cookies from 'js-cookie'; // Importamos la librería js-cookie
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -36,14 +37,13 @@ function Login() {
 
                 if (response.ok) {
                     const data = await response.json();
-                    localStorage.setItem(
-                        'user',
-                        JSON.stringify({
-                            nombreUsuario: data.nombreUsuario,
-                            rol: data.rol,
-                            token: data.token,
-                        })
-                    );
+                    // Guardamos el token en cookies
+                    Cookies.set('token', data.token, { expires: 1 }); // Guardamos el token con una duración de 7 días
+                    Cookies.set('user', JSON.stringify({
+                        nombreUsuario: data.nombreUsuario,
+                        rol: data.rol,
+                    }), { expires: 7 });
+
                     alert('Inicio de sesión exitoso');
 
                     // Redirigir según el rol
@@ -87,10 +87,9 @@ function Login() {
                             width: '80%',
                             maxWidth: '100%',
                             padding: '10px',
-                            margin : '10px',
-                            display: 'block'
-                        }
-                        }
+                            margin: '10px',
+                            display: 'block',
+                        }}
                     />
                     <input
                         type="password"
@@ -102,10 +101,9 @@ function Login() {
                             width: '80%',
                             maxWidth: '100%',
                             padding: '10px',
-                            margin : '10px',
-                            display: 'block'
-                        }
-                        }
+                            margin: '10px',
+                            display: 'block',
+                        }}
                     />
                     <div id="captcha-container">
                         <ReCAPTCHA
