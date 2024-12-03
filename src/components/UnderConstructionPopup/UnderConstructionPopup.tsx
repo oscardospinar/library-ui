@@ -1,17 +1,18 @@
-import React, { ReactElement } from 'react';
-import '../../Css/SearchCss.css';
+import React from 'react';
+import { Button } from '@mui/material';
+import '../Mainsearch/Popups.css';
 
 interface UnderConstructionPopupProps {
-  onClose: () => void; // Prop que define la función para manejar el cierre
+  onClose: () => void;
 }
 
-const UnderConstructionPopup: React.FC<UnderConstructionPopupProps> = ({
-  onClose,
-}): ReactElement => (
+const UnderConstructionPopup: React.FC<UnderConstructionPopupProps> = ({ onClose }) => (
   <div className="popup-overlay">
     <div className="popup">
       <p>Esta funcionalidad está en construcción</p>
-      <button onClick={onClose}>Ok</button>
+      <Button variant="contained" color="primary" onClick={onClose}>
+        Ok
+      </Button>
     </div>
   </div>
 );

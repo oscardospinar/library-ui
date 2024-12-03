@@ -23,7 +23,7 @@ h1 {
   font-family: 'Lato', sans-serif;
   font-weight: 600;
   font-size: 6rem;
-  color: #0f0025; /* Un color más atractivo, ajusta según el diseño */
+  color: #0f0025;
   letter-spacing: 3px;
   text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
 }
@@ -38,14 +38,14 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px; /* Espacio entre los elementos */
-  margin-top: 20px; /* Espacio entre los elementos */
+  gap: 10px; 
+  margin-top: 20px; 
 }
 
 .search-select,
 .search-input,
 .search-button {
-  height: 50px; /* Altura uniforme para todos los elementos */
+  height: 50px; 
   font-size: 16px;
   border-radius: 5px;
   outline: none;
@@ -62,7 +62,7 @@ h1 {
 }
 
 .search-input { 
-  width: 600px;/* Expande la caja de texto para ocupar más espacio */
+  width: 600px;
   padding: 0 10px;
   border: 2px solid #00B4CC;
   color: #9DBFAF;

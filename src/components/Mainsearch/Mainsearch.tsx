@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, TextField, CircularProgress } from '@mui/material';
+import { Box, Typography, Button, TextField } from '@mui/material';
 import SearchingPopup from '../SearchingPopup/SearchingPopup';
 import UnderConstructionPopup from '../UnderConstructionPopup/UnderConstructionPopup';
 import NoResultsPopup from '../NoResultsPopup/NoResultsPopup';
+import IncompleteSearchPopup from '../IncompleteSearchPopup/IncompleteSearchPopup';
 import { getAllBooks, searchBooks, Book } from '../api/api';
 import { useNavigate } from 'react-router-dom';
+import './SearchCss.css';
+
 const MainSearch: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [searchParam, setSearchParam] = useState<string>('');
@@ -12,22 +15,43 @@ const MainSearch: React.FC = () => {
   const [showSearchingPopup, setShowSearchingPopup] = useState<boolean>(false);
   const [showUnderConstructionPopup, setShowUnderConstructionPopup] = useState<boolean>(false);
   const [showNoResultsPopup, setShowNoResultsPopup] = useState<boolean>(false);
+  const [showIncompleteSearchPopup, setShowIncompleteSearchPopup] = useState<boolean>(false);
+  const [error, setError] = useState<{ searchType: boolean; searchParam: boolean }>({
+    searchType: false,
+    searchParam: false,
+  });
   const navigate = useNavigate();
 
-  // Cargar libros al montar el componente
   useEffect(() => {
     const fetchBooks = async () => {
-      const fetchedBooks = await getAllBooks();
-      setBooks(fetchedBooks);
-      console.log(fetchedBooks);
+      try {
+        const fetchedBooks = await getAllBooks();
+        setBooks(fetchedBooks);
+      } catch (error) {
+        console.error('Error al cargar los libros:', error);
+      }
     };
     fetchBooks();
   }, []);
 
-  const handleSearch = async () => {
-    if (searchType === 'code') {
-      setShowUnderConstructionPopup(true);
-    } else if (['titulo', 'autor', 'descripcion', 'isbn'].includes(searchType)) {
+  const handleSearch = async (event?: React.FormEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
+
+    const hasErrors = {
+      searchType: !searchType,
+      searchParam: !searchParam.trim(),
+    };
+    setError(hasErrors);
+
+    if (hasErrors.searchType || hasErrors.searchParam) {
+      setShowIncompleteSearchPopup(true);
+      return;
+    }
+
+    const normalizedSearchType = searchType.trim().toLowerCase();
+    if (['titulo', 'autor', 'description', 'isbn'].includes(normalizedSearchType)) {
       setShowSearchingPopup(true);
 
       setTimeout(() => {
@@ -35,7 +59,9 @@ const MainSearch: React.FC = () => {
         setShowSearchingPopup(false);
 
         if (results.length > 0) {
-          navigate('/results', { state: { results } });
+          navigate('/results', { state: 
+            { results, books }, 
+          });
         } else {
           setShowNoResultsPopup(true);
         }
@@ -44,12 +70,18 @@ const MainSearch: React.FC = () => {
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedType = e.target.value;
-    setSearchType(selectedType);
+    console.log('si cambió')
+    setSearchType(e.target.value);
+    setError((prev) => ({ ...prev, searchType: false }));
+  };
 
-    if (selectedType === 'code') {
-      setShowUnderConstructionPopup(true);
-    }
+  const handleSearchParamChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchParam(e.target.value);
+    setError((prev) => ({ ...prev, searchParam: false }));
+  };
+
+  const handleIncompleteSearchClose = () => {
+    setShowIncompleteSearchPopup(false);
   };
 
   const handleUnderConstructionClose = () => {
@@ -57,11 +89,13 @@ const MainSearch: React.FC = () => {
     setSearchType('');
   };
 
-  return (
-    <Box sx={{ height: '89hv', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 8 }}>
-      {/* Barra de navegación */}
+  const clearSearchFields = () => {
+    setSearchType('');
+    setSearchParam('');
+  };
 
-      {/* Caja de búsqueda */}
+  return (
+    <Box sx={{ height: '89vh', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 8 }}>
       <Box
         sx={{
           width: '100%',
@@ -77,52 +111,53 @@ const MainSearch: React.FC = () => {
           Búsqueda de libros
         </Typography>
 
-        {/* Selector de parámetros de búsqueda */}
-        <TextField
-          select
-          fullWidth
-          label="Seleccione un parámetro"
-          value={searchType}
-          onChange={handleSelectChange}
-          SelectProps={{
-            native: true,
-          }}
-          sx={{ marginBottom: 3 }}
-        >
-          <option value="">Seleccione un parámetro</option>
-          <option value="titulo">Título</option>
-          <option value="autor">Autor</option>
-          <option value="descripcion">Descripción</option>
-          <option value="isbn">ISBN</option>
-          <option value="code">Código QR</option>
-        </TextField>
+        <form onSubmit={handleSearch}>
+          <TextField
+            select
+            fullWidth
+            label="Seleccione un parámetro"
+            value={searchType}
+            onChange={handleSelectChange}
+            error={error.searchType}
+            helperText={error.searchType ? 'Este campo es obligatorio' : ''}
+            SelectProps={{
+              native: true,
+            }}
+            sx={{ marginBottom: 3 }}
+          >
+            <option value="">Seleccione un parámetro</option>
+            <option value="titulo">Título</option>
+            <option value="autor">Autor</option>
+            <option value="description">Palabras claves</option>
+            <option value="isbn">ISBN</option>
+          </TextField>
 
-        {/* Input de búsqueda */}
-        <TextField
-          fullWidth
-          label="Ingresa el parámetro de búsqueda"
-          value={searchParam}
-          onChange={(e) => setSearchParam(e.target.value)}
-          sx={{ marginBottom: 3 }}
-        />
+          <TextField
+            fullWidth
+            label="Ingresa el parámetro de búsqueda"
+            value={searchParam}
+            onChange={handleSearchParamChange}
+            error={error.searchParam}
+            helperText={error.searchParam ? 'Este campo es obligatorio' : ''}
+            sx={{ marginBottom: 3 }}
+          />
 
-        {/* Botón de búsqueda */}
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={handleSearch}
-          sx={{ padding: 1.5 }}
-        >
-          Buscar
-        </Button>
-
-        {/* Popups */}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ padding: 1.5 }}
+          >
+            Buscar
+          </Button>
+        </form>
+        {showUnderConstructionPopup && <UnderConstructionPopup onClose={handleUnderConstructionClose} />}
         {showSearchingPopup && <SearchingPopup />}
-        {showNoResultsPopup && <NoResultsPopup />}
-        {showUnderConstructionPopup && (
-          <UnderConstructionPopup onClose={handleUnderConstructionClose} />
+        {showNoResultsPopup && (
+          <NoResultsPopup onClose={() => setShowNoResultsPopup(false)} clearFields={clearSearchFields} />
         )}
+        {showIncompleteSearchPopup && <IncompleteSearchPopup onClose={handleIncompleteSearchClose} />}
       </Box>
     </Box>
   );

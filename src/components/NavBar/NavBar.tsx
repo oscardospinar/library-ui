@@ -42,7 +42,7 @@ export function NavBar(): ReactElement {
 
     const handleNavigate = (page: string) => {
         if (page === "Busqueda") {
-            navigate("/busqueda"); // Redirigir a la ruta de búsqueda
+            navigate("/search"); // Redirigir a la ruta de búsqueda
         }
         handleCloseNavMenu();
     };

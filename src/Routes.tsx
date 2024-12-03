@@ -14,7 +14,7 @@ export const routes = [
                 element: <Home />
             }
             ,{
-                path: "busqueda",
+                path: "search",
                 element: <MainSearch />
             }
             ,{

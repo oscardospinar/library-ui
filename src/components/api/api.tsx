@@ -1,38 +1,70 @@
 import axios from 'axios';
+
 const API_URL = 'http://localhost:80/BookModule/getAllBooks';
-// Tipos para los libros
+
+
 export interface Book {
   descripcion: string;
   titulo: string;
   autor: string;
   isbn: string;
-  [key: string]: any; // En caso de que haya más propiedades no definidas explícitamente
+  [key: string]: any; 
 }
 
-// Obtener todos los libros desde el endpoint
-export const getAllBooks = async (): Promise<Book[]> => {
-    try {
-      const response = await axios.get(API_URL);
-      const { body } = response.data; // Se asume que el cuerpo contiene el arreglo de libros
-      return Array.isArray(body)
-        ? body.map((book) => ({
-            ...book,
-            titulo: book.title, // Normalización de datos
-            autor: book.author,
-            descripcion: book.description,
-          }))
-        : [];
-    } catch (error) {
-      console.error('Error al obtener los libros:', error);
-      return [];
+const cleanJsonData = (data: any): any => {
+  const softHyphenRegex = /\u00AD/g;
+
+  const cleanString = (value: any): any => {
+    if (typeof value === 'string') {
+      return value.replace(softHyphenRegex, ''); 
     }
+    return value;
+  };
+
+  const cleanObject = (obj: any): any => {
+    if (Array.isArray(obj)) {
+      return obj.map(cleanObject);
+    } else if (obj && typeof obj === 'object') {
+      return Object.fromEntries(
+        Object.entries(obj).map(([key, value]) => [key, cleanObject(value)])
+      );
+    }
+    return cleanString(obj);
+  };
+
+  return cleanObject(data);
 };
 
-// Filtrar libros localmente por parámetros
-export const searchBooks = (books: Book[], param: string, type: string): Book[] => {
-  const normalizedParam = param.toLowerCase();
-  return books.filter((book) => {
-    const value = book[type]?.toString().toLowerCase() || ''; // Obtener el valor del campo y normalizarlo
-    return value.includes(normalizedParam);
-  });
+export const getAllBooks = async (): Promise<Book[]> => {
+  try {
+    const response = await axios.get(API_URL);
+    let { body } = response.data;
+
+    body = cleanJsonData(body);
+
+
+    return Array.isArray(body)
+      ? body.map((book) => ({
+          ...book,
+          titulo: book.title,
+          autor: book.author,
+          descripcion: book.description,
+        }))
+      : [];
+  } catch (error) {
+    console.error('Error al obtener los libros:', error);
+    return [];
+  }
+};
+
+export const searchBooks = (books: Book[], searchParam: string, searchType: string): Book[] => {
+  if (searchType === 'isbn') {
+    const sanitizedSearchParam = searchParam.replace(/-/g, '');
+    return books.filter((book) =>
+      book.isbn.replace(/-/g, '') === sanitizedSearchParam
+    );
+  }
+  return books.filter((book) =>
+    book[searchType]?.toString().toLowerCase().includes(searchParam.toLowerCase()) || ''
+  );
 };

@@ -1,0 +1,87 @@
+.search-results-container {
+padding: 16px;
+margin-top: 128px;
+height: 100vh;
+display: flex;
+flex-direction: column;
+background-color: #f9f9f9;
+}
+
+.search-results-container .new-search-button {
+margin-bottom: 16px;
+background-color: #007bff;
+color: #fff;
+border: none;
+font-weight: bold;
+text-transform: uppercase;
+transition: background-color 0.3s ease;
+}
+
+.search-results-container .new-search-button:hover {
+background-color: #0056b3;
+}
+
+.table-container {
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+border-radius: 8px;
+overflow: hidden;
+}
+
+.table-container table {
+width: 100%;
+border-collapse: collapse;
+font-family: 'Arial', sans-serif;
+}
+
+.table-container th,
+.table-container td {
+padding: 12px 16px;
+text-align: left;
+}
+
+.table-container th {
+background-color: #343a40;
+color: #fff;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.table-container tr:nth-child(even) {
+background-color: #f2f2f2;
+}
+
+.table-container tr:hover {
+background-color: #e9ecef;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+
+.table-container td {
+border-bottom: 1px solid #ddd;
+}
+
+.title-link {
+color: #007bff;
+text-decoration: none;
+font-weight: bold;
+transition: color 0.3s ease;
+}
+
+.title-link:hover {
+color: #0056b3;
+text-decoration: underline;
+}
+
+.search-controls {
+display: flex;
+align-items: center;
+gap: 16px;
+margin-bottom: 16px;
+}
+
+.search-controls .MuiFormControl-root,
+.search-controls .MuiTextField-root {
+flex: 1;
+}
+
+  
