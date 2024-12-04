@@ -44,7 +44,7 @@ export function NavBar(): ReactElement {
     const handleNavigate = (page: string) => {
         switch (page) {
             case 'Registro':
-                navigate('/registro'); // Cambia a la ruta '/registro'
+                navigate('/Responsable'); // Cambia a la ruta '/registro'
                 break;
             // Puedes manejar otras páginas aquí si es necesario
             default:
