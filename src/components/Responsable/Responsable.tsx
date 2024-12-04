@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function EmailValidation() {
     const [email, setEmail] = useState('');
     const [mensaje, setMensaje] = useState('');
+    const navigate = useNavigate(); // Hook para la navegación.
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -10,6 +12,7 @@ function EmailValidation() {
 
         if (regexCorreo.test(email)) {
             setMensaje('El correo es válido.');
+            navigate('/Registro'); // Navega al componente de registro.
         } else {
             setMensaje('El correo no es válido.');
         }

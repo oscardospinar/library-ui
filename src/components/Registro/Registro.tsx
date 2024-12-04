@@ -6,45 +6,27 @@ import Boton from '../../components/Boton/Boton';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
 
-
 interface Formulario {
   codigoEstudiante: string;
   nombreEstudiante: string;
   numeroDocumentoEstudiante: string;
   tipoDocumentoEstudiante: string;
-  nombreResponsable: string;
-  documentoResponsable: string;
-  lugarExpedicionResponsable: string;
-  telefonoResponsable: string;
-  correoResponsable: string;
   curso: string;
   grado: string;
   contrasena: string;
   confirmacionContrasena: string;
-  otraCiudad?: string;
-}
-
-interface Errores {
-  correoResponsable: string;
 }
 
 const FormularioRegistro: React.FC = () => {
   const navigate = useNavigate();
 
-  const handlePrincipal = () => {
-
-  };
+  const handlePrincipal = () => {};
 
   const [formulario, setFormulario] = useState<Formulario>({
     codigoEstudiante: '',
     nombreEstudiante: '',
     numeroDocumentoEstudiante: '',
     tipoDocumentoEstudiante: '',
-    nombreResponsable: '',
-    documentoResponsable: '',
-    lugarExpedicionResponsable: '',
-    telefonoResponsable: '',
-    correoResponsable: '',
     curso: '',
     grado: '',
     contrasena: '',
@@ -52,9 +34,6 @@ const FormularioRegistro: React.FC = () => {
   });
 
   const [opcionesCurso, setOpcionesCurso] = useState<string[]>([]);
-  const [errores, setErrores] = useState<Errores>({
-    correoResponsable: '',
-  });
   const [captchaValido, setCaptchaValido] = useState<boolean>(false);
 
   const cursosPorPrefijo: Record<string, string[]> = {
@@ -74,15 +53,6 @@ const FormularioRegistro: React.FC = () => {
     Once: ['1101', '1102', '1103'],
   };
 
-  const ciudadesColombia: string[] = [
-    'Arauca', 'Armenia', 'Barranquilla', 'Bogotá D.C', 'Bucaramanga', 'Cali',
-    'Cartagena', 'Cúcuta', 'Florencia', 'Inírida', 'Ibagué', 'Leticia',
-    'Manizales', 'Medellín', 'Mitú', 'Mocoa', 'Montería', 'Neiva',
-    'Pasto', 'Pereira', 'Popayán', 'Puerto Carreño', 'Quibdó',
-    'Riohacha', 'San Andrés', 'Santa Marta', 'Sincelejo', 'Tunja', 'Valledupar',
-    'Villavicencio', 'Yopal', 'Otro',
-  ];
-
   useEffect(() => {
     const gradoSeleccionado = formulario.grado;
     setOpcionesCurso(cursosPorPrefijo[gradoSeleccionado] || []);
@@ -91,22 +61,11 @@ const FormularioRegistro: React.FC = () => {
   const manejarCambio = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    if (
-      ['numeroDocumentoEstudiante', 'documentoResponsable', 'telefonoResponsable'].includes(name) &&
-      !/^\d*$/.test(value)
-    ) {
+    if (['numeroDocumentoEstudiante'].includes(name) && !/^\d*$/.test(value)) {
       return;
     }
 
-    if (name === 'lugarExpedicionResponsable' && value !== 'Otro') {
-      setFormulario({ ...formulario, otraCiudad: '', [name]: value });
-    } else {
-      setFormulario({ ...formulario, [name]: value });
-    }
-
-    if (name === 'correoResponsable') {
-      validarCorreo(value);
-    }
+    setFormulario({ ...formulario, [name]: value });
   };
 
   const manejarEnvio = (e: React.FormEvent<HTMLFormElement>) => {
@@ -122,36 +81,10 @@ const FormularioRegistro: React.FC = () => {
       return;
     }
 
-    if (!validarCorreo(formulario.correoResponsable)) {
-      alert('El correo electrónico no es válido. Por favor, ingresa un correo válido.');
-      return;
-    }
-
     alert('Formulario enviado correctamente');
     console.log(formulario);
-    
-    navigate('/navar')
-  };
 
-  const todosCamposLlenos = (): boolean => {
-    return Object.values(formulario).every((campo) => campo !== '');
-  };
-
-  const validarCorreo = (correo: string): boolean => {
-    const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!regexCorreo.test(correo)) {
-      setErrores((prevErrores) => ({
-        ...prevErrores,
-        correoResponsable: 'El correo electrónico no es válido',
-      }));
-      return false;
-    } else {
-      setErrores((prevErrores) => ({
-        ...prevErrores,
-        correoResponsable: '',
-      }));
-      return true;
-    }
+    navigate('/navar');
   };
 
   const manejarCaptcha = (value: string | null) => {
@@ -199,57 +132,29 @@ const FormularioRegistro: React.FC = () => {
       <ListaDesplegable
         label="Tipo de Documento"
         name="tipoDocumentoEstudiante"
-        opciones={[ 'REGISTRO CIVIL', 'TI', 'CÉDULA'
-        ]}
+        opciones={['REGISTRO CIVIL', 'TI', 'CÉDULA']}
         value={formulario.tipoDocumentoEstudiante}
         onChange={manejarCambio}
         required
       />
-      <CampoTexto
-        label="Nombre del Responsable Económico"
-        name="nombreResponsable"
-        value={formulario.nombreResponsable}
-        onChange={manejarCambio}
-        required
-      />
-      <CampoTexto
-        label="Documento del Responsable Económico"
-        name="documentoResponsable"
-        value={formulario.documentoResponsable}
-        onChange={manejarCambio}
-        required
-      />
-      <CampoTexto
-        label="Lugar de Expedición"
-        name="lugarExpedicionResponsable"
-        value={formulario.lugarExpedicionResponsable}
-        onChange={manejarCambio}
-        required
-      />
-      <CampoTexto
-        label="Teléfono del Responsable Económico"
-        name="telefonoResponsable"
-        value={formulario.telefonoResponsable}
-        onChange={manejarCambio}
-        required
-      />
-      <CampoTexto
-        label="Correo del Responsable Económico"
-        name="correoResponsable"
-        value={formulario.correoResponsable}
-        onChange={manejarCambio}
-        required
-        type="email"
-      />
-      {errores.correoResponsable && (
-        <div className="advertencia-correo">{errores.correoResponsable}</div>
-      )}
       <ListaDesplegable
         label="Grado"
         name="grado"
-        opciones={[ 'Prejardín', 'Jardín', 'Transición',
-          'Primero', 'Segundo', 'Tercero', 'Cuarto', 'Quinto',
-          'Sexto', 'Séptimo', 'Octavo', 'Noveno', 'Décimo', 'Once',
+        opciones={[
+          'Prejardín',
+          'Jardín',
+          'Transición',
+          'Primero',
+          'Segundo',
+          'Tercero',
+          'Cuarto',
+          'Quinto',
+          'Sexto',
+          'Séptimo',
+          'Octavo',
+          'Noveno',
+          'Décimo',
+          'Once',
         ]}
         value={formulario.grado}
         onChange={manejarCambio}
@@ -281,7 +186,6 @@ const FormularioRegistro: React.FC = () => {
         onChange={manejarCambio}
         required
       />
-      {/* Agregar el componente de reCAPTCHA */}
       <div className="captcha-container">
         <ReCAPTCHA
           sitekey="6LcD-YQqAAAAAKmisLvpnV7EHvNoN7w-ZDUYpJsA"
@@ -289,8 +193,8 @@ const FormularioRegistro: React.FC = () => {
         />
       </div>
       <div className="form-buttons">
-      <Boton 
-          label="Registrar" 
+        <Boton
+          label="Registrar"
           onClick={handlePrincipal}
           style={{
             backgroundColor: 'blue',
