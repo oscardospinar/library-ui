@@ -15,7 +15,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 
 const pages = ['Prestamos', 'Libros', 'Estudiantes'];
-const settings = ['Perfil', 'Logout'];
+const settings = ['Logout'];
 
 export function NavBarEstudiantes(): ReactElement {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);

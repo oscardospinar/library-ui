@@ -17,7 +17,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from "react-router-dom";
 
 const pages = ['Prestamos', 'Libros', 'Estudiantes', 'Registro'];
-const settings = ['Perfil', 'Logout'];
+const settings = ['Logout'];
 
 export function NavBar(): ReactElement {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
