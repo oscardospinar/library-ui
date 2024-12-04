@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
-import './stylesLogin.css'; // Importamos el CSS
+import './stylesLogin.css';
 import Cookies from 'js-cookie'; // Importamos la librería js-cookie
 
 function Login() {
