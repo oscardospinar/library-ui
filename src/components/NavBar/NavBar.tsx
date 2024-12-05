@@ -53,6 +53,14 @@ export function NavBar(): ReactElement {
         handleCloseNavMenu(); // Cierra el menú
     };
 
+    const handleLogout = (settings: string) => {
+        switch (settings){
+            case 'Logout':
+                navigate('/Login');
+                break;
+        }
+    }
+
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
