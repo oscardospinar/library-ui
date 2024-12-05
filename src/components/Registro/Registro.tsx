@@ -10,19 +10,17 @@ import Cookies from 'js-cookie';
 interface Formulario {
   codigoEstudiante: string;
   nombreEstudiante: string;
-  numeroDocumentoEstudiante: string;
-  tipoDocumentoEstudiante: string;
   curso: string;
-  grado: string;
   contrasena: string;
   confirmacionContrasena: string;
-  responsableId: string;
   anoAcademico: string;
-  nombreCompleto: string;
 }
+
 
 const token = Cookies.get('token'); // Obtén el token desde las cookies.
 const FormularioRegistro: React.FC = () => {
+
+  
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -32,41 +30,30 @@ const FormularioRegistro: React.FC = () => {
   const [formulario, setFormulario] = useState<Formulario>({
     codigoEstudiante: '',
     nombreEstudiante: '',
-    numeroDocumentoEstudiante: '',
-    tipoDocumentoEstudiante: '',
     curso: '',
-    grado: '',
     contrasena: '',
     confirmacionContrasena: '',
-    responsableId: responsableId || '', // Asignar responsableId o valor vacío
     anoAcademico: new Date().getFullYear().toString(), // Año académico actual
-    nombreCompleto: ''
   });
 
-  const [opcionesCurso, setOpcionesCurso] = useState<string[]>([]);
+  const [opcionesCurso, setOpcionesCurso] = useState<string[]>([
+    'Pre-jardín',
+    'Jardín',
+    'Transición',
+    'Primero',
+    'Segundo',
+    'Tercero',
+    'Cuarto',
+    'Quinto',
+    'Sexto',
+    'Séptimo',
+    'Octavo',
+    'Noveno',
+    'Décimo',
+    'Once'
+  ]);
+
   const [captchaValido, setCaptchaValido] = useState<boolean>(false);
-
-  const cursosPorPrefijo: Record<string, string[]> = {
-    Prejardín: ['Pre-jardín'],
-    Jardín: ['Jardín'],
-    Transición: ['Transición'],
-    Primero: ['101'],
-    Segundo: ['201', '202'],
-    Tercero: ['301'],
-    Cuarto: ['401', '402'],
-    Quinto: ['501', '502'],
-    Sexto: ['601'],
-    Séptimo: ['701', '702'],
-    Octavo: ['801', '802'],
-    Noveno: ['901', '902', '903'],
-    Décimo: ['1001', '1002', '1003'],
-    Once: ['1101', '1102', '1103'],
-  };
-
-  useEffect(() => {
-    const gradoSeleccionado = formulario.grado;
-    setOpcionesCurso(cursosPorPrefijo[gradoSeleccionado] || []);
-  }, [formulario.grado]);
 
   const manejarCambio = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -91,11 +78,6 @@ const FormularioRegistro: React.FC = () => {
       return;
     }
 
-    if (!formulario.responsableId) {
-      alert('Error: responsableId no está definido. Por favor, verifica.');
-      return;
-    }
-
     try {
       const response = await fetch(
         'https://cvds-project-cnb6c0cuddfyc9fe.mexicocentral-01.azurewebsites.net/usuario/registrarEstudiante',
@@ -109,10 +91,8 @@ const FormularioRegistro: React.FC = () => {
             codigoEstudiante: formulario.codigoEstudiante,
             curso: formulario.curso,
             anoAcademico: formulario.anoAcademico,
-            responsableId: formulario.responsableId, // Asegurarse de que se esté enviando
             nombreUsuario: formulario.codigoEstudiante,
-            contrasena: formulario.contrasena,
-            nombreCompleto: formulario.nombreCompleto,
+            contrasena: formulario.contrasena
           }),
         }
       );
@@ -135,6 +115,21 @@ const FormularioRegistro: React.FC = () => {
       setCaptchaValido(true);
     }
   };
+  useEffect(() => {
+    
+    const fetchCursos = async () => {
+      try {
+        const response = await fetch('URL_DE_TU_API');
+        const data = await response.json();
+        setOpcionesCurso(data.cursos);
+      } catch (error) {
+        console.error('Error al cargar los cursos:', error);
+      }
+    };
+  
+    fetchCursos();
+  }, []); 
+  
 
   return (
     <form className="form-container" onSubmit={manejarEnvio}>
@@ -165,45 +160,6 @@ const FormularioRegistro: React.FC = () => {
         onChange={manejarCambio}
         required
       />
-      <CampoTexto
-        label="Número de Documento del Estudiante"
-        name="numeroDocumentoEstudiante"
-        value={formulario.numeroDocumentoEstudiante}
-        onChange={manejarCambio}
-        required
-      />
-      <ListaDesplegable
-        label="Tipo de Documento"
-        name="tipoDocumentoEstudiante"
-        opciones={['REGISTRO CIVIL', 'TI', 'CÉDULA']}
-        value={formulario.tipoDocumentoEstudiante}
-        onChange={manejarCambio}
-        required
-      />
-      <ListaDesplegable
-        label="Grado"
-        name="grado"
-        opciones={[
-          'Prejardín',
-          'Jardín',
-          'Transición',
-          'Primero',
-          'Segundo',
-          'Tercero',
-          'Cuarto',
-          'Quinto',
-          'Sexto',
-          'Séptimo',
-          'Octavo',
-          'Noveno',
-          'Décimo',
-          'Once',
-        ]}
-        value={formulario.grado}
-        onChange={manejarCambio}
-        required
-      />
-      {opcionesCurso.length > 0 && (
         <ListaDesplegable
           label="Curso"
           name="curso"
@@ -212,7 +168,6 @@ const FormularioRegistro: React.FC = () => {
           onChange={manejarCambio}
           required
         />
-      )}
       <CampoTexto
         label="Contraseña"
         name="contrasena"
@@ -226,13 +181,6 @@ const FormularioRegistro: React.FC = () => {
         name="confirmacionContrasena"
         type="password"
         value={formulario.confirmacionContrasena}
-        onChange={manejarCambio}
-        required
-      />
-      <CampoTexto
-        label="Responsable ID (si no se autocompleta, debes ingresarlo)"
-        name="responsableId"
-        value={formulario.responsableId}
         onChange={manejarCambio}
         required
       />
