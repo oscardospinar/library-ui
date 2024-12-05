@@ -1,4 +1,4 @@
-import { Box,TextField, Button, IconButton, Select, MenuItem, Dialog, DialogTitle, DialogContent} from '@mui/material';
+import { Box,TextField, Button, IconButton, MenuItem, Dialog, DialogTitle, DialogContent} from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { BookObj } from "../Services/BookObj";
 import { updateBook } from "../../Hook/BookService";
@@ -114,7 +114,16 @@ const getAllSubcategories = async () => {
           </IconButton>
       </DialogTitle>
       <DialogContent dividers>
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, maxWidth: '1000px', margin: 'auto', padding: 3 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column', 
+              gap: 3,
+              maxWidth: '1000px',
+              margin: 'auto',
+              padding: 3,
+            }}
+          >
           <TextField
             label="Título"
             name="title"
@@ -159,32 +168,36 @@ const getAllSubcategories = async () => {
             rows={4}
             fullWidth
           />
-          <Select
+          <TextField
+            select
             label="Categorías"
             name="categories"
             value={editedBook.categories || ''}
-            displayEmpty
+            onChange={handleCategoryChange}
             fullWidth
+            variant="outlined" 
           >
             {categories.map((category, index) => (
               <MenuItem key={index} value={category.categoryId}>
                 {category.description}
               </MenuItem>
             ))}
-          </Select>
-          <Select
+          </TextField>
+          <TextField
+            select
             label="Subcategorías"
             name="subcategories"
             value={editedBook.subcategories || ''}
-            displayEmpty
+            onChange={handleSubcategoryChange}
             fullWidth
+            variant="outlined" 
           >
             {subcategories.map((subcategory, index) => (
               <MenuItem key={index} value={subcategory.subcategoryId}>
                 {subcategory.description}
               </MenuItem>
             ))}
-          </Select>
+          </TextField>
           
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2 }}>
           <Button variant="contained" color="primary" onClick={handleSave}>
