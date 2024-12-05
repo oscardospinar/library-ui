@@ -14,7 +14,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  CircularProgress,
 } from "@mui/material";
 import "./PrestamosActivos.css";
 import ReturnLoan from "../ReturnLoan/ReturnLoan";
@@ -83,7 +82,20 @@ const PrestamosActivos = ({
 
   return (
     <>
-      <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+      <Dialog
+        open={open}
+        onClose={(event, reason) => {
+          if (reason !== "backdropClick") {
+            onClose();
+          }
+        }}
+        fullWidth
+        maxWidth="md"
+        disableEscapeKeyDown
+        BackdropProps={{
+          onClick: (e) => e.stopPropagation(), // Evita que el clic en el fondo cierre el diálogo
+        }}
+      >
         <DialogTitle className="dialog-title">Préstamos Activos</DialogTitle>
         <DialogContent className="dialog-content">
           <Box>

@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { AccessTime, Search, Assignment } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import Prestamos from "../../components/Loans/Loan/Prestamos";
+import Prestamos from "../../components/Loans/Loan/Prestamos";  // Importación del componente Prestamos
 import BusquedaLibro from "../../components/Loans/BookSearch/BusquedaLibro";
 import PrestamosActivos from "../../components/Loans/ActiveLoan/PrestamosActivos";
 import HistorialPrestamos from "../../components/Loans/History/historial";
@@ -63,7 +63,8 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
               }}
             >
               <Box sx={{ width: "100%", maxWidth: 600 }}>
-                <Prestamos onSuccess={handleLoanSuccess} />
+                {/* Pasa tanto onSuccess como onClose a Prestamos */}
+                <Prestamos onSuccess={handleLoanSuccess} onClose={onClose} />
               </Box>
             </DialogContent>
           </Dialog>
@@ -101,6 +102,7 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
           </Paper>
 
           <Grid container spacing={3} sx={{ mb: 4 }}>
+            {/* Cards for different options */}
             <Grid item xs={12} sm={6} md={3}>
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -139,6 +141,7 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
               </motion.div>
             </Grid>
 
+            {/* Other grid items for different actions */}
             <Grid item xs={12} sm={6} md={3}>
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -174,6 +177,7 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
               </motion.div>
             </Grid>
 
+            {/* Additional cards for other options */}
             <Grid item xs={12} sm={6} md={3}>
               <motion.div
                 whileHover={{ scale: 1.05 }}

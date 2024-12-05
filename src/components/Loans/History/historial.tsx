@@ -73,9 +73,21 @@ const HistorialPrestamos = ({
   }, [open]);
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle className="dialog-title">Historial de Préstamos</DialogTitle>{" "}
-      s
+    <Dialog
+      open={open}
+      onClose={(event, reason) => {
+        if (reason !== "backdropClick") {
+          onClose();
+        }
+      }}
+      fullWidth
+      maxWidth="md"
+      disableEscapeKeyDown
+      BackdropProps={{
+        onClick: (e) => e.stopPropagation(), // Evita que el clic en el fondo cierre el diálogo
+      }}
+    >
+      <DialogTitle className="dialog-title">Historial de Préstamos</DialogTitle>
       <DialogContent className="dialog-content">
         <Box>
           <Typography

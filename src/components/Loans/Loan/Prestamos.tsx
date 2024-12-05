@@ -3,9 +3,10 @@ import './Prestamos.css';
 
 interface PrestamosProps {
   onSuccess: () => void;
+  onClose: () => void; // Asegúrate de pasar esta prop desde el componente principal
 }
 
-function Prestamos({ onSuccess }: PrestamosProps) {
+function Prestamos({ onSuccess, onClose }: PrestamosProps) {
   const [codigoEstudiante, setCodigoEstudiante] = useState('');
   const [codigoLibro, setCodigoLibro] = useState('');
 
@@ -35,7 +36,12 @@ function Prestamos({ onSuccess }: PrestamosProps) {
           value={codigoLibro}
           onChange={(e) => setCodigoLibro(e.target.value)}
         />
-        <input className="login-button" type="submit" value="Registrar" />
+        <div className="form-actions">
+          <input className="login-button" type="submit" value="Registrar" />
+          <button type="button" className="login-button" onClick={onClose}>
+            Cerrar
+          </button>
+        </div>
       </form>
       <span className="agreement">
         <a href="#">Gestión de préstamos</a>

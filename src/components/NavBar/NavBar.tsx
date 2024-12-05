@@ -15,6 +15,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const pages = ['Prestamos', 'Libros', 'Estudiantes', 'Registro'];
 const settings = ['Logout'];
@@ -54,12 +55,13 @@ export function NavBar(): ReactElement {
     };
 
     const handleLogout = (settings: string) => {
-        switch (settings){
-            case 'Logout':
-                navigate('/Login');
-                break;
+        if (settings === 'Logout') {
+            // Eliminar el token de las cookies
+            document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+            // Navegar a la página de inicio de sesión
+            navigate('/');
         }
-    }
+    };
 
     return (
         <AppBar position="static">
@@ -153,9 +155,13 @@ export function NavBar(): ReactElement {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                <MenuItem key={setting} onClick={() => { 
+                                    handleLogout(setting); 
+                                    handleCloseUserMenu(); 
+                                }}>
                                     <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
                                 </MenuItem>
+                                
                             ))}
                         </Menu>
                     </Box>
