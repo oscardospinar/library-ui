@@ -16,6 +16,9 @@ import Icon from '@mui/material/Icon';
 import { green } from '@mui/material/colors';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { BasicBook } from '../Services/BasicBook';
+import BookEditor from '../Book/bookEditor';
+import { BookObj } from "../Services/BookObj";
+import { getBook } from "../../Hook/BookService";
 
 // Simulación de datos y operaciones de base de datos
 interface Props {
@@ -25,9 +28,40 @@ interface Props {
 export default function BookAdministration(props: Props) {
 
   const {initialBooks} = props;
+  const [openEditor, setOpenEditor] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<BasicBook | null>(null);
+  const [book, setBook] = useState<BookObj>();
 
+  const handleEdit = (bookId: string | undefined) => {
+    setOpenEditor(true);
+    if(bookId){
+      getABook(bookId);
+  }
+  };
+  const getABook = async (id: string ) => {
+    if(id){
+      const answer = await getBook(id);
+      if (answer) {
+        const book: BookObj | undefined = answer.data.body && answer.data.body.length === 1 
+          ? answer.data.body[0] 
+          : undefined;
+        if (book) {
+          console.log(book);
+          setBook(book);
+        }
+      }
+    }
+  };
+
+  const handleCloseEditor = () => {
+    setOpenEditor(false);
+    setSelectedBook(null);
+  };
+  
+  
 
   return (
+    <Box>
       <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -51,7 +85,7 @@ export default function BookAdministration(props: Props) {
               <TableCell >{row.isbn}</TableCell>
               <TableCell align="right">
                 <ButtonGroup variant="outlined" aria-label="crud botton group">
-                    <Button  startIcon={<EditIcon />}>
+                    <Button  startIcon={<EditIcon />} onClick={() => handleEdit(row.bookId)}>
                         Editar
                     </Button>
                     <Button color="error" startIcon={<DeleteIcon />}>
@@ -64,5 +98,12 @@ export default function BookAdministration(props: Props) {
         </TableBody>
       </Table>
     </TableContainer>
+    
+    {openEditor && book && (
+      <Box mt={2}>
+        <BookEditor open = {true} book={book} onClose={handleCloseEditor} />
+      </Box>
+      )}
+    </Box>
   );
 }

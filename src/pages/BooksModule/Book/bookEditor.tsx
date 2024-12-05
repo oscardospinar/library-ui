@@ -1,22 +1,33 @@
-import { Box, Typography, TextField, Button, Chip, IconButton, Select, MenuItem,} from '@mui/material';
+import { Box,TextField, Button, IconButton, Select, MenuItem, Dialog, DialogTitle, DialogContent} from '@mui/material';
+import { Close } from '@mui/icons-material';
 import { BookObj } from "../Services/BookObj";
 import { updateBook } from "../../Hook/BookService";
 import { getCategories } from '../../Hook/BookService';
+import { getSubcategories } from '../../Hook/BookService';
 import React, { ReactElement, useEffect, useState } from "react";
 import { Category } from '../Services/category';
-export default function BookEditor({ 
-    book
-     }: {
-    book:BookObj;
+import { Subcategory } from '../Services/Subcategory';
 
+export default function BookEditor({
+  book,
+  open,
+  onClose
+}: {
+  book: BookObj;
+  open: boolean;
+  onClose: () => void;
 }) {
-{/*estado inical del libro */}
+
+  
+
+  const [subcategories, setSubcategories] = React.useState<Subcategory[]>([]);
   const [categories, setCategories] = React.useState<Category[]>([]);
   const [editedBook, setEditedBook] = React.useState<BookObj>({
     ...book,
     subcategories: book.subcategories || ''
   })
-{/*manejo de cambios y guardar*/}
+
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }
@@ -27,68 +38,83 @@ export default function BookEditor({
       setEditedBook((prev) => ({ ...prev, [name]: value }));
     }
   };
-  const handleSave = () => {
+
+  const handleSave = async () => {
     if (!editedBook.title.trim() || !editedBook.author.trim()) {
-      alert(' Complete title and author.');
-      return;
+        alert('Complete title and author.');
+        return;
     }
-    /*onSave(editedBook);*/
-  };
+    const response = await updateBook(editedBook);
+    if (response) {
+        alert('Book updated successfully');
+        onClose();
+    } else {
+        alert('Failed to update book.');
+    }
+};
+
   const handleCategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const category = event.target.value as string;
     setEditedBook((prev) => ({
-      ...prev,
-      category,
-      subcategories: [] 
+        ...prev,
+        category
     }));
-  };
+};
 
-  const handleSubcategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+const handleSubcategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const subcategory = event.target.value as string;
     setEditedBook((prev) => ({
-      ...prev,
-      subcategories: event.target.value as string[]
+        ...prev,
+        subcategory
     }));
-  };
+};
 
-  
+const updateNewBook = async()=>{ 
+  const answer = await updateBook(editedBook);
+  if(answer){ 
+      alert("hola")
+  }
+}
+useEffect (() => {
+  getAllCategories();
+},[]);
+useEffect (() => {
+  getAllSubcategories();
+},[]);
 
-  const updateNewBook = async()=>{ 
-    const answer = await updateBook(editedBook);
-    if(answer){ 
-        alert("hola")
-    }
+const getAllCategories = async () => {
+  const answer = await getCategories();
+  if(answer){ 
+    console.log(answer.data.body);
+    setCategories(answer.data.body);
   }
-  useEffect (() => {
-    getAllCategories();
-  },[]);
-  const getAllCategories = async () => {
-    const answer = await getCategories();
-    if(answer){ 
-      console.log(answer.data.body);
-      setCategories(answer.data.body);
-    }
+}
+const getAllSubcategories = async () => {
+  const answer = await getSubcategories();
+  if(answer){ 
+    console.log(answer.data.body);
+    setSubcategories(answer.data.body);
   }
+}
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, maxWidth: '1000px', margin: 'auto', padding: 3 }}>
-
-      {/* Formulario */}
-      <Box sx={{ flex: 1 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" component="h1" fontWeight="bold">
-            {editedBook.title|| 'Editar libro'}
-          </Typography>
-          <Box>
-            <IconButton aria-label="editar">
-              <Typography>✏️</Typography>
-            </IconButton>
-            <IconButton aria-label="eliminar">
-              <Typography>🗑️</Typography>
-            </IconButton>
-          </Box>
-        </Box>
-
-        <Box sx={{ display: 'grid', gap: 2 }}>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <DialogTitle sx={{ m: 0, p: 2 }}>Editar Libro
+      <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close/>
+          </IconButton>
+      </DialogTitle>
+      <DialogContent dividers>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, maxWidth: '1000px', margin: 'auto', padding: 3 }}>
           <TextField
             label="Título"
             name="title"
@@ -134,6 +160,8 @@ export default function BookEditor({
             fullWidth
           />
           <Select
+            label="Categorías"
+            name="categories"
             value={editedBook.categories || ''}
             displayEmpty
             fullWidth
@@ -143,22 +171,32 @@ export default function BookEditor({
                 {category.description}
               </MenuItem>
             ))}
-        </Select>
-          <TextField
+          </Select>
+          <Select
             label="Subcategorías"
             name="subcategories"
-            value={editedBook.subcategories}
-            onChange={handleChange}
+            value={editedBook.subcategories || ''}
+            displayEmpty
             fullWidth
-            helperText="Please,enter subcategories with comma "
-          />
+          >
+            {subcategories.map((subcategory, index) => (
+              <MenuItem key={index} value={subcategory.subcategoryId}>
+                {subcategory.description}
+              </MenuItem>
+            ))}
+          </Select>
           
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2 }}>
-          { /*<Button variant="outlined" onClick={onCancel}>Cancelar</Button>*/}
-            {/*<Button variant="contained" onClick={() => onSave(editedBook)}>Guardar cambios</Button>*/}
+          <Button variant="contained" color="primary" onClick={handleSave}>
+              Guardar
+            </Button>
+            <Button variant="outlined" onClick={onClose}>
+              Cancelar
+            </Button>
           </Box>
         </Box>
-      </Box>
-    </Box>
+      </DialogContent>
+    </Dialog>
   )
 }
+
