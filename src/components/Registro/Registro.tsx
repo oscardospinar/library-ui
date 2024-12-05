@@ -3,8 +3,9 @@ import CampoTexto from '../../components/CampoTexto/CampoTexto';
 import ListaDesplegable from '../../components/ListaDesplegable/ListaDesplegable';
 import ReCAPTCHA from 'react-google-recaptcha';
 import Boton from '../../components/Boton/Boton';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './style.css';
+import Cookies from 'js-cookie';
 
 interface Formulario {
   codigoEstudiante: string;
@@ -15,12 +16,18 @@ interface Formulario {
   grado: string;
   contrasena: string;
   confirmacionContrasena: string;
+  responsableId: string;
+  anoAcademico: string;
+  nombreCompleto: string;
 }
 
+const token = Cookies.get('token'); // Obtén el token desde las cookies.
 const FormularioRegistro: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handlePrincipal = () => {};
+  // Obtener el correo del responsable desde el estado de navegación
+  const { responsableId } = location.state || {};
 
   const [formulario, setFormulario] = useState<Formulario>({
     codigoEstudiante: '',
@@ -31,6 +38,9 @@ const FormularioRegistro: React.FC = () => {
     grado: '',
     contrasena: '',
     confirmacionContrasena: '',
+    responsableId: responsableId || '', // Asignar responsableId o valor vacío
+    anoAcademico: new Date().getFullYear().toString(), // Año académico actual
+    nombreCompleto: ''
   });
 
   const [opcionesCurso, setOpcionesCurso] = useState<string[]>([]);
@@ -68,7 +78,7 @@ const FormularioRegistro: React.FC = () => {
     setFormulario({ ...formulario, [name]: value });
   };
 
-  const manejarEnvio = (e: React.FormEvent<HTMLFormElement>) => {
+  const manejarEnvio = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!captchaValido) {
@@ -81,10 +91,43 @@ const FormularioRegistro: React.FC = () => {
       return;
     }
 
-    alert('Formulario enviado correctamente');
-    console.log(formulario);
+    if (!formulario.responsableId) {
+      alert('Error: responsableId no está definido. Por favor, verifica.');
+      return;
+    }
 
-    navigate('/navar');
+    try {
+      const response = await fetch(
+        'https://cvds-project-cnb6c0cuddfyc9fe.mexicocentral-01.azurewebsites.net/usuario/registrarEstudiante',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`, // Agrega el token al encabezado.
+          },
+          body: JSON.stringify({
+            codigoEstudiante: formulario.codigoEstudiante,
+            curso: formulario.curso,
+            anoAcademico: formulario.anoAcademico,
+            responsableId: formulario.responsableId, // Asegurarse de que se esté enviando
+            nombreUsuario: formulario.codigoEstudiante,
+            contrasena: formulario.contrasena,
+            nombreCompleto: formulario.nombreCompleto,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || 'Error desconocido');
+      }
+
+      alert('Estudiante registrado correctamente');
+      navigate('/navar');
+    } catch (error: any) {
+      console.error('Error al registrar estudiante:', error.message || error);
+      alert('Hubo un error al registrar al estudiante');
+    }
   };
 
   const manejarCaptcha = (value: string | null) => {
@@ -186,6 +229,13 @@ const FormularioRegistro: React.FC = () => {
         onChange={manejarCambio}
         required
       />
+      <CampoTexto
+        label="Responsable ID (si no se autocompleta, debes ingresarlo)"
+        name="responsableId"
+        value={formulario.responsableId}
+        onChange={manejarCambio}
+        required
+      />
       <div className="captcha-container">
         <ReCAPTCHA
           sitekey="6LcD-YQqAAAAAKmisLvpnV7EHvNoN7w-ZDUYpJsA"
@@ -193,18 +243,7 @@ const FormularioRegistro: React.FC = () => {
         />
       </div>
       <div className="form-buttons">
-        <Boton
-          label="Registrar"
-          onClick={handlePrincipal}
-          style={{
-            backgroundColor: 'blue',
-            color: 'white',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: captchaValido ? 'pointer' : 'not-allowed',
-          }}
-        />
+        <button type="submit">Registrar</button>
       </div>
     </form>
   );

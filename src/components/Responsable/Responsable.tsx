@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function EmailValidation() {
     const [email, setEmail] = useState('');
     const [mensaje, setMensaje] = useState('');
     const [responsableNoExiste, setResponsableNoExiste] = useState(false); // Controla la visibilidad de las casillas adicionales.
     const [nuevoResponsable, setNuevoResponsable] = useState({
-        nombre: '',
-        documento: '',
-        lugar: '',
+        nombreCompleto: '',
+        correoElectronico: '',
         telefono: '',
+        direccion: '',
+        documentoIdentificacion: '',
     });
 
     const navigate = useNavigate(); // Hook para la navegación.
+    const token = Cookies.get('token'); // Obtén el token desde las cookies.
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -26,26 +29,29 @@ function EmailValidation() {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`, // Agrega el token al encabezado.
                         },
-                        body: JSON.stringify({
-                            email, // Envía el correo validado al backend.
-                        }),
+                        body: JSON.stringify({ responsableEconomico: email }),
                     }
                 );
 
-                if (response.ok) {
-                    setMensaje('El correo es válido y el responsable existe.');
-                    navigate('/Registro'); // Navega al componente de registro.
-                } else if (response.status === 404) {
-                    setMensaje('El responsable no existe. Por favor, ingresa los datos del nuevo responsable.');
-                    setResponsableNoExiste(true); // Muestra las casillas adicionales.
-                } else {
-                    const errorData = await response.json();
-                    setMensaje(`Error en la solicitud: ${errorData.message || 'Desconocido'}`);
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(errorData || 'Error desconocido.');
                 }
-            } catch (error) {
+
+                const responsableExiste = await response.json();
+
+                if (responsableExiste) {
+                    setMensaje('El correo es válido y el responsable existe.');
+                    navigate('/Registro', { state: { email } }); // Enviar el correo a la ruta `/Registro`.
+                } else {
+                    setMensaje('El responsable no existe. Por favor, ingresa los datos del nuevo responsable.');
+                    setResponsableNoExiste(true); // Activa el formulario para nuevo responsable.
+                }
+            } catch (error: any) {
                 setMensaje('Error al enviar los datos al servidor.');
-                console.error('Error:', error);
+                console.error('Error:', error.message || error);
             }
         } else {
             setMensaje('El correo no es válido.');
@@ -59,6 +65,7 @@ function EmailValidation() {
 
     const handleNuevoResponsableSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
         try {
             const response = await fetch(
                 'https://cvds-project-cnb6c0cuddfyc9fe.mexicocentral-01.azurewebsites.net/usuario/registrarResponsableEconomico',
@@ -66,21 +73,22 @@ function EmailValidation() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`, // Agrega el token al encabezado.
                     },
                     body: JSON.stringify(nuevoResponsable),
                 }
             );
 
-            if (response.ok) {
-                setMensaje('Responsable registrado con éxito.');
-                navigate('/Registro'); // Navega al componente de registro.
-            } else {
-                const errorData = await response.json();
-                setMensaje(`Error al registrar: ${errorData.message || 'Desconocido'}`);
+            if (!response.ok) {
+                const errorData = await response.text();
+                throw new Error(errorData || 'Error desconocido.');
             }
-        } catch (error) {
+
+            setMensaje('Responsable registrado con éxito.');
+            navigate('/Registro', { state: { email } }); // Enviar el correo al registrar al responsable.
+        } catch (error: any) {
             setMensaje('Error al registrar el nuevo responsable.');
-            console.error('Error:', error);
+            console.error('Error:', error.message || error);
         }
     };
 
@@ -111,25 +119,17 @@ function EmailValidation() {
                     <form onSubmit={handleNuevoResponsableSubmit}>
                         <input
                             type="text"
-                            placeholder="Nombre"
-                            name="nombre"
-                            value={nuevoResponsable.nombre}
+                            placeholder="Nombre Completo"
+                            name="nombreCompleto"
+                            value={nuevoResponsable.nombreCompleto}
                             onChange={handleNuevoResponsableChange}
                             required
                         />
                         <input
-                            type="text"
-                            placeholder="Documento"
-                            name="documento"
-                            value={nuevoResponsable.documento}
-                            onChange={handleNuevoResponsableChange}
-                            required
-                        />
-                        <input
-                            type="text"
-                            placeholder="Lugar"
-                            name="lugar"
-                            value={nuevoResponsable.lugar}
+                            type="email"
+                            placeholder="Correo Electrónico"
+                            name="correoElectronico"
+                            value={nuevoResponsable.correoElectronico}
                             onChange={handleNuevoResponsableChange}
                             required
                         />
@@ -138,6 +138,22 @@ function EmailValidation() {
                             placeholder="Teléfono"
                             name="telefono"
                             value={nuevoResponsable.telefono}
+                            onChange={handleNuevoResponsableChange}
+                            required
+                        />
+                        <input
+                            type="text"
+                            placeholder="Dirección"
+                            name="direccion"
+                            value={nuevoResponsable.direccion}
+                            onChange={handleNuevoResponsableChange}
+                            required
+                        />
+                        <input
+                            type="text"
+                            placeholder="Documento de Identificación"
+                            name="documentoIdentificacion"
+                            value={nuevoResponsable.documentoIdentificacion}
                             onChange={handleNuevoResponsableChange}
                             required
                         />

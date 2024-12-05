@@ -43,7 +43,7 @@ function Login() {
                         nombreUsuario: data.nombreUsuario,
                         rol: data.rol,
                     }), { expires: 7 });
-
+                    console.log('Token:', data.token);
                     alert('Inicio de sesión exitoso');
 
                     // Redirigir según el rol
