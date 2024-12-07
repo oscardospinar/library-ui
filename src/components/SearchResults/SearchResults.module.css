@@ -1,4 +1,4 @@
-.search-results-container {
+.searchResultsContainer {
 padding: 16px;
 margin-top: 128px;
 height: 100vh;
@@ -7,7 +7,7 @@ flex-direction: column;
 background-color: #f9f9f9;
 }
 
-.search-results-container .new-search-button {
+.newSearchButton {
 margin-bottom: 16px;
 background-color: #007bff;
 color: #fff;
@@ -17,71 +17,70 @@ text-transform: uppercase;
 transition: background-color 0.3s ease;
 }
 
-.search-results-container .new-search-button:hover {
+.newSearchButton:hover {
 background-color: #0056b3;
 }
 
-.table-container {
+.tableContainer {
 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 border-radius: 8px;
 overflow: hidden;
 }
 
-.table-container table {
+.tableContainer table {
 width: 100%;
 border-collapse: collapse;
 font-family: 'Arial', sans-serif;
 }
 
-.table-container th,
-.table-container td {
+.tableContainer th,
+.tableContainer td {
 padding: 12px 16px;
 text-align: left;
 }
 
-.table-container th {
+.tableContainer th {
 background-color: #343a40;
 color: #fff;
 text-transform: uppercase;
 letter-spacing: 1px;
 }
 
-.table-container tr:nth-child(even) {
+.tableContainer tr:nth-child(even) {
 background-color: #f2f2f2;
 }
 
-.table-container tr:hover {
+.tableContainer tr:hover {
 background-color: #e9ecef;
 cursor: pointer;
 transition: background-color 0.3s ease;
 }
 
-.table-container td {
+.tableContainer td {
 border-bottom: 1px solid #ddd;
 }
 
-.title-link {
+.titleLink {
 color: #007bff;
 text-decoration: none;
 font-weight: bold;
 transition: color 0.3s ease;
 }
 
-.title-link:hover {
+.titleLink:hover {
 color: #0056b3;
 text-decoration: underline;
 }
 
-.search-controls {
+.searchControls {
 display: flex;
 align-items: center;
 gap: 16px;
 margin-bottom: 16px;
 }
 
-.search-controls .MuiFormControl-root,
-.search-controls .MuiTextField-root {
+.searchControls .MuiFormControl-root,
+.searchControls .MuiTextField-root {
 flex: 1;
 }
-
   

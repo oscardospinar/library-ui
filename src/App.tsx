@@ -7,7 +7,7 @@ import { NextUIProvider } from "@nextui-org/react";
 
 function App(): ReactElement {
   return (
-    <Box>
+    <Box sx={{ mt: '64px' }}>
       <NavBar />
       <Outlet />
     </Box>
