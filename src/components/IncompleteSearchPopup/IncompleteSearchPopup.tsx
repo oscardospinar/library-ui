@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../Mainsearch/Popups.css';
+import styles from '../Mainsearch/Popups.module.css';
 
 interface IncompleteSearchPopupProps {
   onClose: () => void;
@@ -14,11 +14,13 @@ const IncompleteSearchPopup: React.FC<IncompleteSearchPopupProps> = ({ onClose }
   };
 
   return (
-    <div className="popup-overlay">
-      <div className="popup">
-        <div className="popup-content">
+    <div className={styles.popupOverlay}>
+      <div className={styles.popup}>
+        <div className={styles.popupContent}>
           <p>Algunos campos no fueron llenados. Por favor llene todos los campos para poder hacer una búsqueda</p>
-          <button onClick={handleOk}>Ok</button>
+          <button className={styles.popupButton} onClick={handleOk}>
+            Ok
+          </button>
         </div>
       </div>
     </div>

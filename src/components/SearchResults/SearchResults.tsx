@@ -21,11 +21,9 @@ import UnderConstructionPopup from '../UnderConstructionPopup/UnderConstructionP
 import IncompleteSearchPopup from '../IncompleteSearchPopup/IncompleteSearchPopup';
 import SearchingPopup from '../SearchingPopup/SearchingPopup';
 import NoResultsPopup from '../NoResultsPopup/NoResultsPopup';
-import { searchBooks, getAllBooks } from '../api/api';
-import './SearchResults.css';
+import { searchBooks } from '../api/api';
+import styles from './SearchResults.module.css';
 import { Book } from '../api/api';
-
-
 
 const SearchResults: React.FC = () => {
   const { state } = useLocation();
@@ -46,7 +44,6 @@ const SearchResults: React.FC = () => {
     return titleA.localeCompare(titleB);
   });
 
-
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setShowUnderConstructionPopup(true);
@@ -63,7 +60,7 @@ const SearchResults: React.FC = () => {
   const closeNoResultsPopup = () => {
     setShowNoResultsPopup(false);
     navigate('/search');
-  }
+  };
 
   const handleNewSearch = () => {
     if (!searchType || !searchParam.trim()) {
@@ -81,84 +78,83 @@ const SearchResults: React.FC = () => {
         setShowNoResultsPopup(true);
       }
     }, 3000);
-    
-    
   };
-  
+
   const clearSearchFields = () => {
     setSearchType('');
     setSearchParam('');
   };
 
   return (
-    <Box sx={{ padding: 2, marginTop: '128px', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ flex: 1, alignItems: 'center', padding: 2 }}>
-        <Typography variant="h4" gutterBottom>
-          Resultados de Búsqueda
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: 2 }}>
-          <FormControl sx={{ minWidth: 150 }}>
-            <InputLabel>Parámetro</InputLabel>
-            <Select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value)}
-              label="Parámetro"
-            >
-              <MenuItem value="id">ID</MenuItem>
-              <MenuItem value="title">Título</MenuItem>
-              <MenuItem value="author">Autor</MenuItem>
-              <MenuItem value="descripcion">Palabras claves</MenuItem>
-              <MenuItem value="isbn">ISBN</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            label="Búsqueda"
-            variant="outlined"
-            value={searchParam}
-            onChange={(e) => setSearchParam(e.target.value)}
-            sx = {{width: '71%'}}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleNewSearch}
+    <Box className={styles.searchResultsContainer}>
+      <Typography variant="h4" gutterBottom>
+        Resultados de Búsqueda
+      </Typography>
+      <Box className={styles.searchControls}>
+        <FormControl sx={{ minWidth: 150 }}>
+          <InputLabel>Parámetro</InputLabel>
+          <Select
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
+            label="Parámetro"
           >
-            Nueva Búsqueda
-          </Button>
-        </Box>
-        <TableContainer component={Paper} className="table-container">
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell><strong>Código</strong></TableCell>
-                <TableCell><strong>Título</strong></TableCell>
-                <TableCell><strong>Autor</strong></TableCell>
-                <TableCell><strong>Descripcion</strong></TableCell>
-                <TableCell><strong>ISBN</strong></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sortedResults.map((book) => (
-                <TableRow key={book.id}>
-                  <TableCell>{book.id}</TableCell>
-                  <TableCell>
-                    <a href="#" onClick={handleLinkClick} className="title-link">
-                      {book.title}
-                    </a>
-                  </TableCell>
-                  <TableCell>{book.author}</TableCell>
-                  <TableCell>{book.descripcion}</TableCell>
-                  <TableCell>{book.isbn}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        {showUnderConstructionPopup && <UnderConstructionPopup onClose={closeUnderConstructionPopup} />}
-        {showIncompleteSearchPopup && <IncompleteSearchPopup onClose={closeIncompleteSearchPopup} />}
-        {showSearchingPopup && <SearchingPopup />}
-        {showNoResultsPopup && <NoResultsPopup onClose={closeNoResultsPopup} clearFields={clearSearchFields} />}
+            <MenuItem value="id">ID</MenuItem>
+            <MenuItem value="title">Título</MenuItem>
+            <MenuItem value="author">Autor</MenuItem>
+            <MenuItem value="descripcion">Palabras claves</MenuItem>
+            <MenuItem value="isbn">ISBN</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          label="Búsqueda"
+          variant="outlined"
+          value={searchParam}
+          onChange={(e) => setSearchParam(e.target.value)}
+        />
+        <Button
+          className={styles.newSearchButton}
+          variant="contained"
+          onClick={handleNewSearch}
+        >
+          Nueva Búsqueda
+        </Button>
       </Box>
+      <TableContainer component={Paper} className={styles.tableContainer}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell><strong>Código</strong></TableCell>
+              <TableCell><strong>Título</strong></TableCell>
+              <TableCell><strong>Autor</strong></TableCell>
+              <TableCell><strong>Descripcion</strong></TableCell>
+              <TableCell><strong>ISBN</strong></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sortedResults.map((book) => (
+              <TableRow key={book.id}>
+                <TableCell>{book.id}</TableCell>
+                <TableCell>
+                  <a
+                    href="#"
+                    onClick={handleLinkClick}
+                    className={styles.titleLink}
+                  >
+                    {book.title}
+                  </a>
+                </TableCell>
+                <TableCell>{book.author}</TableCell>
+                <TableCell>{book.descripcion}</TableCell>
+                <TableCell>{book.isbn}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {showUnderConstructionPopup && <UnderConstructionPopup onClose={closeUnderConstructionPopup} />}
+      {showIncompleteSearchPopup && <IncompleteSearchPopup onClose={closeIncompleteSearchPopup} />}
+      {showSearchingPopup && <SearchingPopup />}
+      {showNoResultsPopup && <NoResultsPopup onClose={closeNoResultsPopup} clearFields={clearSearchFields}/>}
     </Box>
   );
 };
