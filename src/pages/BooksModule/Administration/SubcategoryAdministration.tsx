@@ -13,49 +13,85 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Subcategory } from '../Services/Subcategory';
+import SubcategoryEditor from '../Book/subcategoryEditor';
+import { getBooksBySubcategories } from '../../Hook/BookService';
+import React, { useState } from 'react';
+
 
 interface Props {
-    initialSubategories: Subcategory[];
+    initialSubcategories: Subcategory[];
 }
 
 export default function SubategoryAdministration(props: Props) {
 
-  const {initialSubategories} = props;
+  const {initialSubcategories} = props;
+  const [openEditor, setOpenEditor] = useState(false);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory | null>(null);
+
+  
+  const handleEdit = async (subcategoryId: string | undefined) => {
+    if (subcategoryId) {
+      const subcategory = await getASubcategory(subcategoryId);
+      setSelectedSubcategory(subcategory); 
+      setOpenEditor(true);
+    }
+  };
+
+  
+  const getASubcategory = async (id: string): Promise<Subcategory | null> => {
+    const answer = await getBooksBySubcategories(id);
+    if (answer && answer.data.body.length === 1) {
+      return answer.data.body[0]; 
+    }
+    return null;
+  };
+
+  const handleCloseEditor = () => {
+    setOpenEditor(false);
+    setSelectedSubcategory(null); 
+  };
 
   return (
+    <div>
       <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Id</TableCell>
-            <TableCell >Nombre</TableCell>
-            <TableCell align="right">Acciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {initialSubategories.map((row) => (
-            <TableRow
-              key={row.subcategoryId}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.subcategoryId}
-              </TableCell>
-              <TableCell >{row.description}</TableCell>
-              <TableCell align="right">
-                <ButtonGroup variant="outlined" aria-label="crud botton group">
-                    <Button  startIcon={<EditIcon />}>
-                        Editar
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Id</TableCell>
+              <TableCell>Nombre</TableCell>
+              <TableCell align="right">Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {initialSubcategories.map((row) => (
+              <TableRow
+                key={row.subcategoryId}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.subcategoryId}
+                </TableCell>
+                <TableCell>{row.description}</TableCell>
+                <TableCell align="right">
+                  <ButtonGroup variant="outlined" aria-label="crud button group">
+                    <Button startIcon={<EditIcon />} onClick={() => handleEdit(row.subcategoryId)}>
+                      Editar
                     </Button>
                     <Button color="error" startIcon={<DeleteIcon />}>
-                        Eliminar
+                      Eliminar
                     </Button>
-                </ButtonGroup>
+                  </ButtonGroup>
                 </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {openEditor && selectedSubcategory && (
+        <Box mt={2}>
+          <SubcategoryEditor open={openEditor} subcategory={selectedSubcategory} onClose={handleCloseEditor} />
+        </Box>
+      )}
+    </div>
   );
 }

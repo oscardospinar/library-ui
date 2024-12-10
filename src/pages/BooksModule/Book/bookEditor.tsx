@@ -1,32 +1,41 @@
-import { Box,TextField, Button, IconButton, MenuItem, Dialog, DialogTitle, DialogContent} from '@mui/material';
-import { Close } from '@mui/icons-material';
-import { BookObj } from "../Services/BookObj";
-import { updateBook } from "../../Hook/BookService";
-import { getCategories } from '../../Hook/BookService';
-import { getSubcategories } from '../../Hook/BookService';
 import React, { ReactElement, useEffect, useState } from "react";
-import { Category } from '../Services/category';
-import { Subcategory } from '../Services/Subcategory';
+import {
+  Box,
+  TextField,
+  Button,
+  IconButton,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Typography 
+} from "@mui/material";
+import { Close } from "@mui/icons-material";
+import { BookObj } from "../Services/BookObj";
+import { updateBook, uploadBookImage } from "../../Hook/BookService";
+import { getCategories } from "../../Hook/BookService";
+import { getSubcategories } from "../../Hook/BookService";
+import { Category } from "../Services/category";
+import { Subcategory } from "../Services/Subcategory";
 
 export default function BookEditor({
   book,
   open,
-  onClose
+  onClose,
 }: {
   book: BookObj;
   open: boolean;
   onClose: () => void;
 }) {
-
-  
-
-  const [subcategories, setSubcategories] = React.useState<Subcategory[]>([]);
-  const [categories, setCategories] = React.useState<Category[]>([]);
-  const [editedBook, setEditedBook] = React.useState<BookObj>({
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [editedBook, setEditedBook] = useState<BookObj>({
     ...book,
-    subcategories: book.subcategories || ''
-  })
-
+    subcategories: book.subcategories || [],
+    categories: book.categories || [],
+  });
+  const [imagePreview, setImagePreview] = useState<string | null>(book.imgPath || null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -39,91 +48,105 @@ export default function BookEditor({
     }
   };
 
+
+
   const handleSave = async () => {
     if (!editedBook.title.trim() || !editedBook.author.trim()) {
-        alert('Complete title and author.');
-        return;
+      alert("Complete title and author.");
+      return;
     }
+
+    if (!book.bookId) {
+      alert("ID doesnt defined.");
+      return;
+    }
+
+    if (selectedImage) {
+      try {
+        const imagePath = await uploadBookImage(selectedImage, book.bookId);
+        editedBook.imgPath = imagePath;
+      } catch (error) {
+        alert("Error uploading the image");
+        return;
+      }
+    }
+    
     const response = await updateBook(editedBook);
     if (response) {
-        alert('Book updated successfully');
-        onClose();
+      alert("Book updated successfully");
+      onClose();
     } else {
-        alert('Failed to update book.');
+      alert("Failed to update book.");
     }
-};
+
+  };
 
   const handleCategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const category = event.target.value as string;
     setEditedBook((prev) => ({
-        ...prev,
-        category
+      ...prev,
+      categories: [category],
     }));
-};
+  };
 
-const handleSubcategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleSubcategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const subcategory = event.target.value as string;
     setEditedBook((prev) => ({
-        ...prev,
-        subcategory
+      ...prev,
+      subcategories: [subcategory],
     }));
-};
+  };
 
-const updateNewBook = async()=>{ 
-  const answer = await updateBook(editedBook);
-  if(answer){ 
-      alert("hola")
-  }
-}
-useEffect (() => {
-  getAllCategories();
-},[]);
-useEffect (() => {
-  getAllSubcategories();
-},[]);
+  useEffect(() => {
+    getAllCategories();
+  }, []);
 
-const getAllCategories = async () => {
-  const answer = await getCategories();
-  if(answer){ 
-    console.log(answer.data.body);
-    setCategories(answer.data.body);
-  }
-}
-const getAllSubcategories = async () => {
-  const answer = await getSubcategories();
-  if(answer){ 
-    console.log(answer.data.body);
-    setSubcategories(answer.data.body);
-  }
-}
+  useEffect(() => {
+    getAllSubcategories();
+  }, []);
+
+  const getAllCategories = async () => {
+    const answer = await getCategories();
+    if (answer) {
+      setCategories(answer.data.body);
+    }
+  };
+
+  const getAllSubcategories = async () => {
+    const answer = await getSubcategories();
+    if (answer) {
+      setSubcategories(answer.data.body);
+    }
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ m: 0, p: 2 }}>Editar Libro
-      <IconButton
+      <DialogTitle sx={{ m: 0, p: 2 }}>
+        Editar Libro
+        <IconButton
           aria-label="close"
           onClick={onClose}
           sx={{
-            position: 'absolute',
+            position: "absolute",
             right: 8,
             top: 8,
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <Close/>
-          </IconButton>
+          <Close />
+        </IconButton>
       </DialogTitle>
       <DialogContent dividers>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column', 
-              gap: 3,
-              maxWidth: '1000px',
-              margin: 'auto',
-              padding: 3,
-            }}
-          >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+            maxWidth: "1000px",
+            margin: "auto",
+            padding: 3,
+          }}
+        >
           <TextField
             label="Título"
             name="title"
@@ -172,10 +195,10 @@ const getAllSubcategories = async () => {
             select
             label="Categorías"
             name="categories"
-            value={editedBook.categories || ''}
+            value={editedBook.categories[0] || ""}
             onChange={handleCategoryChange}
             fullWidth
-            variant="outlined" 
+            variant="outlined"
           >
             {categories.map((category, index) => (
               <MenuItem key={index} value={category.categoryId}>
@@ -187,10 +210,10 @@ const getAllSubcategories = async () => {
             select
             label="Subcategorías"
             name="subcategories"
-            value={editedBook.subcategories || ''}
+            value={editedBook.subcategories[0] || ""}
             onChange={handleSubcategoryChange}
             fullWidth
-            variant="outlined" 
+            variant="outlined"
           >
             {subcategories.map((subcategory, index) => (
               <MenuItem key={index} value={subcategory.subcategoryId}>
@@ -198,9 +221,42 @@ const getAllSubcategories = async () => {
               </MenuItem>
             ))}
           </TextField>
-          
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2 }}>
-          <Button variant="contained" color="primary" onClick={handleSave}>
+          {/* Imagen */}
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 1, mt: 2 }}>
+            <Button variant="outlined" component="label" sx={{ alignSelf: "start" }}>
+              Cambiar Portada del Libro
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setSelectedImage(e.target.files[0]);
+                    const fileReader = new FileReader();
+                    fileReader.onload = () => {
+                      setImagePreview(fileReader.result as string);
+                    };
+                    fileReader.readAsDataURL(e.target.files[0]);
+                  }
+                }}
+              />
+            </Button>
+            <Typography variant="body2" color="textSecondary">
+              {selectedImage ? selectedImage.name : "Ningún archivo seleccionado"}
+            </Typography>
+            {imagePreview && (
+              <Box mt={2}>
+                <img
+                  src={imagePreview}
+                  alt="Vista previa"
+                  style={{ width: "100%", maxWidth: "200px", borderRadius: "8px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)" }}
+                />
+              </Box>
+            )}
+          </Box>
+
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, mt: 2 }}>
+            <Button variant="contained" color="primary" onClick={handleSave}>
               Guardar
             </Button>
             <Button variant="outlined" onClick={onClose}>
@@ -210,6 +266,5 @@ const getAllSubcategories = async () => {
         </Box>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-

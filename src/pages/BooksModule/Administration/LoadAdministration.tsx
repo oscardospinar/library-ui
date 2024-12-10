@@ -38,7 +38,7 @@ export default function LoadAdministration(props: Props) {
                 return <CategoryAdministration initialCategories={listCategory}/>
             default:
                 getAllSubcategories();
-                return <SubategoryAdministration initialSubategories={listSub} />
+                return <SubategoryAdministration initialSubcategories={listSub} />
         }
     }
   const getBooks = async () => {
