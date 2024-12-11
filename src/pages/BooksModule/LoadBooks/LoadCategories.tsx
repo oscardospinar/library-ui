@@ -2,6 +2,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import { BookObj } from "../Services/BookObj";
 import { BookPagination } from "../../../components/BookPagination/BookPagination";
 import { getBookByCategory, getCategories, getSubcategories,getBooksBySubcategories } from "../../Hook/BookService";
+import { BasicBook } from "../Services/BasicBook";
 
 
 type Props = {
@@ -11,7 +12,7 @@ type Props = {
 
 export function LoadCategories(props: Props): ReactElement  {
     const {type, showBook} = props;
-    const [allBooks, setHashmap] = useState<Record<string, BookObj[]>>({});
+    const [allBooks, setHashmap] = useState<Record<string, BasicBook[]>>({});
 
     useEffect(() => {
         switch (type){

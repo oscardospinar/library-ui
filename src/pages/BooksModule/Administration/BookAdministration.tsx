@@ -20,7 +20,24 @@ import BookEditor from '../Book/bookEditor';
 import { BookObj } from "../Services/BookObj";
 import { getBook } from "../../Hook/BookService";
 
-// Simulación de datos y operaciones de base de datos
+export const emptyBook: BookObj = {
+  bookId: "",
+  isbn: "",
+  description: "",
+  title: "",
+  author: "",
+  collection: "",
+  editorial: "",
+  edition: "",
+  recommendedAges: "",
+  language: "",
+  categories: [],
+  subcategories: [],
+  copies: [], 
+  imgPath: "", 
+  active: false, 
+};
+
 interface Props {
     initialBooks: BasicBook[];
 }
@@ -29,14 +46,14 @@ export default function BookAdministration(props: Props) {
 
   const {initialBooks} = props;
   const [openEditor, setOpenEditor] = useState(false);
-  const [selectedBook, setSelectedBook] = useState<BasicBook | null>(null);
-  const [book, setBook] = useState<BookObj>();
+  const [book, setBook] = useState<BookObj>(emptyBook);
+  const [title, setTitle] = useState<string>("Añadir libro");
+  const [edit, setEdit] = useState<boolean>(false);
 
   const handleEdit = (bookId: string | undefined) => {
-    setOpenEditor(true);
     if(bookId){
       getABook(bookId);
-  }
+    }
   };
   const getABook = async (id: string ) => {
     if(id){
@@ -48,19 +65,36 @@ export default function BookAdministration(props: Props) {
         if (book) {
           console.log(book);
           setBook(book);
+          setTitle("Editar Libro");
+          setEdit(true);
+          setOpenEditor(true); 
         }
       }
     }
   };
 
+  const handleAdd = () => {
+    setOpenEditor(true); 
+  };
+
   const handleCloseEditor = () => {
     setOpenEditor(false);
-    setSelectedBook(null);
+    setBook(emptyBook);
+    setTitle("Añadir libro");
+    setEdit(false);
   };
   
   
 
   return (
+    <>
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Typography variant="h4" gutterBottom>
+        Gestión de libros
+      </Typography>
+      <Button color="success" startIcon={<AddCircleIcon />} size="large" onClick={handleAdd}>
+      </Button>
+    </Box>
     <Box>
       <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -101,9 +135,10 @@ export default function BookAdministration(props: Props) {
     
     {openEditor && book && (
       <Box mt={2}>
-        <BookEditor open = {true} book={book} onClose={handleCloseEditor} />
+        <BookEditor isEdit = {edit} title = {title} open = {true} book={book} onClose={handleCloseEditor} />
       </Box>
       )}
     </Box>
+    </>
   );
 }

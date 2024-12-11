@@ -77,13 +77,6 @@ const getAllSubcategories = async () => {
         >
         Volver
     </Button> 
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <Typography variant="h4" gutterBottom>
-        {title}
-      </Typography>
-      <Button color="success" startIcon={<AddCircleIcon />} size="large">
-        </Button>
-    </Box>
     {handlePage()}
     </div>
   );

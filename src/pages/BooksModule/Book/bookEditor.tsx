@@ -8,11 +8,12 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  Typography 
+  Typography,
+  Chip 
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { BookObj } from "../Services/BookObj";
-import { updateBook, uploadBookImage } from "../../Hook/BookService";
+import { updateBook, uploadBookImage, saveBook } from "../../Hook/BookService";
 import { getCategories } from "../../Hook/BookService";
 import { getSubcategories } from "../../Hook/BookService";
 import { Category } from "../Services/category";
@@ -22,13 +23,19 @@ export default function BookEditor({
   book,
   open,
   onClose,
+  title,
+  isEdit
 }: {
   book: BookObj;
   open: boolean;
   onClose: () => void;
+  title: string
+  isEdit: boolean
 }) {
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesIds, setCategoriesIds] = useState<string[]>([]);
+  const [subcategoriesIds, setSubcategoriesIds] = useState<string[]>([]);
   const [editedBook, setEditedBook] = useState<BookObj>({
     ...book,
     subcategories: book.subcategories || [],
@@ -50,54 +57,89 @@ export default function BookEditor({
 
 
 
-  const handleSave = async () => {
-    if (!editedBook.title.trim() || !editedBook.author.trim()) {
-      alert("Complete title and author.");
+  const handleSave = () => {
+    if (!editedBook.title.trim() || !editedBook.author.trim() || !editedBook.collection.trim() || !editedBook.editorial.trim() || !editedBook.recommendedAges.trim()
+    || !editedBook.edition.trim() || !editedBook.description.trim() || !editedBook.isbn.trim() || !editedBook.language.trim()) {
+      alert("Complete todos los campos.");
       return;
     }
-
-    if (!book.bookId) {
-      alert("ID doesnt defined.");
-      return;
+    if(isEdit){
+      updateABook();
+    }else{
+      createABook();
     }
+  }
 
+  const uploadImage = async (bookId: string | undefined) => {
     if (selectedImage) {
-      try {
-        const imagePath = await uploadBookImage(selectedImage, book.bookId);
-        editedBook.imgPath = imagePath;
-      } catch (error) {
-        alert("Error uploading the image");
-        return;
+      if(book.bookId){
+        try {
+          const imagePath = await uploadBookImage(selectedImage, book.bookId);
+          console.log(imagePath);
+          editedBook.imgPath = imagePath;
+        } catch (error) {
+          alert("Error al cargar imagen");
+          return;
+        }
       }
     }
-    
-    const response = await updateBook(editedBook);
-    if (response) {
-      alert("Book updated successfully");
-      onClose();
-    } else {
-      alert("Failed to update book.");
-    }
+  }
 
-  };
+  const updateABook = async () => {
+      const response = await updateBook(editedBook.bookId, editedBook.isbn, editedBook.description, editedBook.title, editedBook.author, editedBook.collection, editedBook.editorial, editedBook.edition,
+        editedBook.recommendedAges, editedBook.language, categoriesIds, subcategoriesIds);
+      if (response) {
+        console.log(response);
+        alert("Libro actualizado correctamente");
+        uploadImage(book.bookId);
+        onClose();
+      } else {
+        alert("Error al cargar el libro");
+      }
+  }
+
+  const createABook = async () => {
+    console.log(editedBook);
+      const response = await saveBook(editedBook.isbn, editedBook.description, editedBook.title, editedBook.author, editedBook.collection, editedBook.editorial, editedBook.edition,
+        editedBook.recommendedAges, editedBook.language, categoriesIds, subcategoriesIds);
+      if (response) {
+        alert("Libro creado correctamente");
+        uploadImage(response.data.body);
+        onClose();
+      } else {
+        alert("Error al crear el libro");
+      }
+  }
+
 
   const handleCategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const category = event.target.value as string;
+    setCategoriesIds([...categoriesIds, category]);
+    const categoryName = categories.find(cat => cat.categoryId === category)?.description;
     setEditedBook((prev) => ({
       ...prev,
-      categories: [category],
+      categories: [
+        ...(prev.categories || []), 
+        categoryName || "" 
+      ]
     }));
   };
 
   const handleSubcategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const subcategory = event.target.value as string;
+    setSubcategoriesIds([...subcategoriesIds, subcategory]);
+    const subcategoryName = subcategories.find(cat => cat.subcategoryId === subcategory)?.description;
     setEditedBook((prev) => ({
       ...prev,
-      subcategories: [subcategory],
+      subcategories: [
+        ...(prev.subcategories || []), 
+        subcategoryName || "" 
+      ]
     }));
   };
 
   useEffect(() => {
+    console.log(book);
     getAllCategories();
   }, []);
 
@@ -122,7 +164,7 @@ export default function BookEditor({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ m: 0, p: 2 }}>
-        Editar Libro
+        {title}
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -192,30 +234,74 @@ export default function BookEditor({
             fullWidth
           />
           <TextField
+            label="Colección"
+            name="collection"
+            value={editedBook.collection}
+            onChange={handleChange}
+            multiline
+            fullWidth
+          />
+          <TextField
+            label="Edad recomendada"
+            name="recommendedAges"
+            value={editedBook.recommendedAges}
+            onChange={handleChange}
+            multiline
+            fullWidth
+          />
+          <TextField
+            label="Idioma"
+            name="language"
+            value={editedBook.language}
+            onChange={handleChange}
+            multiline
+            fullWidth
+          />
+          <Box>
+              <Typography variant="subtitle1" gutterBottom display="flex" alignItems="center">
+                Categorías:
+              </Typography>
+              {editedBook.categories.map((category, index) => (
+                    <Chip key={index} label={category} sx={{ mr: 1, mb: 1 }} />
+              ))}
+          </Box>
+          <TextField
             select
             label="Categorías"
             name="categories"
-            value={editedBook.categories[0] || ""}
+            value={""}
             onChange={handleCategoryChange}
             fullWidth
             variant="outlined"
           >
-            {categories.map((category, index) => (
+            {categories
+            .filter((category) => !editedBook.categories.includes(category.description)) 
+            .map((category, index) => (
               <MenuItem key={index} value={category.categoryId}>
                 {category.description}
               </MenuItem>
             ))}
           </TextField>
+          <Box mt={2}>
+            <Typography variant="subtitle1" gutterBottom>
+                Subcategorías:
+            </Typography>
+            {editedBook.subcategories.map((sub, index) => (
+              <Chip key={index} label={sub} sx={{ mr: 1, mb: 1 }} />
+            ))}
+          </Box>
           <TextField
             select
             label="Subcategorías"
             name="subcategories"
-            value={editedBook.subcategories[0] || ""}
+            value={""}
             onChange={handleSubcategoryChange}
             fullWidth
             variant="outlined"
           >
-            {subcategories.map((subcategory, index) => (
+            {subcategories
+            .filter((subcategory) => !editedBook.subcategories.includes(subcategory.description)) 
+            .map((subcategory, index) => (
               <MenuItem key={index} value={subcategory.subcategoryId}>
                 {subcategory.description}
               </MenuItem>
@@ -258,9 +344,6 @@ export default function BookEditor({
           <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, mt: 2 }}>
             <Button variant="contained" color="primary" onClick={handleSave}>
               Guardar
-            </Button>
-            <Button variant="outlined" onClick={onClose}>
-              Cancelar
             </Button>
           </Box>
         </Box>

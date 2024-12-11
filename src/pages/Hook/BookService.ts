@@ -67,13 +67,52 @@ export const getBooksBySubcategories = async (idSubcategory: string) => {
     }
 }
 
-export const updateBook = async (book:BookObj) => {
-    try{
-        var answer = axios.post<any>(API+'updateBook',book);
-        return answer;
-        } catch (error) {
-        alert(error);
- } 
+export const updateBook = async (bookId: string | undefined, isbn: string, description: string, title: string, author: string, collection:string, editorial: string, edition: string,
+    recommendedAges: string, language: string, categoryIds?: string[], subcategoryIds?: string[]) => {
+        try{
+            const requestBody = {
+                bookId: bookId,
+                isbn: isbn,
+                description: description,
+                title: title,
+                author: author,
+                collection: collection,
+                editorial: editorial,
+                edition: edition,
+                recommendedAges: recommendedAges,
+                language: language,
+                categoryIds: categoryIds,
+                subcategoryIds: subcategoryIds
+            }
+            var answer = axios.patch<BookResponse>(API+'updateBook',requestBody
+            );
+            return answer;
+            } catch (error) {
+            alert(error);
+    } 
+}
+
+export const saveBook = async (isbn: string, description: string, title: string, author: string, collection:string, editorial: string, edition: string,
+    recommendedAges: string, language: string, categoryIds?: string[], subcategoryIds?: string[]) => {
+        try{
+            const requestBody = {
+                isbn: isbn,
+                description: description,
+                title: title,
+                author: author,
+                collection: collection,
+                editorial: editorial,
+                edition: edition,
+                recommendedAges: recommendedAges,
+                language: language,
+                categoryIds: categoryIds,
+                subcategoryIds: subcategoryIds
+            }
+            var answer = axios.post<BookResponse>(API+'saveBook',requestBody);
+            return answer;
+            } catch (error) {
+            alert(error);
+    } 
 }
 
 export const updateCategory = async (category:Category) => {
@@ -98,15 +137,13 @@ export const uploadBookImage = async (file: File, bookId: string) => {
     try {
       const formData = new FormData();
       formData.append("file", file); 
-      formData.append("bookId", bookId);
-  
-      const response = await axios.post(API+'uploadImg', formData, {
+      const response = await axios.post(API+'uploadImg?bookId='+bookId,formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
   
-      return response.data; // Ruta de la imagen
+      return response.data; 
     } catch (error) {
       console.error("Error al subir la imagen:", error);
       throw new Error("No se pudo subir la imagen");

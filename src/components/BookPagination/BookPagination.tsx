@@ -10,11 +10,12 @@ import {
 import { BookObj } from "../../pages/BooksModule/Services/BookObj";
 import { Navigate, useNavigate } from "react-router-dom";
 import { BookCard } from "../BookCard/BookCard";
+import { BasicBook } from "../../pages/BooksModule/Services/BasicBook";
 
 const booksPerPage = 5; 
   type Props = {
     title?: string;
-    books: BookObj[];
+    books: BasicBook[];
     showBook: (id: string | undefined) => void;
 };
 
@@ -31,7 +32,7 @@ export function BookPagination(props: Props): ReactElement {
       to: booksPerPage
     });
 
-    const [Newbooks, setBooks] = useState<BookObj[]>();
+    const [Newbooks, setBooks] = useState<BasicBook[]>();
 
 
     const handlePageChange =  (event: React.ChangeEvent<unknown>, value: number) => {
