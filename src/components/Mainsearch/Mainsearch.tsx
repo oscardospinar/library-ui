@@ -6,7 +6,7 @@ import NoResultsPopup from '../NoResultsPopup/NoResultsPopup';
 import IncompleteSearchPopup from '../IncompleteSearchPopup/IncompleteSearchPopup';
 import { getAllBooks, searchBooks, Book } from '../api/api';
 import { useNavigate } from 'react-router-dom';
-import './SearchCss.css';
+import styles from './SearchCss.module.css';
 
 const MainSearch: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -59,9 +59,7 @@ const MainSearch: React.FC = () => {
         setShowSearchingPopup(false);
 
         if (results.length > 0) {
-          navigate('/results', { state: 
-            { results, books }, 
-          });
+          navigate('/results', { state: { results, books } });
         } else {
           setShowNoResultsPopup(true);
         }
@@ -95,19 +93,9 @@ const MainSearch: React.FC = () => {
   };
 
   return (
-    <Box sx={{ height: '89vh', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 8 }}>
-      <Box
-        sx={{
-          width: '100%',
-          maxWidth: 600,
-          padding: 4,
-          backgroundColor: 'white',
-          borderRadius: 2,
-          boxShadow: 3,
-          marginTop: 4,
-        }}
-      >
-        <Typography variant="h4" sx={{ textAlign: 'center', marginBottom: 3 }}>
+    <Box className={styles.container}>
+      <Box className={styles.formWrapper}>
+        <Typography variant="h4" className={styles.title}>
           Búsqueda de libros
         </Typography>
 
@@ -117,7 +105,7 @@ const MainSearch: React.FC = () => {
             fullWidth
             label="Seleccione un parámetro"
             value={searchType}
-            onChange={handleSelectChange}
+            onChange={(e) => setSearchType(e.target.value)}
             error={error.searchType}
             helperText={error.searchType ? 'Este campo es obligatorio' : ''}
             SelectProps={{
@@ -136,7 +124,7 @@ const MainSearch: React.FC = () => {
             fullWidth
             label="Ingresa el parámetro de búsqueda"
             value={searchParam}
-            onChange={handleSearchParamChange}
+            onChange={(e) => setSearchParam(e.target.value)}
             error={error.searchParam}
             helperText={error.searchParam ? 'Este campo es obligatorio' : ''}
             sx={{ marginBottom: 3 }}
@@ -145,19 +133,17 @@ const MainSearch: React.FC = () => {
           <Button
             type="submit"
             variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ padding: 1.5 }}
+            className={styles.searchButton}
           >
             Buscar
           </Button>
         </form>
-        {showUnderConstructionPopup && <UnderConstructionPopup onClose={handleUnderConstructionClose} />}
+        {showUnderConstructionPopup && <UnderConstructionPopup onClose={() => setShowUnderConstructionPopup(false)} />}
         {showSearchingPopup && <SearchingPopup />}
         {showNoResultsPopup && (
-          <NoResultsPopup onClose={() => setShowNoResultsPopup(false)} clearFields={clearSearchFields} />
+          <NoResultsPopup onClose={() => setShowNoResultsPopup(false)} clearFields={clearSearchFields}/>
         )}
-        {showIncompleteSearchPopup && <IncompleteSearchPopup onClose={handleIncompleteSearchClose} />}
+        {showIncompleteSearchPopup && <IncompleteSearchPopup onClose={() => setShowIncompleteSearchPopup(false)} />}
       </Box>
     </Box>
   );
