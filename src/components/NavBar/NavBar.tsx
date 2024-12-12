@@ -4,27 +4,32 @@ import {
   Box,
   Button,
   Container,
-  IconButton,
   Toolbar,
-  Tooltip,
-  Avatar,
   Typography,
+  TextField,
+  InputAdornment,
+  Menu,
+  MenuItem,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import SearchIcon from "@mui/icons-material/Search";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import BookIcon from "@mui/icons-material/Book";
 import { useNavigate } from "react-router-dom";
 import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
 import { motion } from "framer-motion";
 
 const pages = [
-  { name: "Prestamos", color: "#ff69b4" }, // Rosado
-  { name: "Libros", color: "#ffd700" }, // Amarillo
-  { name: "Estudiantes", color: "#32cd32" }, // Verde
+  { name: "Prestamos", color: "#ff69b4" },
+  { name: "Libros", color: "#ffd700" },
+  { name: "Estudiantes", color: "#32cd32" },
 ];
 
 export function NavBar() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [openPrestamosDialog, setOpenPrestamosDialog] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
   const handleSectionClick = (section: string): void => {
@@ -33,13 +38,19 @@ export function NavBar() {
     } else if (section === "Libros") {
       navigate("/libros");
     }
-    setActiveSection((prevSection) =>
-      section === prevSection ? null : section
-    );
+    setActiveSection((prevSection) => (section === prevSection ? null : section));
   };
 
   const handleClosePrestamosDialog = (): void => {
     setOpenPrestamosDialog(false);
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   const linkVariants = {
@@ -54,10 +65,68 @@ export function NavBar() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
+      
+      <Box
+        sx={{
+          width: "100%",
+          height: "50px",
+          backgroundColor: "white",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          px: 2,
+        }}
+      >
+        <img
+          src="/mnt/data/image.png" //ruta de la iamgen del logo 
+          style={{ height: "40px", cursor: "pointer" }}
+        />
+        <Box sx={{ flex: 1, maxWidth: "400px", mx: 3 }}>
+          <TextField
+            type="search"
+            placeholder="Buscar..."
+            fullWidth
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center", marginRight: "2rem" }}>
+          <Button
+            id="user-menu-button"
+            aria-controls={open ? "user-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+            endIcon={<KeyboardArrowDownIcon />}
+            startIcon={<AccountCircleIcon />}
+          >
+            user123
+          </Button>
+          <Menu
+            id="user-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "user-menu-button",
+            }}
+          >
+            <MenuItem onClick={handleClose}>Perfil</MenuItem>
+            <MenuItem onClick={handleClose}>Configuración</MenuItem>
+            <MenuItem onClick={handleClose}>Cerrar sesión</MenuItem>
+          </Menu>
+        </Box>
+      </Box>
+
       <AppBar position="static" sx={{ backgroundColor: "#1976d2", boxShadow: "none" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            {/* Logo Animado */}
             <Box
               sx={{
                 flexGrow: 1,
@@ -87,7 +156,6 @@ export function NavBar() {
               </motion.div>
             </Box>
 
-            {/* Enlaces de navegación */}
             <Box sx={{ display: "flex", justifyContent: "center", flexGrow: 1 }}>
               {pages.map((page, index) => (
                 <motion.div
@@ -105,7 +173,7 @@ export function NavBar() {
                       textTransform: "none",
                       fontSize: "1rem",
                       fontWeight: activeSection === page.name ? 700 : 400,
-                      marginX: "1rem",
+                      mx: 2,
                     }}
                   >
                     {page.name}
@@ -113,15 +181,11 @@ export function NavBar() {
                 </motion.div>
               ))}
             </Box>
-
           </Toolbar>
         </Container>
       </AppBar>
 
-      <PrestamosDialog
-        open={openPrestamosDialog}
-        onClose={handleClosePrestamosDialog}
-      />
+      <PrestamosDialog open={openPrestamosDialog} onClose={handleClosePrestamosDialog} />
     </motion.nav>
   );
 }
