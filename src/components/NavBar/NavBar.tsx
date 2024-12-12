@@ -5,37 +5,32 @@ import {
   Button,
   Container,
   IconButton,
-  Menu,
-  MenuItem,
   Toolbar,
   Tooltip,
-  Typography,
   Avatar,
+  Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import BookIcon from "@mui/icons-material/Book";
 import { useNavigate } from "react-router-dom";
 import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
+import { motion } from "framer-motion";
 
-const pages = ["Prestamos", "Libros", "Estudiantes"];
+const pages = [
+  { name: "Prestamos", color: "#ff69b4" }, // Rosado
+  { name: "Libros", color: "#ffd700" }, // Amarillo
+  { name: "Estudiantes", color: "#32cd32" }, // Verde
+];
 
 export function NavBar() {
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [openPrestamosDialog, setOpenPrestamosDialog] = useState(false);
   const navigate = useNavigate();
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>): void => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = (): void => {
-    setAnchorElNav(null);
-  };
-
   const handleSectionClick = (section: string): void => {
     if (section === "Prestamos") {
       setOpenPrestamosDialog(true);
-    }else if(section === "Libros"){
+    } else if (section === "Libros") {
       navigate("/libros");
     }
     setActiveSection((prevSection) =>
@@ -47,80 +42,78 @@ export function NavBar() {
     setOpenPrestamosDialog(false);
   };
 
+  const linkVariants = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    hover: { scale: 1.1 },
+  };
+
   return (
-    <>
-      <AppBar position="static" sx={{ backgroundColor: "#0271df" }}>
+    <motion.nav
+      initial={{ opacity: 0, y: -50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <AppBar position="static" sx={{ backgroundColor: "#1976d2", boxShadow: "none" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-              onClick={handleOpenNavMenu}
-            >
-              <MenuIcon />
-            </IconButton>
-
-            <Typography
-              variant="h6"
-              noWrap
+            {/* Logo Animado */}
+            <Box
               sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
+                flexGrow: 1,
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
               }}
             >
-              LOGO
-            </Typography>
-
-            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
+              <motion.div
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+                style={{ display: "flex", alignItems: "center" }}
               >
-                {pages.map((page) => (
-                  <MenuItem key={page} onClick={() => handleSectionClick(page)}>
-                    <Typography>{page}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
+                <BookIcon sx={{ fontSize: 40, color: "white" }} />
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontFamily: "monospace",
+                    fontWeight: 700,
+                    letterSpacing: ".3rem",
+                    color: "white",
+                    marginLeft: "0.5rem",
+                  }}
+                >
+                  Bienvenido!
+                </Typography>
+              </motion.div>
             </Box>
 
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {pages.map((page) => (
-                <Button
-                  key={page}
-                  sx={{
-                    my: 2,
-                    color: "white",
-                    display: "block",
-                    "&:hover": {
-                      backgroundColor: "#0271df",
-                    },
-                    backgroundColor:
-                      activeSection === page ? "#0271df" : "transparent",
-                  }}
-                  onClick={() => handleSectionClick(page)}
+            {/* Enlaces de navegación */}
+            <Box sx={{ display: "flex", justifyContent: "center", flexGrow: 1 }}>
+              {pages.map((page, index) => (
+                <motion.div
+                  key={page.name}
+                  variants={linkVariants}
+                  initial="initial"
+                  animate="animate"
+                  whileHover="hover"
+                  transition={{ delay: index * 0.1 }}
                 >
-                  {page}
-                </Button>
+                  <Button
+                    onClick={() => handleSectionClick(page.name)}
+                    sx={{
+                      color: page.color,
+                      textTransform: "none",
+                      fontSize: "1rem",
+                      fontWeight: activeSection === page.name ? 700 : 400,
+                      marginX: "1rem",
+                    }}
+                  >
+                    {page.name}
+                  </Button>
+                </motion.div>
               ))}
             </Box>
 
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton sx={{ p: 0 }}>
-                  <Avatar alt="User" />
-                </IconButton>
-              </Tooltip>
-            </Box>
           </Toolbar>
         </Container>
       </AppBar>
@@ -129,6 +122,6 @@ export function NavBar() {
         open={openPrestamosDialog}
         onClose={handleClosePrestamosDialog}
       />
-    </>
+    </motion.nav>
   );
 }
