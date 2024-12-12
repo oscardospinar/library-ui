@@ -115,18 +115,69 @@ export const saveBook = async (isbn: string, description: string, title: string,
     } 
 }
 
-export const updateCategory = async (category:Category) => {
+export const deleteBook = async (idBook:string) => {
     try{
-        var answer = axios.post<any>(API+'updateCategory',category);
+        var answer = axios.delete<BookResponse>(API+'deleteBook?id='+idBook);
+        return answer;
+    } catch (error) {
+        alert(error);
+    }
+}
+
+export const updateCategory = async (id: string, description:string) => {
+    try{
+        const requestBody = {
+            categoryId: id,
+            description: description
+        }
+        var answer = axios.patch<BookResponse>(APICategory+'updateCategory',requestBody);
         return answer;
         } catch (error) {
         alert(error);
  } 
 }
 
-export const updateSubcategory = async (subcategory:Subcategory) => {
+export const saveCategory = async (description:string) => {
     try{
-        var answer = axios.post<any>(API+'updateSubcategory',subcategory);
+        const requestBody = {
+            description: description
+        }
+        var answer = axios.post<BookResponse>(APICategory+'createCategory',requestBody);
+        return answer;
+        } catch (error) {
+        alert(error);
+ } 
+}
+
+
+export const deleteCategory = async (id:string) => {
+    try{
+        var answer = axios.delete<BookResponse>(APICategory+'deleteCategory?id='+id);
+        return answer;
+        } catch (error) {
+        alert(error);
+ } 
+}
+
+export const updateSubcategory = async (id: string, description:string) => {
+    try{
+        const requestBody = {
+            subcategoryId: id,
+            description: description
+        }
+        var answer = axios.patch<BookResponse>(APISubcategory+'updateSubcategory',requestBody);
+        return answer;
+        } catch (error) {
+        alert(error);
+    } 
+}
+
+export const saveSubcategory = async (description:string) => {
+    try{
+        const requestBody = {
+            description: description
+        }
+        var answer = axios.post<BookResponse>(APISubcategory+'createSubcategory',requestBody);
         return answer;
         } catch (error) {
         alert(error);
@@ -149,5 +200,32 @@ export const uploadBookImage = async (file: File, bookId: string) => {
       throw new Error("No se pudo subir la imagen");
     }
   };
+
+    export const getCategory = async (category:string) => {
+        try{
+            var answer = axios.get<BookResponse>(APICategory+'getCategory?id='+category);
+            return answer;
+            } catch (error) {
+            alert(error);
+    } 
+    }
+
+    export const getSubcategory = async (subcategory:string) => {
+        try{
+            var answer = axios.get<BookResponse>(APISubcategory+'getSubcategory?id='+subcategory);
+            return answer;
+            } catch (error) {
+            alert(error);
+    } 
+    }
+
+    export const deleteSubcategory = async (id:string) => {
+        try{
+            var answer = axios.delete<BookResponse>(APISubcategory+'deleteSubcategory?id='+id);
+            return answer;
+            } catch (error) {
+            alert(error);
+     } 
+    }
 
 

@@ -12,13 +12,11 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import Icon from '@mui/material/Icon';
-import { green } from '@mui/material/colors';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { BasicBook } from '../Services/BasicBook';
 import BookEditor from '../Book/bookEditor';
 import { BookObj } from "../Services/BookObj";
-import { getBook } from "../../Hook/BookService";
+import { getBook, deleteBook } from "../../Hook/BookService";
 
 export const emptyBook: BookObj = {
   bookId: "",
@@ -73,6 +71,15 @@ export default function BookAdministration(props: Props) {
     }
   };
 
+  const deleteABook = async (id: string ) => {
+    if(id){
+      const answer = await deleteBook(id);
+      if (answer) {
+        console.log(answer);
+      }
+    }
+  };
+
   const handleAdd = () => {
     setOpenEditor(true); 
   };
@@ -83,9 +90,14 @@ export default function BookAdministration(props: Props) {
     setTitle("Añadir libro");
     setEdit(false);
   };
-  
-  
 
+  const handleDelete = (bookId: string | undefined) => {
+    if(bookId){
+      deleteABook(bookId);
+    }
+  };
+  
+  
   return (
     <>
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -122,7 +134,7 @@ export default function BookAdministration(props: Props) {
                     <Button  startIcon={<EditIcon />} onClick={() => handleEdit(row.bookId)}>
                         Editar
                     </Button>
-                    <Button color="error" startIcon={<DeleteIcon />}>
+                    <Button color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(row.bookId)}>
                         Eliminar
                     </Button>
                 </ButtonGroup>

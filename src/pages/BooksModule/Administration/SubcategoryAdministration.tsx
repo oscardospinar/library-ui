@@ -11,12 +11,17 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Subcategory } from '../Services/Subcategory';
 import SubcategoryEditor from '../Book/subcategoryEditor';
-import { getBooksBySubcategories } from '../../Hook/BookService';
+import { getSubcategory, deleteSubcategory } from '../../Hook/BookService';
 import React, { useState } from 'react';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
+export const emptySubcategory: Subcategory = {
+  subcategoryId: "",
+  description: "",
+  active: false 
+};
 
 interface Props {
     initialSubcategories: Subcategory[];
@@ -26,33 +31,64 @@ export default function SubategoryAdministration(props: Props) {
 
   const {initialSubcategories} = props;
   const [openEditor, setOpenEditor] = useState(false);
-  const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory | null>(null);
-
+  const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>(emptySubcategory);
+  const [title, setTitle] = useState<string>("Añadir Subcategoría");
+  const [edit, setEdit] = useState<boolean>(false);
   
   const handleEdit = async (subcategoryId: string | undefined) => {
     if (subcategoryId) {
-      const subcategory = await getASubcategory(subcategoryId);
-      setSelectedSubcategory(subcategory); 
-      setOpenEditor(true);
+      getASubcategory(subcategoryId);  
     }
   };
 
   
-  const getASubcategory = async (id: string): Promise<Subcategory | null> => {
-    const answer = await getBooksBySubcategories(id);
+  const getASubcategory = async (id: string)  => {
+    const answer = await getSubcategory(id);
     if (answer && answer.data.body.length === 1) {
-      return answer.data.body[0]; 
+      setSelectedSubcategory(answer.data.body[0]); 
+      setTitle("Editar Subcategoría");
+      setEdit(true);
+      setOpenEditor(true); 
     }
-    return null;
+    
   };
 
   const handleCloseEditor = () => {
     setOpenEditor(false);
-    setSelectedSubcategory(null); 
+    setSelectedSubcategory(emptySubcategory);
+    setTitle("Añadir Subcategoría");
+    setEdit(false);
+  };
+
+  const handleAdd = () => {
+    setOpenEditor(true); 
+  };
+
+  const deleteASubcategory = async (id: string ) => {
+    if(id){
+      const answer = await deleteSubcategory(id);
+      if (answer) {
+        console.log(answer);
+      }
+    }
+  };
+
+  const handleDelete = (subcategoryId: string | undefined) => {
+    if(subcategoryId){
+      deleteASubcategory(subcategoryId);
+    }
   };
 
   return (
-    <div>
+    <>
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Typography variant="h4" gutterBottom>
+        Gestión de Subcategorías
+      </Typography>
+      <Button color="success" startIcon={<AddCircleIcon />} size="large" onClick={handleAdd}>
+      </Button>
+    </Box>
+    <Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -77,7 +113,7 @@ export default function SubategoryAdministration(props: Props) {
                     <Button startIcon={<EditIcon />} onClick={() => handleEdit(row.subcategoryId)}>
                       Editar
                     </Button>
-                    <Button color="error" startIcon={<DeleteIcon />}>
+                    <Button color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(row.subcategoryId)}>
                       Eliminar
                     </Button>
                   </ButtonGroup>
@@ -89,9 +125,10 @@ export default function SubategoryAdministration(props: Props) {
       </TableContainer>
       {openEditor && selectedSubcategory && (
         <Box mt={2}>
-          <SubcategoryEditor open={openEditor} subcategory={selectedSubcategory} onClose={handleCloseEditor} />
+          <SubcategoryEditor isEdit={edit} title= {title} open={openEditor} subcategory={selectedSubcategory} onClose={handleCloseEditor} />
         </Box>
       )}
-    </div>
+    </Box>
+    </>
   );
 }

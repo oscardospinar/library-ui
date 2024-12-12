@@ -1,22 +1,25 @@
 import { Box, TextField, Button, IconButton, Dialog, DialogTitle, DialogContent, Switch, FormControlLabel } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { Subcategory } from '../Services/Subcategory';
-import { updateSubcategory } from '../../Hook/BookService'; 
+import { updateSubcategory, saveSubcategory } from '../../Hook/BookService'; 
 import React, { useState, useEffect } from 'react';
 
-export default function CategoryEditor({
+export default function SubcategoryEditor({
   subcategory,
   open,
-  onClose
+  onClose,
+  title,
+  isEdit
 }: {
     subcategory: Subcategory;
   open: boolean;
   onClose: () => void;
+  title: string;
+  isEdit: boolean;
 }) {
 
   const [editedSubcategory, setEditedSubcategory] = useState<Subcategory>({
-    ...subcategory,
-    active: subcategory.active || false 
+    ...subcategory
   });
 
   const handleChange = (
@@ -28,37 +31,45 @@ export default function CategoryEditor({
     }
   };
 
-  const handleActiveChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedSubcategory((prev) => ({
-      ...prev,
-      active: event.target.checked
-    }));
-  };
-
   const handleSave = async () => {
     if (!editedSubcategory.description.trim()) {
-      alert('Please complete the description.');
+      alert('La descripción no puede ser vacía');
       return;
     }
-    const response = await updateSubcategory(editedSubcategory);
-    if (response) {
-      alert('Category updated successfully');
-      onClose();
-    } else {
-      alert('Failed to update Subcategory.');
+    if(isEdit){
+      updateASubcategory();
+    }else{
+      createASubcategory();
     }
+    
   };
-  const updateNewSubcategory = async()=>{ 
-    const answer = await updateSubcategory(editedSubcategory);
-    if(answer){ 
-        alert("hola")
+
+  const updateASubcategory = async () => {
+    if(editedSubcategory.subcategoryId){
+      const response = await updateSubcategory(editedSubcategory.subcategoryId,editedSubcategory.description);
+      if (response) {
+        alert('Subcategoría actualizada correctamente');
+        onClose();
+      } else {
+        alert('Error al actualizar subcategoría');
+      }
     }
   }
+
+  const createASubcategory = async () => {
+    const response = await saveSubcategory(editedSubcategory.description);
+    if (response) {
+      alert("Subcategoría creada correctamente");
+      onClose();
+    } else {
+      alert("Error al crear la subcategoría");
+    }
+}
 
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ m: 0, p: 2 }}> Editar Subcategoría
+      <DialogTitle sx={{ m: 0, p: 2 }}> {title}
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -90,24 +101,9 @@ export default function CategoryEditor({
             onChange={handleChange}
             fullWidth
           />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={editedSubcategory.active}
-                onChange={handleActiveChange}
-                name="active"
-                color="primary"
-              />
-            }
-            label="Activo"
-          />
-
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2 }}>
             <Button variant="contained" color="primary" onClick={handleSave}>
               Guardar
-            </Button>
-            <Button variant="outlined" onClick={onClose}>
-              Cancelar
             </Button>
           </Box>
         </Box>

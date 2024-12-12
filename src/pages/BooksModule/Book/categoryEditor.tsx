@@ -1,22 +1,25 @@
 import { Box, TextField, Button, IconButton, Dialog, DialogTitle, DialogContent, Switch, FormControlLabel } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { Category } from '../Services/category';
-import { updateCategory } from '../../Hook/BookService'; 
+import { updateCategory, saveCategory } from '../../Hook/BookService'; 
 import React, { useState, useEffect } from 'react';
 
 export default function CategoryEditor({
   category,
   open,
-  onClose
+  onClose,
+  title,
+  isEdit
 }: {
   category: Category;
   open: boolean;
   onClose: () => void;
+  title: string;
+  isEdit: boolean;
 }) {
 
   const [editedCategory, setEditedCategory] = useState<Category>({
-    ...category,
-    active: category.active || false 
+    ...category
   });
 
   const handleChange = (
@@ -28,37 +31,44 @@ export default function CategoryEditor({
     }
   };
 
-  const handleActiveChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedCategory((prev) => ({
-      ...prev,
-      active: event.target.checked
-    }));
-  };
 
   const handleSave = async () => {
     if (!editedCategory.description.trim()) {
-      alert('Please complete the description.');
+      alert('La descripción no puede ser vacía');
       return;
     }
-    const response = await updateCategory(editedCategory);
+    if(isEdit){
+      updateACategory();
+    }else{
+      createACategory();
+    }
+    
+  };
+
+  const updateACategory = async () => {
+    const response = await updateCategory(editedCategory.categoryId,editedCategory.description);
     if (response) {
-      alert('Category updated successfully');
+      alert('Categoría actualizada correctamente');
       onClose();
     } else {
-      alert('Failed to update category.');
+      alert('Error al actualizar categoria');
     }
-  };
-  const updateNewCategory = async()=>{ 
-    const answer = await updateCategory(editedCategory);
-    if(answer){ 
-        alert("hola")
-    }
+  }
+
+  const createACategory = async () => {
+      const response = await saveCategory(editedCategory.description);
+      if (response) {
+        alert("Categoría creada correctamente");
+        onClose();
+      } else {
+        alert("Error al crear la categoría");
+      }
   }
 
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ m: 0, p: 2 }}> Editar Categoría
+      <DialogTitle sx={{ m: 0, p: 2 }}> {title}
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -90,24 +100,9 @@ export default function CategoryEditor({
             onChange={handleChange}
             fullWidth
           />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={editedCategory.active}
-                onChange={handleActiveChange}
-                name="active"
-                color="primary"
-              />
-            }
-            label="Activo"
-          />
-
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2 }}>
             <Button variant="contained" color="primary" onClick={handleSave}>
               Guardar
-            </Button>
-            <Button variant="outlined" onClick={onClose}>
-              Cancelar
             </Button>
           </Box>
         </Box>

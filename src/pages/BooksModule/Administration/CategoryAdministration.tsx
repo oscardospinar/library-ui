@@ -14,8 +14,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Category } from '../Services/category';
 import CategoryEditor from '../Book/categoryEditor';
-import { getBookByCategory } from '../../Hook/BookService';
+import { getCategory, deleteCategory } from '../../Hook/BookService';
+import { Typography } from '@mui/material';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
+export const emptyCategory: Category = {
+  categoryId: "",
+  description: "",
+  active: false 
+};
 
 interface Props {
   initialCategories: Category[];
@@ -24,34 +31,70 @@ interface Props {
 export default function CategoryAdministration(props: Props) {
   const { initialCategories } = props;
   const [openEditor, setOpenEditor] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [title, setTitle] = useState<string>("Añadir Categoría");
+  const [edit, setEdit] = useState<boolean>(false);
+  const [selectedCategory, setSelectedCategory] = useState<Category>(emptyCategory);
 
 
   const handleEdit = async (categoryId: string | undefined) => {
     if (categoryId) {
-      const category = await getACategory(categoryId);
-      setSelectedCategory(category);  
-      setOpenEditor(true);  
+      getACategory(categoryId);  
     }
   };
 
   
-  const getACategory = async (id: string): Promise<Category | null> => {
-    const answer = await getBookByCategory(id);
-    if (answer && answer.data.body.length === 1) {
-      return answer.data.body[0]; 
+  const getACategory = async (id: string) => {
+    const answer = await getCategory(id);
+    if (answer) {
+      const category: Category | undefined = answer.data.body && answer.data.body.length === 1 
+          ? answer.data.body[0] 
+          : undefined;
+        if (category) {
+          console.log(category);
+          setSelectedCategory(category);
+          setTitle("Editar Categoría");
+          setEdit(true);
+          setOpenEditor(true); 
+        }
     }
-    return null;
   };
 
- 
   const handleCloseEditor = () => {
     setOpenEditor(false);
-    setSelectedCategory(null);
+    setSelectedCategory(emptyCategory);
+    setTitle("Añadir Categoría");
+    setEdit(false);
+  };
+
+  const handleAdd = () => {
+    setOpenEditor(true); 
+  };
+
+  const deleteACategory = async (id: string ) => {
+    if(id){
+      const answer = await deleteCategory(id);
+      if (answer) {
+        console.log(answer);
+      }
+    }
+  };
+
+  const handleDelete = (categoryId: string | undefined) => {
+    if(categoryId){
+      deleteACategory(categoryId);
+    }
   };
 
   return (
-    <div>
+    <>
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Typography variant="h4" gutterBottom>
+        Gestión de categorías
+      </Typography>
+      <Button color="success" startIcon={<AddCircleIcon />} size="large" onClick={handleAdd}>
+      </Button>
+    </Box>
+    <Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -76,7 +119,7 @@ export default function CategoryAdministration(props: Props) {
                     <Button startIcon={<EditIcon />} onClick={() => handleEdit(row.categoryId)}>
                       Editar
                     </Button>
-                    <Button color="error" startIcon={<DeleteIcon />}>
+                    <Button color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(row.categoryId)}>
                       Eliminar
                     </Button>
                   </ButtonGroup>
@@ -89,9 +132,10 @@ export default function CategoryAdministration(props: Props) {
 
       {openEditor && selectedCategory && (
         <Box mt={2}>
-          <CategoryEditor open={openEditor} category={selectedCategory} onClose={handleCloseEditor} />
+          <CategoryEditor isEdit={edit} title={title} open={openEditor} category={selectedCategory} onClose={handleCloseEditor} />
         </Box>
       )}
-    </div>
+    </Box>
+    </>
   );
 }
