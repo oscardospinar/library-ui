@@ -78,8 +78,12 @@ export function NavBar() {
         }}
       >
         <img
-          src="/mnt/data/image.png" //ruta de la iamgen del logo 
-          style={{ height: "40px", cursor: "pointer" }}
+          src="/colegioLogo.png"
+          style={{
+            height: "53px", 
+            width: "auto",  
+            
+          }}
         />
         <Box sx={{ flex: 1, maxWidth: "400px", mx: 3 }}>
           <TextField
