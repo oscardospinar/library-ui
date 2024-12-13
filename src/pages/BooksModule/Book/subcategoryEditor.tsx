@@ -1,7 +1,7 @@
 import { Box, TextField, Button, IconButton, Dialog, DialogTitle, DialogContent, Switch, FormControlLabel } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { Subcategory } from '../Services/Subcategory';
-import { updateSubcategory, saveSubcategory } from '../../Hook/BookService'; 
+import { updateSubcategory, saveSubcategory } from '../../Hook/SubcategoryService'; 
 import React, { useState, useEffect } from 'react';
 
 export default function SubcategoryEditor({

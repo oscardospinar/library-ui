@@ -1,7 +1,7 @@
 import { Box, TextField, Button, IconButton, Dialog, DialogTitle, DialogContent, Switch, FormControlLabel } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { Category } from '../Services/category';
-import { updateCategory, saveCategory } from '../../Hook/BookService'; 
+import { updateCategory, saveCategory } from '../../Hook/CategoryService'; 
 import React, { useState, useEffect } from 'react';
 
 export default function CategoryEditor({

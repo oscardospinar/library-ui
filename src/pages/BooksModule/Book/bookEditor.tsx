@@ -14,10 +14,11 @@ import {
 import { Close } from "@mui/icons-material";
 import { BookObj } from "../Services/BookObj";
 import { updateBook, uploadBookImage, saveBook } from "../../Hook/BookService";
-import { getCategories } from "../../Hook/BookService";
-import { getSubcategories } from "../../Hook/BookService";
+import { getCategories } from "../../Hook/CategoryService";
+import { getSubcategories } from "../../Hook/SubcategoryService";
 import { Category } from "../Services/category";
 import { Subcategory } from "../Services/Subcategory";
+import ClassIcon from '@mui/icons-material/Class';
 
 export default function BookEditor({
   book,
@@ -76,7 +77,7 @@ export default function BookEditor({
         try {
           const imagePath = await uploadBookImage(selectedImage, book.bookId);
           console.log(imagePath);
-          editedBook.imgPath = imagePath;
+          //editedBook.imgPath = imagePath;
         } catch (error) {
           alert("Error al cargar imagen");
           return;
@@ -139,7 +140,6 @@ export default function BookEditor({
   };
 
   useEffect(() => {
-    console.log(book);
     getAllCategories();
   }, []);
 
@@ -160,7 +160,7 @@ export default function BookEditor({
       setSubcategories(answer.data.body);
     }
   };
-
+  
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ m: 0, p: 2 }}>
@@ -275,7 +275,7 @@ export default function BookEditor({
             variant="outlined"
           >
             {categories
-            .filter((category) => !editedBook.categories.includes(category.description)) 
+            .filter((category) => !editedBook.categories.includes(category.description) && category.active) 
             .map((category, index) => (
               <MenuItem key={index} value={category.categoryId}>
                 {category.description}
@@ -300,7 +300,7 @@ export default function BookEditor({
             variant="outlined"
           >
             {subcategories
-            .filter((subcategory) => !editedBook.subcategories.includes(subcategory.description)) 
+            .filter((subcategory) => !editedBook.subcategories.includes(subcategory.description) && subcategory.active) 
             .map((subcategory, index) => (
               <MenuItem key={index} value={subcategory.subcategoryId}>
                 {subcategory.description}
@@ -341,10 +341,10 @@ export default function BookEditor({
             )}
           </Box>
 
-          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, mt: 2 }}>
-            <Button variant="contained" color="primary" onClick={handleSave}>
+          <Box sx={{ display: "flex", justifyContent:"flex-end", gap: 1, mt: 2 }}>
+          <Button variant="contained" color="primary" onClick={handleSave}>
               Guardar
-            </Button>
+          </Button>
           </Box>
         </Box>
       </DialogContent>

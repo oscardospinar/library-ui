@@ -3,6 +3,7 @@ export type Copy = {
     book: string;
     state: string;
     barCode?: string;
+    ubication: string;
     disponibility: string;
     active: boolean;
 

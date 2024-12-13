@@ -4,7 +4,7 @@ import { Home } from "./pages/Home";
 import { createBrowserRouter } from "react-router-dom";
 import { LoadBooks } from "./pages/BooksModule/LoadBooks";
 import Notfound from "./components/Loans/NotFound/NotFound";
-
+import { BookProvider } from "../src/components/BookContext/useBooks";
 
 export const routes = [
   {
@@ -16,7 +16,7 @@ export const routes = [
       },
       {
         path: "/libros",
-        element: <LoadBooks />,
+        element: <BookProvider><LoadBooks /></BookProvider>,
       },
       {
         path: "*",

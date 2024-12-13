@@ -13,9 +13,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Subcategory } from '../Services/Subcategory';
 import SubcategoryEditor from '../Book/subcategoryEditor';
-import { getSubcategory, deleteSubcategory } from '../../Hook/BookService';
-import React, { useState } from 'react';
+import { getSubcategories, getSubcategory, deleteSubcategory } from '../../Hook/SubcategoryService';
+import React, { useState, useEffect } from 'react';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { PaginationTable } from '../../../components/BookPagination/PaginationTable';
 
 export const emptySubcategory: Subcategory = {
   subcategoryId: "",
@@ -23,17 +24,13 @@ export const emptySubcategory: Subcategory = {
   active: false 
 };
 
-interface Props {
-    initialSubcategories: Subcategory[];
-}
 
-export default function SubategoryAdministration(props: Props) {
-
-  const {initialSubcategories} = props;
+export default function SubategoryAdministration() {
   const [openEditor, setOpenEditor] = useState(false);
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>(emptySubcategory);
   const [title, setTitle] = useState<string>("Añadir Subcategoría");
   const [edit, setEdit] = useState<boolean>(false);
+  const [initialSubcategories,setSubcategories] = useState<Subcategory[] >([]);
   
   const handleEdit = async (subcategoryId: string | undefined) => {
     if (subcategoryId) {
@@ -41,6 +38,18 @@ export default function SubategoryAdministration(props: Props) {
     }
   };
 
+  useEffect(() => {
+        getAllSubcategories();
+      }, []); 
+
+  const getAllSubcategories = async () => {
+    const answer = await getSubcategories();
+    if (answer) {
+      if(answer.data){
+          setSubcategories(answer.data.body);
+        }
+      }
+  };
   
   const getASubcategory = async (id: string)  => {
     const answer = await getSubcategory(id);
@@ -81,54 +90,58 @@ export default function SubategoryAdministration(props: Props) {
 
   return (
     <>
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <Typography variant="h4" gutterBottom>
-        Gestión de Subcategorías
-      </Typography>
-      <Button color="success" startIcon={<AddCircleIcon />} size="large" onClick={handleAdd}>
-      </Button>
-    </Box>
-    <Box>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Id</TableCell>
-              <TableCell>Nombre</TableCell>
-              <TableCell align="right">Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {initialSubcategories.map((row) => (
-              <TableRow
-                key={row.subcategoryId}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.subcategoryId}
-                </TableCell>
-                <TableCell>{row.description}</TableCell>
-                <TableCell align="right">
-                  <ButtonGroup variant="outlined" aria-label="crud button group">
-                    <Button startIcon={<EditIcon />} onClick={() => handleEdit(row.subcategoryId)}>
-                      Editar
-                    </Button>
-                    <Button color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(row.subcategoryId)}>
-                      Eliminar
-                    </Button>
-                  </ButtonGroup>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {openEditor && selectedSubcategory && (
-        <Box mt={2}>
-          <SubcategoryEditor isEdit={edit} title= {title} open={openEditor} subcategory={selectedSubcategory} onClose={handleCloseEditor} />
+    <PaginationTable books={initialSubcategories}>
+    {(paginatedBooks) => (
+      <Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h4" gutterBottom>
+            Gestión de Subcategorías
+          </Typography>
+          <Button color="success" startIcon={<AddCircleIcon />} size="large" onClick={handleAdd}>
+          </Button>
         </Box>
-      )}
-    </Box>
+        <Box>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Id</TableCell>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell align="right">Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedBooks.map((row) => (
+                  <TableRow
+                    key={row.subcategoryId}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.subcategoryId}
+                    </TableCell>
+                    <TableCell>{row.description}</TableCell>
+                    <TableCell align="right">
+                      <ButtonGroup variant="outlined" aria-label="crud button group">
+                        <Button startIcon={<EditIcon />} onClick={() => handleEdit(row.subcategoryId)}>
+                          Editar
+                        </Button>
+                        <Button color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(row.subcategoryId)}>
+                          Eliminar
+                        </Button>
+                      </ButtonGroup>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {openEditor && selectedSubcategory && (
+            <Box mt={2}>
+              <SubcategoryEditor isEdit={edit} title= {title} open={openEditor} subcategory={selectedSubcategory} onClose={handleCloseEditor} />
+            </Box>
+          )}
+        </Box> </Box>)}
+    </PaginationTable>
     </>
   );
 }
