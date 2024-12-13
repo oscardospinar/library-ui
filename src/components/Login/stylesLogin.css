@@ -1,0 +1,83 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('https://kusimanta.com/wp-content/uploads/libreria-4-e1710803427558.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh; /* Altura completa de la ventana */
+    display: block; /* Asegura que el contenido no esté centrado por flex */
+    overflow: hidden;
+}
+
+
+.container {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    text-align: center;
+    flex-direction: column; /* Asegura que los elementos estén en columna */
+}
+
+.thumbnail img {
+    display: block;
+    margin: 0 auto 20px;
+    width: 100px;
+    border-radius: 50%;
+}
+
+.form {
+    background: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 80%; /* Puedes ajustar este tamaño */
+    max-width: 360px; /* Limita el ancho máximo */
+}
+
+input[type='text'],
+input[type='password'] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: #aaa;
+}
+
+.message {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.message a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+    object-fit: cover;
+}
