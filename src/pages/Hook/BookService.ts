@@ -67,10 +67,11 @@ export const saveBook = async (isbn: string, description: string, title: string,
                 categoryIds: categoryIds,
                 subcategoryIds: subcategoryIds
             }
-            const answer: AxiosResponse<BookResponse> = await axios.post<BookResponse>(API+'saveBook',requestBody); 
-            if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+            const answer = await axios.post<BookResponse>(API+'saveBook',requestBody); 
+            if(answer.status !== 200) Error(`Error: ${answer.data.message}`);
             return answer;
             } catch (error) {
+                console.log(error);
                 throw error;
     } 
 }

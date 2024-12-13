@@ -22,7 +22,7 @@ export function PaginationTable({ books, children }: Props): ReactElement {
     
     const paginatedBooks = useMemo(() => {
       const from = (page - 1) * booksPerPage;
-      const to = page * booksPerPage;
+      const to = (page-1) * booksPerPage +booksPerPage;
       return books.slice(from, to);
     }, [books, page]);
       
