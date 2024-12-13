@@ -67,7 +67,7 @@ function Login() {
     return (
         <div className="container">
             <div className="info">
-                <h1>BiblioSoft</h1>
+                <h1 style={{ color: '#ffffff', fontSize: '2rem', textAlign: 'center' }}>BiblioSoft</h1>
             </div>
             <div className="form">
                 <div className="thumbnail">

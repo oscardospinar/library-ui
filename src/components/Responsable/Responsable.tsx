@@ -97,7 +97,7 @@ function EmailValidation() {
     return (
         <div className="container">
             <div className="info">
-                <h1>Validador de Correo</h1>
+                <h1 style={{ color: '#ffffff', fontSize: '2rem', textAlign: 'center' }}>Validador de Correo</h1>
             </div>
             <div className="form">
                 <form onSubmit={handleSubmit}>

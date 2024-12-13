@@ -12,10 +12,8 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
 
 const pages = ['Prestamos', 'Libros', 'Estudiantes', 'Registro'];
 const settings = ['Logout'];

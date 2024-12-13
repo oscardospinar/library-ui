@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import CampoTexto from '../../components/CampoTexto/CampoTexto';
 import ListaDesplegable from '../../components/ListaDesplegable/ListaDesplegable';
 import ReCAPTCHA from 'react-google-recaptcha';
-import Boton from '../../components/Boton/Boton';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './style.css';
 import Cookies from 'js-cookie';

@@ -7,10 +7,8 @@ import { NavBar } from './components/NavBar/NavBar';
 function App(): ReactElement {
   return (
     <Box>
-       <Outlet /> {/* Aquí se cargarán los componentes según la ruta */}
-      <Box sx={{ mt: '64px' }}>
-       <NavBar />
        <Outlet />
+      <Box sx={{ mt: '64px' }}>
       </Box>
     </Box>
   );
