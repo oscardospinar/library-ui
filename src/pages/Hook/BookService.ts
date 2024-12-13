@@ -1,73 +1,115 @@
-import axios from "axios";
-import { BookObj } from "../BooksModule/Services/BookObj";
-import { Category } from "../BooksModule/Services/category";
+import axios, { AxiosResponse } from "axios";
 import { BookResponse } from "../BooksModule/Services/BookResponse"
+import { handleError } from "../BooksModule/Error/ErrorHandler";
 
+const API = "http://localhost:80/BookModule/";
 
-const API = 'https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/BookModule/';
-const APICategory = 'https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/CategoryModule/';
-const APISubcategory = 'https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/SubcategoryModule/';
 
 export const getBook = async (idBook:string) => {
     try{
-        var answer = axios.get<BookResponse>(API+'getBook?id='+idBook);
+        const answer: AxiosResponse<BookResponse> = await axios.get<BookResponse>(`${API}getBook?id=${idBook}`);
+        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
         return answer;
     } catch (error) {
-        alert(error);
+        throw error;
     }
 }
 
 export const getAllBooks= async () => {
     try{
-        var answer = axios.get<BookResponse>(API+'getAllBooks');        
+        const answer: AxiosResponse<BookResponse> = await axios.get<BookResponse>(API+'getAllBooks'); 
+        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);      
         return answer;
     } catch (error) {
-        alert(error);
+        throw error;
     }
 }
 
 
-export const getCategories = async () => {
+export const updateBook = async (bookId: string | undefined, isbn: string, description: string, title: string, author: string, collection:string, editorial: string, edition: string,
+    recommendedAges: string, language: string, categoryIds?: string[], subcategoryIds?: string[]) => {
     try{
-        var answer = axios.get<BookResponse>(APICategory+'getCategories');
-        return answer;
-    } catch (error) {
-        console.error("Error al obtener las categorías:", error);
-    }
-}
-
-export const getBookByCategory = async (idCategory: string) => {
-    try{
-        var answer = axios.get<BookResponse>(APICategory+'getBooks?idCategory='+idCategory);        
-        return answer;
-    } catch (error) {
-        alert(error);
-    }
-}
-
-export const getSubcategories = async () => {
-    try{
-        var answer = axios.get<BookResponse>(APISubcategory+'getSubcategories');
-        return answer;
-    } catch (error) {
-        alert(error);
-    }
-}
-
-export const getBooksBySubcategories = async (idSubcategory: string) => {
-    try{
-        var answer = axios.get<BookResponse>(APISubcategory+'getBooks?idSubcategory='+idSubcategory);        
-        return answer;
-    } catch (error) {
-        alert(error);
-    }
-}
-
-export const updateBook = async (book:BookObj) => {
-    try{
-        var answer = axios.post<any>(API+'updateBook',book);
+        const requestBody = {
+            bookId: bookId,
+            isbn: isbn,
+            description: description,
+            title: title,
+            author: author,
+            collection: collection,
+            editorial: editorial,
+            edition: edition,
+            recommendedAges: recommendedAges,
+            language: language,
+            categoryIds: categoryIds,
+            subcategoryIds: subcategoryIds
+        }
+        const answer: AxiosResponse<BookResponse> = await axios.patch<BookResponse>(API+'updateBook',requestBody); 
+        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
         return answer;
         } catch (error) {
-        alert(error);
- } 
+            throw error;
+    } 
 }
+
+export const saveBook = async (isbn: string, description: string, title: string, author: string, collection:string, editorial: string, edition: string,
+    recommendedAges: string, language: string, categoryIds?: string[], subcategoryIds?: string[]) => {
+        try{
+            const requestBody = {
+                isbn: isbn,
+                description: description,
+                title: title,
+                author: author,
+                collection: collection,
+                editorial: editorial,
+                edition: edition,
+                recommendedAges: recommendedAges,
+                language: language,
+                categoryIds: categoryIds,
+                subcategoryIds: subcategoryIds
+            }
+            const answer: AxiosResponse<BookResponse> = await axios.post<BookResponse>(API+'saveBook',requestBody); 
+            if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+            return answer;
+            } catch (error) {
+                throw error;
+    } 
+}
+
+export const deleteBook = async (idBook:string) => {
+    try{
+        const answer: AxiosResponse<BookResponse> = await axios.delete<BookResponse>(API+'deleteBook?id='+idBook); 
+        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+        return answer;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+export const uploadBookImage = async (file: File, bookId: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file); 
+      const answer: AxiosResponse<BookResponse> = await axios.post(API+'uploadImg?bookId='+bookId,formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }); 
+        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+      return answer.data; 
+    } catch (error) {
+        throw error;
+    }
+  };
+
+export const getCopiesByBook = async (id:string) => {
+    try{
+        const answer: AxiosResponse<BookResponse> = await axios.get<BookResponse>(API+'getCopies?bookId='+id); 
+        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+        return answer;
+    } catch (error) {
+        throw error;
+    } 
+}
+
+

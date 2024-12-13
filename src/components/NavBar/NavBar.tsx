@@ -1,170 +1,256 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import {
-    AppBar,
-    Avatar,
-    Box,
-    Button,
-    Container,
-    IconButton,
-    Menu,
-    MenuItem,
-    Toolbar,
-    Tooltip,
-    Typography
+  AppBar,
+  Box,
+  Button,
+  Container,
+  Toolbar,
+  Typography,
+  TextField,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  IconButton,
+  Tooltip,
+  Avatar
 } from "@mui/material";
-import AdbIcon from '@mui/icons-material/Adb';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import SearchIcon from "@mui/icons-material/Search";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import BookIcon from "@mui/icons-material/Book";
 import { useNavigate } from "react-router-dom";
+import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
+import { motion } from "framer-motion";
 
-const pages = ['Prestamos', 'Libros', 'Estudiantes', 'Registro'];
+const pages = [
+  { name: "Prestamos", color: "#ff69b4" },
+  { name: "Libros", color: "#ffd700" },
+  { name: "Estudiantes", color: "#32cd32" },
+  { name: "Registro", color: "#1976d2" }
+];
 const settings = ['Logout'];
 
 export function NavBar(): ReactElement {
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [openPrestamosDialog, setOpenPrestamosDialog] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const navigate = useNavigate();
 
-    const navigate = useNavigate(); // Hook para navegar entre rutas
+  const handleSectionClick = (section: string): void => {
+    if (section === "Prestamos") {
+      setOpenPrestamosDialog(true);
+    } else if (section === "Libros") {
+      navigate("/libros");
+    } else if (section === "Registro") {
+      navigate("/Responsable");
+    }
+    setActiveSection((prevSection) => (section === prevSection ? null : section));
+  };
 
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElNav(event.currentTarget);
-    };
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
-    };
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
 
-    // Maneja la navegación según la página seleccionada
-    const handleNavigate = (page: string) => {
-        switch (page) {
-            case 'Registro':
-                navigate('/Responsable'); // Cambia a la ruta '/registro'
-                break;
-            // Puedes manejar otras páginas aquí si es necesario
-            default:
-                console.log(`Navegando a: ${page}`);
-        }
-        handleCloseNavMenu(); // Cierra el menú
-    };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
-    const handleLogout = (settings: string) => {
-        if (settings === 'Logout') {
-            // Eliminar el token de las cookies
-            document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-            // Navegar a la página de inicio de sesión
-            navigate('/');
-        }
-    };
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-    return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                <img 
-                    src="/logoColegio.png" 
-                    alt="Logo del Colegio" 
-                    style={{ height: '50px', marginRight: '10px' }} 
-                />
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-                    {/* Menú de navegación - mobile */}
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{ display: { xs: 'block', md: 'none' } }}
-                        >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={() => handleNavigate(page)}>
-                                    <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href="#app-bar-with-responsive-menu"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'flex', md: 'none' },
-                            flexGrow: 1,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        LOGO
-                    </Typography>
+  const handleLogout = (setting: string) => {
+    if (setting === 'Logout') {
+      // Eliminar el token de las cookies
+      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+      // Navegar a la página de inicio de sesión
+      navigate('/');
+    }
+  };
 
-                    {/* Barra de navegación alineada a la izquierda (menú clásico) */}
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={() => handleNavigate(page)}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
-                    </Box>
+  const linkVariants = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    hover: { scale: 1.1 },
+  };
 
-                    {/* Menú de usuario */}
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={() => { 
-                                    handleLogout(setting); 
-                                    handleCloseUserMenu(); 
-                                }}>
-                                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                                </MenuItem>
-                                
-                            ))}
-                        </Menu>
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
-    );
+  return (
+    <motion.nav
+      initial={{ opacity: 0, y: -50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          height: "50px",
+          backgroundColor: "white",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          px: 2,
+        }}
+      >
+        <img
+          src="/colegioLogo.png"
+          style={{
+            height: "53px", 
+            width: "auto",  
+          }}
+        />
+        <Box sx={{ flex: 1, maxWidth: "400px", mx: 3 }}>
+          <TextField
+            type="search"
+            placeholder="Buscar..."
+            fullWidth
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center", marginRight: "2rem" }}>
+          <Button
+            id="user-menu-button"
+            aria-controls={open ? "user-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+            endIcon={<KeyboardArrowDownIcon />}
+            startIcon={<AccountCircleIcon />}
+          >
+            user123
+          </Button>
+          <Menu
+            id="user-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "user-menu-button",
+            }}
+          >
+            <MenuItem onClick={handleClose}>Perfil</MenuItem>
+            <MenuItem onClick={handleClose}>Configuración</MenuItem>
+            <MenuItem onClick={handleClose}>Cerrar sesión</MenuItem>
+          </Menu>
+        </Box>
+      </Box>
+
+      <AppBar position="static" sx={{ backgroundColor: "#1976d2", boxShadow: "none" }}>
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              <motion.div
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <BookIcon sx={{ fontSize: 40, color: "white" }} />
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontFamily: "monospace",
+                    fontWeight: 700,
+                    letterSpacing: ".3rem",
+                    color: "white",
+                    marginLeft: "0.5rem",
+                  }}
+                >
+                  Bienvenido!
+                </Typography>
+              </motion.div>
+            </Box>
+
+            <Box sx={{ display: "flex", justifyContent: "center", flexGrow: 1 }}>
+              {pages.map((page, index) => (
+                <motion.div
+                  key={page.name}
+                  variants={linkVariants}
+                  initial="initial"
+                  animate="animate"
+                  whileHover="hover"
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Button
+                    onClick={() => handleSectionClick(page.name)}
+                    sx={{
+                      color: page.color,
+                      textTransform: "none",
+                      fontSize: "1rem",
+                      fontWeight: activeSection === page.name ? 700 : 400,
+                      mx: 2,
+                    }}
+                  >
+                    {page.name}
+                  </Button>
+                </motion.div>
+              ))}
+            </Box>
+
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={() => { 
+                    handleLogout(setting); 
+                    handleCloseUserMenu(); 
+                  }}>
+                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      <PrestamosDialog open={openPrestamosDialog} onClose={() => setOpenPrestamosDialog(false)} />
+    </motion.nav>
+  );
 }

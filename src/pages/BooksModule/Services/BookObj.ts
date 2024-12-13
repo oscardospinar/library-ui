@@ -11,7 +11,7 @@ export type BookObj = {
     edition: string;
     recommendedAges: string;
     language: string;
-    isbn: number;
+    isbn: string;
     imgPath: string;
     categories: string[];
     subcategories: string[];
