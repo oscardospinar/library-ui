@@ -1,15 +1,15 @@
-import React, { ReactElement } from "react";
-import "./App.css";
+import React, { ReactElement } from 'react';
+import './App.css';
 import { Box } from "@mui/material";
-import { NavBar } from "./components/NavBar/NavBar";
 import { Outlet } from "react-router-dom";
-import { NextUIProvider } from "@nextui-org/react";
+import { NavBar } from './components/NavBar/NavBar';
 
 function App(): ReactElement {
   return (
     <Box>
-      <NavBar />
-      <Outlet />
+       <Outlet />
+      <Box sx={{ mt: '64px' }}>
+      </Box>
     </Box>
   );
 }
