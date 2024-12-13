@@ -6,73 +6,74 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import React, { useState, useEffect } from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { Category } from '../Services/category';
-import CategoryEditor from '../Book/categoryEditor';
-import { getCategories, getCategory, deleteCategory } from '../../Hook/CategoryService';
-import { Typography } from '@mui/material';
+import CopyEditor from '../Book/copyEditor';
+import { getAllCopies, getCopy } from '../../Hook/CopyService';
+import { getCopiesByBook } from '../../Hook/BookService';
+import React, { useState, useEffect } from 'react';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { Copy } from '../Services/Copy';
+import { deleteCopy } from "../../Hook/CopyService";
 import { PaginationTable } from '../../../components/BookPagination/PaginationTable';
 
-export const emptyCategory: Category = {
-  categoryId: "",
-  description: "",
-  active: false 
+export const emptyCopy: Copy = {
+    id: "",
+    book: "",
+    state:"",
+    barCode: "",
+    ubication: "",
+    disponibility: "",
+    active: false 
 };
 
-
-export default function CategoryAdministration() {
+interface Props {
+  bookId: string;
+}
+export default function CopyAdministration(props: Props) {
+  const {bookId} = props;
   const [openEditor, setOpenEditor] = useState(false);
-  const [title, setTitle] = useState<string>("Añadir Categoría");
+  const [selectedCopy, setSelectedCopy] = useState<Copy>(emptyCopy);
+  const [title, setTitle] = useState<string>("Añadir Copia");
   const [edit, setEdit] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category>(emptyCategory);
-  const [initialCategories,setCategories] = useState<Category[] >([]);
-
-  useEffect(() => {
-      getAllCategories();
-    }, []); 
-
-    const getAllCategories = async () => {
-        const answer = await getCategories();
-        if (answer) {
-          if(answer.data){
-            setCategories(answer.data.body);
-          }
-        }
-    };
-
-  const handleEdit = async (categoryId: string | undefined) => {
-    if (categoryId) {
-      getACategory(categoryId);  
+  const [initialCopies,setCopies] = useState<Copy[]>([]);
+  
+  const handleEdit = async (copyId: string | undefined) => {
+    if (copyId) {
+        getACopy(copyId);  
     }
   };
 
-  
-  const getACategory = async (id: string) => {
-    const answer = await getCategory(id);
+  useEffect(() => {
+        getCopies();
+    }, []); 
+
+  const getCopies = async () => {
+    const answer = await getCopiesByBook(bookId);
     if (answer) {
-      const category: Category | undefined = answer.data.body && answer.data.body.length === 1 
-          ? answer.data.body[0] 
-          : undefined;
-        if (category) {
-          console.log(category);
-          setSelectedCategory(category);
-          setTitle("Editar Categoría");
-          setEdit(true);
-          setOpenEditor(true); 
+      if(answer.data){
+        setCopies(answer.data.body);
         }
+      }
+  };
+  
+  const getACopy = async (id: string)  => {
+    const answer = await getCopy(id);
+    if (answer && answer.data.body.length === 1) {
+        setSelectedCopy(answer.data.body[0]); 
+        setTitle("Editar Copia");
+        setEdit(true);
+        setOpenEditor(true); 
     }
   };
 
   const handleCloseEditor = () => {
     setOpenEditor(false);
-    setSelectedCategory(emptyCategory);
-    setTitle("Añadir Categoría");
+    setSelectedCopy(emptyCopy);
+    setTitle("Añadir Copia");
     setEdit(false);
   };
 
@@ -80,29 +81,29 @@ export default function CategoryAdministration() {
     setOpenEditor(true); 
   };
 
-  const deleteACategory = async (id: string ) => {
+  const deleteACopy= async (id: string ) => {
     if(id){
-      const answer = await deleteCategory(id);
+      const answer = await deleteCopy(id);
       if (answer) {
         console.log(answer);
       }
     }
   };
 
-  const handleDelete = (categoryId: string | undefined) => {
-    if(categoryId){
-      deleteACategory(categoryId);
+  const handleDelete = (copyId: string | undefined) => {
+    if(copyId){
+        deleteACopy(copyId);
     }
   };
 
   return (
     <>
-    <PaginationTable books={initialCategories}>
+    <PaginationTable books={initialCopies}>
     {(paginatedBooks) => (
       <Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h4" gutterBottom>
-            Gestión de categorías
+            Gestión de Copias 
           </Typography>
           <Button color="success" startIcon={<AddCircleIcon />} size="large" onClick={handleAdd}>
           </Button>
@@ -113,26 +114,30 @@ export default function CategoryAdministration() {
               <TableHead>
                 <TableRow>
                   <TableCell>Id</TableCell>
-                  <TableCell>Nombre</TableCell>
+                  <TableCell>Estado</TableCell>
+                  <TableCell>Ubicacion</TableCell>
+                  <TableCell>Disponibilidad</TableCell>
                   <TableCell align="right">Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {paginatedBooks.map((row) => (
                   <TableRow
-                    key={row.categoryId}
+                    key={row.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      {row.categoryId}
+                      {row.id}
                     </TableCell>
-                    <TableCell>{row.description}</TableCell>
+                    <TableCell>{row.state}</TableCell>
+                    <TableCell>{row.ubication}</TableCell>
+                    <TableCell>{row.disponibility}</TableCell>
                     <TableCell align="right">
                       <ButtonGroup variant="outlined" aria-label="crud button group">
-                        <Button startIcon={<EditIcon />} onClick={() => handleEdit(row.categoryId)}>
+                        <Button startIcon={<EditIcon />} onClick={() => handleEdit(row.id)}>
                           Editar
                         </Button>
-                        <Button color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(row.categoryId)}>
+                        <Button color="error" startIcon={<DeleteIcon />} onClick={() => handleDelete(row.id)}>
                           Eliminar
                         </Button>
                       </ButtonGroup>
@@ -142,13 +147,13 @@ export default function CategoryAdministration() {
               </TableBody>
             </Table>
           </TableContainer>
-
-          {openEditor && selectedCategory && (
+          {openEditor && selectedCopy && (
             <Box mt={2}>
-              <CategoryEditor isEdit={edit} title={title} open={openEditor} category={selectedCategory} onClose={handleCloseEditor} />
+              <CopyEditor idBook={bookId} isEdit={edit} title= {title} open={openEditor} copy={selectedCopy} onClose={handleCloseEditor} />
             </Box>
           )}
-        </Box></Box> )}
+        </Box>
+        </Box>)}
     </PaginationTable>
     </>
   );

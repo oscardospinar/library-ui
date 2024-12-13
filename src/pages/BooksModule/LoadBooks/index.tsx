@@ -16,10 +16,12 @@ import { BookObj } from "../Services/BookObj";
 import { Copy } from "../Services/Copy";
 import Book from "../Book";
 import AdministrationPanel from "../Administration/AdministrationPanel";
-
+import { BookProvider } from "../../../components/BookContext/useBooks";
+import { useBooks } from '../../../components/BookContext/useBooks';
 
 
 export function LoadBooks(): ReactElement  {
+    const { setShowErrorMessageB } = useBooks();
     const [filter, setFilter] = React.useState('Categorias');
     
   const handleChange = (event: SelectChangeEvent) => {
@@ -32,19 +34,24 @@ export function LoadBooks(): ReactElement  {
 
   const getABook = async (id: string | undefined) => {
     if(id){
-      const answer = await getBook(id);
-      if (answer) {
-        const book: BookObj | undefined = answer.data.body && answer.data.body.length === 1 
-          ? answer.data.body[0] 
-          : undefined;
-        if (book) {
-          setSelectedBook(book);
-          const availableCopies = book.copies.filter((copy: Copy) => copy.disponibility === "AVAILABLE");
-          console.log(availableCopies);
-          setNumberCopies(availableCopies.length);
-          setDialogOpen(true);
+      try{
+        const answer = await getBook(id);
+        if (answer) {
+          const book: BookObj | undefined = answer.data.body && answer.data.body.length === 1 
+            ? answer.data.body[0] 
+            : undefined;
+          if (book) {
+            setSelectedBook(book);
+            const availableCopies = book.copies.filter((copy: Copy) => copy.disponibility === "AVAILABLE");
+            console.log(availableCopies);
+            setNumberCopies(availableCopies.length);
+            setDialogOpen(true);
+          }
         }
+      }catch(error){
+        setShowErrorMessageB("Error al cargar el libro");
       }
+      
     }
   };
 

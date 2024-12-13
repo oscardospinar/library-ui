@@ -33,7 +33,7 @@ function EmailValidation() {
                             'Content-Type': 'application/json',
                             Authorization: `Bearer ${token}`, // Agrega el token al encabezado.
                         },
-                        body: JSON.stringify({ responsableEconomico: email }),
+                        body: JSON.stringify({ correoElectronico: email }),
                     }
                 );
 
@@ -44,7 +44,7 @@ function EmailValidation() {
 
                 const responsableExiste = await response.json();
 
-                if (responsableExiste) {
+                if (!responsableExiste) {
                     setMensaje('El correo es válido y el responsable existe.');
                     navigate('/Registro', { state: { email } }); // Enviar el correo a la ruta `/Registro`.
                 } else {
@@ -97,7 +97,7 @@ function EmailValidation() {
     return (
         <div className="container">
             <div className="info">
-                <h1>Validador de Correo</h1>
+                <h1 style={{ color: '#ffffff', fontSize: '2rem', textAlign: 'center' }}>Validador de Correo</h1>
             </div>
             <div className="form">
                 <form onSubmit={handleSubmit}>

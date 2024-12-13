@@ -10,7 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import AdministrationOptions from './AdministrationOptions';
-import { ArrowBack } from '@mui/icons-material';
+
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -21,11 +21,12 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+
 export default function AdministrationPanel() : ReactElement {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = useState('Main');
 
-
+  
   const handleClick = (value: string) => {
     setValue(value); 
   };
@@ -41,7 +42,6 @@ export default function AdministrationPanel() : ReactElement {
   const toggleMain = () => {
     setValue('Main');
   };
-
 
   return (
     <React.Fragment>
