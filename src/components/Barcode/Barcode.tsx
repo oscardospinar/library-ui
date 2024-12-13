@@ -1,27 +1,16 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import Button from '@mui/material/Button';
+import OpenBarcode from "./OpenBarcode";
 
 interface Props {
-  src: string; 
   bookId: string;
+  handleClickOpen: () => void;
 }
 
-export default function Barcode({ src, bookId }: Props): ReactElement {
-  const [base64Image, setBase64Image] = useState("");
-
-  useEffect(() => {
-    
-    if (src) {
-      if (!src.startsWith("data:image/")) {
-        setBase64Image(`data:image/png;base64,${src}`);
-      } else {
-        setBase64Image(src);
-      }
-    } else {
-      console.error("El atributo 'src' está vacío o no válido.");
-    }
-  }, [src]);
-
+export default function Barcode({ bookId, handleClickOpen }: Props): ReactElement {
+  
   return (
     <Box
       sx={{
@@ -55,34 +44,10 @@ export default function Barcode({ src, bookId }: Props): ReactElement {
         >
           {bookId}
         </Typography>
+        <Button variant="contained" startIcon={<SaveAltIcon />}  onClick={handleClickOpen}>
+            Ver código de barras
+        </Button>
       </Box>
-
-      {base64Image ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <Typography variant="subtitle1" sx={{ fontWeight: "bold", marginBottom: 1 }}>
-          Código de barras generado:
-          </Typography>
-          <img
-            src={base64Image}
-            style={{
-              maxWidth: "100%",
-              borderRadius: 4,
-              border: "1px solid #ddd",
-            }}
-          />
-        </Box>
-      ) : (
-        <Typography variant="body2" color="error">
-          No se pudo generar la imagen del código de barras.
-        </Typography>
-      )}
     </Box>
   );
 }

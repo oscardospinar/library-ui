@@ -21,6 +21,7 @@ import ClassIcon from '@mui/icons-material/Class';
 import IconButton from '@mui/material/IconButton';
 import CopyAdministration from './CopyAdministration';
 import { PaginationTable } from '../../../components/BookPagination/PaginationTable';
+import { useBooks } from '../../../components/BookContext/useBooks';
 
 export const emptyBook: BookObj = {
   bookId: "",
@@ -42,6 +43,7 @@ export const emptyBook: BookObj = {
 
 
 export default function BookAdministration() {
+  const { setShowErrorMessageB, setShowSuccessMessageB, setShowWarningMessageB } = useBooks();
   const [openEditor, setOpenEditor] = useState(false);
   const [book, setBook] = useState<BookObj>(emptyBook);
   const [title, setTitle] = useState<string>("Añadir libro");
@@ -61,39 +63,43 @@ export default function BookAdministration() {
     }
   };
   const getBooks = async () => {
-    const answer = await getAllBooks();
-    if (answer) {
-      if(answer.data){
-        setBooks(answer.data.body);
-      }
+    try{
+      console.log("hola");
+      const answer = await getAllBooks();
+      setBooks(answer.data.body);
+    }catch(error){
+      setShowErrorMessageB("Error al cargar los libros "+error);
     }
   };
 
   const getABook = async (id: string ) => {
-    if(id){
-      const answer = await getBook(id);
-      console.log(answer);
-      if (answer) {
+    try{
+      if(id){
+        const answer = await getBook(id);
         const book: BookObj | undefined = answer.data.body && answer.data.body.length === 1 
-          ? answer.data.body[0] 
-          : undefined;
+            ? answer.data.body[0] 
+            : undefined;
         if (book) {
-          console.log(book);
           setBook(book);
           setTitle("Editar Libro");
           setEdit(true);
           setOpenEditor(true); 
         }
       }
+    
+    }catch(error){
+      setShowErrorMessageB("Error al cargar el libro "+error);
     }
   };
 
   const deleteABook = async (id: string ) => {
-    if(id){
-      const answer = await deleteBook(id);
-      if (answer) {
-        console.log(answer);
+    try{
+      if(id){
+        const answer = await deleteBook(id);
+        setShowSuccessMessageB("Libro eliminado correctamente "+ answer.data.message);
       }
+    }catch(error){
+      setShowErrorMessageB("Error al eliminar el libro "+error);
     }
   };
 

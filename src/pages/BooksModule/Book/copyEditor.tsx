@@ -12,6 +12,8 @@ import { Close } from "@mui/icons-material";
 import { updateCopy, newCopy } from "../../Hook/CopyService";
 import { Copy } from "../Services/Copy";
 import Barcode from "../../../components/Barcode/Barcode";
+import OpenBarcode from "../../../components/Barcode/OpenBarcode";
+import { useBooks } from "../../../components/BookContext/useBooks";
 
 export default function CopyEditor({
   copy,
@@ -31,6 +33,9 @@ export default function CopyEditor({
   const [editedCopy, setEditedCopy] = useState<Copy>({
     ...copy,
   });
+  const { setShowErrorMessageB, setShowSuccessMessageB, setShowWarningMessageB } = useBooks();
+  const [openBarCode, setOpen] = React.useState(false);
+  const [base64, setBase] = React.useState(copy.barCode);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -45,7 +50,7 @@ export default function CopyEditor({
 
   const handleSave = () => {
     if (!editedCopy.ubication.trim() || !editedCopy.state.trim()) {
-      alert("Complete todos los campos.");
+      setShowWarningMessageB("Complete todos los campos");
       return;
     }
     if (isEdit) {
@@ -56,47 +61,51 @@ export default function CopyEditor({
   };
 
   const updateACopy = async () => {
-    if (editedCopy.id) {
-      const response = await updateCopy(
-        editedCopy.id,
-        editedCopy.state,
-        editedCopy.ubication,
-        editedCopy.disponibility
-      );
-      if (response) {
-        alert("Copia actualizada correctamente");
+    try{
+      if (editedCopy.id) {
+        const response = await updateCopy(
+          editedCopy.id,
+          editedCopy.state,
+          editedCopy.ubication,
+          editedCopy.disponibility
+        );
+        setShowSuccessMessageB("Copia actualizada correctamente "+ response?.data.message);
         onClose();
-      } else {
-        alert("Error al cargar la copia");
+        
       }
-    }
+    }catch(error){
+      setShowErrorMessageB("No se puedo actualizar la copia "+error);
+    } 
   };
 
   const createACopy = async () => {
-    const response = await newCopy(
-      idBook,
-      editedCopy.state,
-      editedCopy.ubication
-    );
-    if (response) {
-      alert("Copia creada correctamente");
-      console.log(response);
-      onClose();
-    } else {
-      alert("Error al crear la copia");
-    }
+    try{
+      const response = await newCopy(
+        idBook,
+        editedCopy.state,
+        editedCopy.ubication
+      );
+      if (response) {
+        setShowSuccessMessageB("Copia creada correctamente "+response.message);
+        setBase(response.body);
+        handleClickOpen();
+      } 
+    }catch(error){
+      setShowErrorMessageB("No se puedo crear la copia "+error);
+    } 
   };
 
-  // Función para validar y adaptar el valor base64 para el código de barras
-  const getValidBase64Image = (base64: string | undefined): string => {
-    if (!base64) {
-      return "";
-    }
-    if (!base64.startsWith("data:image")) {
-      return `data:image/png;base64,${base64}`; 
-    }
-    return base64; 
-  };
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      const activeElement = document.activeElement;
+      if (activeElement instanceof HTMLElement) {
+        activeElement.blur();
+      }
+      setOpen(false);
+    };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -145,11 +154,14 @@ export default function CopyEditor({
             variant="filled"
           />
 
-          <Barcode
+          {isEdit && <Barcode
             bookId={editedCopy.book}
-            src={getValidBase64Image(editedCopy.barCode)}
+            handleClickOpen={handleClickOpen}
+          />}
+          <OpenBarcode src={base64}
+                  open={openBarCode}
+                  onClose={handleClose} 
           />
-
           <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, mt: 2 }}>
             <Button variant="contained" color="primary" onClick={handleSave}>
               Guardar

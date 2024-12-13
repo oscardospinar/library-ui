@@ -46,9 +46,9 @@ export const newCopy = async (id:string, state: string, ubication: string) => {
             state: state,
             ubication: ubication
         }
-        const answer: AxiosResponse<BookResponse> = await axios.post<BookResponse>(API+'createCopy?bookId='+id, requestBody);   
-        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);        
-        return answer;
+        const answer = await axios.post<BookResponse>(API+'createCopy?bookId='+id, requestBody);   
+        if(answer.status !== 200) Error(`Error: ${answer.data.message}`);        
+        return answer.data;
     } catch (error) {
         alert(error);
     }

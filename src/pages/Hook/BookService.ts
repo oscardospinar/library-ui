@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { BookResponse } from "../BooksModule/Services/BookResponse"
-import { handleError } from "../BooksModule/Error/ErrorHandler";
+
 
 const API = "http://localhost:80/BookModule/";
 
@@ -43,8 +43,8 @@ export const updateBook = async (bookId: string | undefined, isbn: string, descr
             categoryIds: categoryIds,
             subcategoryIds: subcategoryIds
         }
-        const answer: AxiosResponse<BookResponse> = await axios.patch<BookResponse>(API+'updateBook',requestBody); 
-        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+        const answer = await axios.patch<BookResponse>(API+'updateBook',requestBody); 
+        if(answer.status !== 200) Error(`Error: ${answer.data.message}`);
         return answer;
         } catch (error) {
             throw error;

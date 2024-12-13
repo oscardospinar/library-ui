@@ -3,6 +3,7 @@ import { Close } from '@mui/icons-material';
 import { Subcategory } from '../Services/Subcategory';
 import { updateSubcategory, saveSubcategory } from '../../Hook/SubcategoryService'; 
 import React, { useState, useEffect } from 'react';
+import { useBooks } from '../../../components/BookContext/useBooks';
 
 export default function SubcategoryEditor({
   subcategory,
@@ -17,7 +18,7 @@ export default function SubcategoryEditor({
   title: string;
   isEdit: boolean;
 }) {
-
+  const { setShowErrorMessageB, setShowSuccessMessageB, setShowWarningMessageB } = useBooks();
   const [editedSubcategory, setEditedSubcategory] = useState<Subcategory>({
     ...subcategory
   });
@@ -33,7 +34,7 @@ export default function SubcategoryEditor({
 
   const handleSave = async () => {
     if (!editedSubcategory.description.trim()) {
-      alert('La descripción no puede ser vacía');
+      setShowWarningMessageB("El nombre de la subcategoría no puede ser vacío");
       return;
     }
     if(isEdit){
@@ -45,26 +46,28 @@ export default function SubcategoryEditor({
   };
 
   const updateASubcategory = async () => {
-    if(editedSubcategory.subcategoryId){
-      const response = await updateSubcategory(editedSubcategory.subcategoryId,editedSubcategory.description);
-      if (response) {
-        alert('Subcategoría actualizada correctamente');
+    try{
+      if(editedSubcategory.subcategoryId){
+        const response = await updateSubcategory(editedSubcategory.subcategoryId,editedSubcategory.description);
+        setShowSuccessMessageB('Subcategoría actualizada correctamente');
         onClose();
-      } else {
-        alert('Error al actualizar subcategoría');
       }
+    }catch(error){
+      setShowErrorMessageB("Error al actualizar subcategoría "+error);
     }
   }
 
   const createASubcategory = async () => {
-    const response = await saveSubcategory(editedSubcategory.description);
-    if (response) {
-      alert("Subcategoría creada correctamente");
-      onClose();
-    } else {
-      alert("Error al crear la subcategoría");
+      try{
+        const response = await saveSubcategory(editedSubcategory.description);
+        setShowSuccessMessageB("Subcategoría creada correctamente "+response?.data.message);
+        onClose();
+      
+    }catch(error){
+      setShowErrorMessageB("Error al crear la subcategoría "+error);
     }
-}
+  }
+
 
 
   return (

@@ -6,7 +6,6 @@ import {
     CardContent
   } from '@mui/material';
 import { BasicBook } from "../../pages/BooksModule/Services/BasicBook";
-import { Navigate, useNavigate } from "react-router-dom";
 
 
   type Props = {
@@ -20,12 +19,6 @@ export function BookCard(props: Props): ReactElement {
         onClick
     } = props;
 
-    const navigate = useNavigate(); 
-    const handleBook = (id: string | undefined) => {
-      if(id){
-        navigate(`/${id}`);
-      }
-    };
 
 return (<>
             <Card sx={{ 
