@@ -7,7 +7,7 @@ import { NavBar } from './components/NavBar/NavBar';
 function App(): ReactElement {
   return (
     <Box>
-       <Outlet />
+      <Outlet />
       <Box sx={{ mt: '64px' }}>
       </Box>
     </Box>

@@ -29,7 +29,6 @@ const pages = [
   { name: "Estudiantes", color: "#32cd32" },
   { name: "Registro", color: "#1976d2" }
 ];
-const settings = ['Logout'];
 
 export function NavBar(): ReactElement {
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -67,21 +66,9 @@ export function NavBar(): ReactElement {
     setAnchorElUser(null);
   };
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleLogout = (setting: string) => {
-    if (setting === 'Logout') {
-      // Eliminar el token de las cookies
-      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-      // Navegar a la página de inicio de sesión
-      navigate('/');
-    }
+  const handleLogout = () => {
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    navigate('/');
   };
 
   const linkVariants = {
@@ -90,10 +77,9 @@ export function NavBar(): ReactElement {
     hover: { scale: 1.1 },
   };
 
-  // Get the 'user' cookie and parse it
-  const userCookie = Cookies.get('use');
+  const userCookie = Cookies.get('user');
   const user = userCookie ? JSON.parse(userCookie) : null;
-  const nombreUsuario = user ? user.nombreUsuario : 'Usuario12321'; // Default to 'Usuario' if not found
+  const nombreUsuario = user ? user.nombreUsuario : 'Invitado';
 
   return (
     <motion.nav
@@ -135,36 +121,36 @@ export function NavBar(): ReactElement {
           />
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", marginRight: "2rem" }}>
-        <Button
-                    id="user-menu-button"
+          <Button
+            id="user-menu-button"
             aria-controls={open ? "user-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
-            onClick={handleClick}
+            onClick={handleOpenUserMenu}
             endIcon={<KeyboardArrowDownIcon />}
             startIcon={<AccountCircleIcon />}
-            >
-            {(() => {
-                const user = Cookies.get('user');
-                if (user) {
-                const parsedUser = JSON.parse(user);
-                return parsedUser.nombreUsuario || "Invitado"; // Accede al nombreUsuario
-                }
-                return "Invitado"; // Si no hay cookie, muestra "Invitado"
-            })()}
-            </Button>
+          >
+            {nombreUsuario}
+          </Button>
           <Menu
             id="user-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
+            anchorEl={anchorElUser}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseUserMenu}
             MenuListProps={{
               "aria-labelledby": "user-menu-button",
             }}
           >
-            <MenuItem onClick={handleClose}>Perfil</MenuItem>
-            <MenuItem onClick={handleClose}>Configuración</MenuItem>
-            <MenuItem onClick={handleClose}>Cerrar sesión</MenuItem>
+            <MenuItem onClick={handleCloseUserMenu}>Perfil</MenuItem>
+            <MenuItem onClick={handleCloseUserMenu}>Configuración</MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleLogout();
+                handleCloseUserMenu();
+              }}
+            >
+              Cerrar sesión
+            </MenuItem>
           </Menu>
         </Box>
       </Box>
@@ -225,39 +211,6 @@ export function NavBar(): ReactElement {
                   </Button>
                 </motion.div>
               ))}
-            </Box>
-
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={() => { 
-                    handleLogout(setting); 
-                    handleCloseUserMenu(); 
-                  }}>
-                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
             </Box>
           </Toolbar>
         </Container>
