@@ -21,6 +21,7 @@ import BookIcon from "@mui/icons-material/Book";
 import { useNavigate } from "react-router-dom";
 import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
 import { motion } from "framer-motion";
+import Cookies from 'js-cookie';
 
 const pages = [
   { name: "Prestamos", color: "#ff69b4" },
@@ -89,6 +90,11 @@ export function NavBar(): ReactElement {
     hover: { scale: 1.1 },
   };
 
+  // Get the 'user' cookie and parse it
+  const userCookie = Cookies.get('use');
+  const user = userCookie ? JSON.parse(userCookie) : null;
+  const nombreUsuario = user ? user.nombreUsuario : 'Usuario12321'; // Default to 'Usuario' if not found
+
   return (
     <motion.nav
       initial={{ opacity: 0, y: -50 }}
@@ -129,17 +135,24 @@ export function NavBar(): ReactElement {
           />
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", marginRight: "2rem" }}>
-          <Button
-            id="user-menu-button"
+        <Button
+                    id="user-menu-button"
             aria-controls={open ? "user-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
             onClick={handleClick}
             endIcon={<KeyboardArrowDownIcon />}
             startIcon={<AccountCircleIcon />}
-          >
-            user123
-          </Button>
+            >
+            {(() => {
+                const user = Cookies.get('user');
+                if (user) {
+                const parsedUser = JSON.parse(user);
+                return parsedUser.nombreUsuario || "Invitado"; // Accede al nombreUsuario
+                }
+                return "Invitado"; // Si no hay cookie, muestra "Invitado"
+            })()}
+            </Button>
           <Menu
             id="user-menu"
             anchorEl={anchorEl}
