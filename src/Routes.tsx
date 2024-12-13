@@ -7,19 +7,29 @@ import SearchResults from "./components/SearchResults/SearchResults";
 import { LoadBooks } from "./pages/BooksModule/LoadBooks";
 import Notfound from "./components/Loans/NotFound/NotFound";
 import { BookProvider } from "../src/components/BookContext/useBooks";
-import Login from "./components/Login/Login"; // Importa el componente Login
-
+import Login from "./components/Login/Login"; 
+import { NavBar } from './components/NavBar/NavBar';  // Ajusta la ruta si es necesario
+import {NavBarEstudiantes} from './components/NavBarEstudiantes/NavBarEstudiantes';  // Ajusta la ruta si es necesario
+import FormularioRegistro from './components/Registro/Registro';
+import EmailValidation from './components/Responsable/Responsable';
 export const routes = [
   {
     element: <App />,
     children: [
       {
         index: true,
-        element: <Login />, // Configura Login como la ruta inicial
+        element: <Login />, 
       },
       {
         path: "/home",
         element: <Home />,
+      },
+      {path:"/navar" ,
+        element:<NavBar />,
+    },
+      {
+        path: "navar2",  // Y esta también
+        element: <NavBarEstudiantes />,
       },
       {
         path: "search",
@@ -37,6 +47,12 @@ export const routes = [
           </BookProvider>
         ),
       },
+      { path:'/Responsable',
+         element:<EmailValidation />,
+     },
+      {path:'/Registro',
+         element:<FormularioRegistro />,
+    },
       {
         path: "*",
         element: <Notfound />,
