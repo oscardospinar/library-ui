@@ -61,7 +61,7 @@ interface Props {
             <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 2fr' }} gap={3}>
               <Box>
                 <img
-                  src="/portada.jpg"
+                  src={`https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/${selectedBook.imgPath}`}
                   alt={`Portada de ${selectedBook.title}`}
                   style={{ width: '100%', height: 'auto', marginBottom: '1rem' }}
                 />
@@ -79,19 +79,19 @@ interface Props {
                   <Typography variant="body1" sx={{ mb: 2, textAlign: "justify"}}>
                     {selectedBook.description}
                   </Typography>
-                  <Typography variant="body2" sx={{ mb: 2 }}>
+                  <Typography variant="body2" sx={{ mb: 2, alignSelf: "start", textAlign: "left" }}>
                     <strong>Editorial:</strong> {selectedBook.editorial}
                   </Typography>
-                  <Typography variant="body2"  sx={{ mb: 2 }}>
+                  <Typography variant="body2"  sx={{ mb: 2, alignSelf: "start", textAlign: "left" }}>
                     <strong>Edición:</strong> {selectedBook.edition}
                   </Typography>
-                  <Typography variant="body2"  sx={{ mb: 2 }}>
+                  <Typography variant="body2"  sx={{ mb: 2, alignSelf: "start", textAlign: "left" }}>
                     <strong>Colección:</strong> {selectedBook.collection}
                   </Typography>
-                  <Typography variant="body2"  sx={{ mb: 2 }}>
+                  <Typography variant="body2"  sx={{ mb: 2, alignSelf: "start", textAlign: "left" }}>
                     <strong>Idioma:</strong> {selectedBook.language}
                   </Typography>
-                  <Typography variant="body2"  sx={{ mb: 2 }}>
+                  <Typography variant="body2"  sx={{ mb: 2, alignSelf: "start", textAlign: "left" }}>
                     <strong>ISBN:</strong> {selectedBook.isbn}
                   </Typography>
                   <Paper elevation={1}  sx={{ p: 2, mb: 2, backgroundColor: copies === 0 ? '#ff0000' : '#7bb7e0'}}>
