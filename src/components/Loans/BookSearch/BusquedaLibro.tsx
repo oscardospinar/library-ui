@@ -3,7 +3,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   TextField,
   Button,
   Box,
@@ -13,6 +12,7 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
+import LoanByDisponobility from "../BookSearch/LoanByDisponibility/LoanByDisponibility";
 import "./BusquedaLibro.css";
 
 interface BusquedaLibroProps {
@@ -23,7 +23,11 @@ interface BusquedaLibroProps {
 const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
   const [terminoBusqueda, setTerminoBusqueda] = useState("");
   const [resultado, setResultado] = useState<string | null>(null);
-  const [tipoBusqueda, setTipoBusqueda] = useState<"isbn" | "nombre" | "codigo" | null>(null);
+  const [tipoBusqueda, setTipoBusqueda] = useState<
+    "isbn" | "nombre" | "codigo" | null
+  >(null);
+  const [dialogoDisponibilidadAbierto, setDialogoDisponibilidadAbierto] =
+    useState(false);
 
   const libros = [
     {
@@ -47,118 +51,121 @@ const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
   ];
 
   const manejarBusqueda = () => {
-    try {
-      if (!tipoBusqueda) {
-        setResultado("Por favor, selecciona un tipo de búsqueda.");
-        return;
-      }
+    if (!tipoBusqueda) {
+      setResultado("Por favor, selecciona un tipo de búsqueda.");
+      return;
+    }
 
-      const libroEncontrado = libros.find((libro) => {
-        switch (tipoBusqueda) {
-          case "isbn":
-            return libro.isbn.includes(terminoBusqueda);
-          case "nombre":
-            return libro.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase());
-          case "codigo":
-            return libro.codigo.includes(terminoBusqueda);
-          default:
-            return false;
-        }
-      });
-
-      if (libroEncontrado) {
-        setResultado(
-          `Libro encontrado: ${libroEncontrado.nombre} (${libroEncontrado.isbn}) - ${
-            libroEncontrado.disponible ? "Disponible" : "No disponible"
-          }`
-        );
-      } else {
-        setResultado("No se encontró ningún libro con ese término de búsqueda.");
+    const libroEncontrado = libros.find((libro) => {
+      switch (tipoBusqueda) {
+        case "isbn":
+          return libro.isbn.includes(terminoBusqueda);
+        case "nombre":
+          return libro.nombre
+            .toLowerCase()
+            .includes(terminoBusqueda.toLowerCase());
+        case "codigo":
+          return libro.codigo.includes(terminoBusqueda);
+        default:
+          return false;
       }
-    } catch (error) {
-      setResultado("Error al realizar la búsqueda. Intenta nuevamente más tarde.");
+    });
+
+    if (libroEncontrado) {
+      setResultado(
+        `Libro encontrado: ${libroEncontrado.nombre} (${libroEncontrado.isbn}) - ${
+          libroEncontrado.disponible ? "Disponible" : "No disponible"
+        }`
+      );
+
+      // Abrir diálogo de disponibilidad si se encuentra el libro
+      if (libroEncontrado.disponible) {
+        setDialogoDisponibilidadAbierto(true);
+      }
+    } else {
+      setResultado("No se encontró ningún libro con ese término de búsqueda.");
     }
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={(event, reason) => {
-        if (reason !== "backdropClick") {
-          onClose();
-        }
-      }}
-      fullWidth
-      maxWidth="sm"
-      disableEscapeKeyDown
-      BackdropProps={{
-        onClick: (e) => e.stopPropagation(), // Evita el cierre al hacer clic fuera del diálogo
-      }}
-    >
-      <DialogContent className="dialog-content">
-        <Box className="container">
-          {tipoBusqueda === null ? (
-            <Box>
-              <Typography variant="h6" className="typography-header">
-                ¿Cómo deseas buscar?
-              </Typography>
-              <FormControl component="fieldset" className="form-control">
-                <RadioGroup
-                  onChange={(e) => setTipoBusqueda(e.target.value as "isbn" | "nombre" | "codigo")}
-                  row
-                  className="radio-group"
+    <>
+      <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+        <DialogContent className="dialog-content">
+          <Box className="container">
+            {tipoBusqueda === null ? (
+              <Box>
+                <Typography variant="h6" className="typography-header">
+                  ¿Cómo deseas buscar?
+                </Typography>
+                <FormControl component="fieldset" className="form-control">
+                  <RadioGroup
+                    onChange={(e) =>
+                      setTipoBusqueda(
+                        e.target.value as "isbn" | "nombre" | "codigo"
+                      )
+                    }
+                    row
+                    className="radio-group"
+                  >
+                    <FormControlLabel
+                      value="isbn"
+                      control={<Radio />}
+                      label="Por ISBN"
+                      className="radio-label"
+                    />
+                    <FormControlLabel
+                      value="nombre"
+                      control={<Radio />}
+                      label="Por Nombre"
+                      className="radio-label"
+                    />
+                    <FormControlLabel
+                      value="codigo"
+                      control={<Radio />}
+                      label="Por Código"
+                      className="radio-label"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Box>
+            ) : (
+              <Box>
+                <TextField
+                  label={`Buscar por ${tipoBusqueda}`}
+                  variant="outlined"
+                  fullWidth
+                  value={terminoBusqueda}
+                  onChange={(e) => setTerminoBusqueda(e.target.value)}
+                  className="text-field"
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={manejarBusqueda}
+                  className="search-button"
                 >
-                  <FormControlLabel
-                    value="isbn"
-                    control={<Radio />}
-                    label="Por ISBN"
-                    className="radio-label"
-                  />
-                  <FormControlLabel
-                    value="nombre"
-                    control={<Radio />}
-                    label="Por Nombre"
-                    className="radio-label"
-                  />
-                  <FormControlLabel
-                    value="codigo"
-                    control={<Radio />}
-                    label="Por Código"
-                    className="radio-label"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </Box>
-          ) : (
-            <Box>
-              <TextField
-                label={`Buscar por ${tipoBusqueda}`}
-                variant="outlined"
-                fullWidth
-                value={terminoBusqueda}
-                onChange={(e) => setTerminoBusqueda(e.target.value)}
-                className="text-field"
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={manejarBusqueda}
-                className="search-button"
-              >
-                Buscar
-              </Button>
-            </Box>
-          )}
+                  Buscar
+                </Button>
+              </Box>
+            )}
+            {resultado && (
+              <Typography className="result">{resultado}</Typography>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} color="primary" className="close-button">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-          {resultado && <Typography className="result">{resultado}</Typography>}
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="primary" className="close-button">
-          Cerrar
-        </Button>
-      </DialogActions>
-    </Dialog>
+      {/* Diálogo de disponibilidad */}
+      <LoanByDisponobility
+        open={dialogoDisponibilidadAbierto}
+        onClose={() => setDialogoDisponibilidadAbierto(false)}
+      />
+    </>
   );
 };
 
