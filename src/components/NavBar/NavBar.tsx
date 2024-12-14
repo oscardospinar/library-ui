@@ -27,7 +27,6 @@ import MainSearch from '../Mainsearch/Mainsearch';
 const pages = [
   { name: "Préstamos", color: "#ff69b4" },
   { name: "Libros", color: "#ffd700" },
-  { name: "Estudiantes", color: "#32cd32" },
 
   { name: "Registro", color: "#ffffff" },
 
@@ -57,7 +56,8 @@ export function NavBar(): ReactElement {
     } else if (section === "Registro") {
       navigate("/Responsable");
     }else if (section === "Búsqueda") {
-      setShowMainSearch(true); 
+      navigate("/search");
+      
     } else {
       setShowMainSearch(false);
     }
