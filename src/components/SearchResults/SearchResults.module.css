@@ -1,0 +1,86 @@
+.searchResultsContainer {
+padding: 16px;
+margin-top: 128px;
+height: 100vh;
+display: flex;
+flex-direction: column;
+background-color: #f9f9f9;
+}
+
+.newSearchButton {
+margin-bottom: 16px;
+background-color: #007bff;
+color: #fff;
+border: none;
+font-weight: bold;
+text-transform: uppercase;
+transition: background-color 0.3s ease;
+}
+
+.newSearchButton:hover {
+background-color: #0056b3;
+}
+
+.tableContainer {
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+border-radius: 8px;
+overflow: hidden;
+}
+
+.tableContainer table {
+width: 100%;
+border-collapse: collapse;
+font-family: 'Arial', sans-serif;
+}
+
+.tableContainer th,
+.tableContainer td {
+padding: 12px 16px;
+text-align: left;
+}
+
+.tableContainer th {
+background-color: #343a40;
+color: #fff;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.tableContainer tr:nth-child(even) {
+background-color: #f2f2f2;
+}
+
+.tableContainer tr:hover {
+background-color: #e9ecef;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+
+.tableContainer td {
+border-bottom: 1px solid #ddd;
+}
+
+.titleLink {
+color: #007bff;
+text-decoration: none;
+font-weight: bold;
+transition: color 0.3s ease;
+}
+
+.titleLink:hover {
+color: #0056b3;
+text-decoration: underline;
+}
+
+.searchControls {
+display: flex;
+align-items: center;
+gap: 16px;
+margin-bottom: 16px;
+}
+
+.searchControls .MuiFormControl-root,
+.searchControls .MuiTextField-root {
+flex: 1;
+}
+  
