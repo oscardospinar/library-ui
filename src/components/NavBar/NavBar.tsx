@@ -22,17 +22,20 @@ import { useNavigate } from "react-router-dom";
 import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
 import { motion } from "framer-motion";
 import Cookies from 'js-cookie';
+import MainSearch from '../Mainsearch/Mainsearch';
 
 const pages = [
-  { name: "Prestamos", color: "#ff69b4" },
+  { name: "Préstamos", color: "#ff69b4" },
   { name: "Libros", color: "#ffd700" },
   { name: "Estudiantes", color: "#32cd32" },
-  { name: "Registro", color: "#1976d2" }
+  { name: "Registro", color: "#f98404" },
+  {name : "Búsqueda", color: "#8A9597"}
 ];
 
 export function NavBar(): ReactElement {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [openPrestamosDialog, setOpenPrestamosDialog] = useState(false);
+  const [showMainSearch, setShowMainSearch] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -40,12 +43,16 @@ export function NavBar(): ReactElement {
   const navigate = useNavigate();
 
   const handleSectionClick = (section: string): void => {
-    if (section === "Prestamos") {
+    if (section === "Préstamos") {
       setOpenPrestamosDialog(true);
     } else if (section === "Libros") {
       navigate("/libros");
     } else if (section === "Registro") {
       navigate("/Responsable");
+    }else if (section === "Búsqueda") {
+      setShowMainSearch(true); 
+    } else {
+      setShowMainSearch(false);
     }
     setActiveSection((prevSection) => (section === prevSection ? null : section));
   };
@@ -87,85 +94,19 @@ export function NavBar(): ReactElement {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Box
-        sx={{
-          width: "100%",
-          height: "50px",
-          backgroundColor: "white",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          px: 2,
-        }}
-      >
-        <img
-          src="/colegioLogo.png"
-          style={{
-            height: "53px", 
-            width: "auto",  
-          }}
-        />
-        <Box sx={{ flex: 1, maxWidth: "400px", mx: 3 }}>
-          <TextField
-            type="search"
-            placeholder="Buscar..."
-            fullWidth
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center", marginRight: "2rem" }}>
-          <Button
-            id="user-menu-button"
-            aria-controls={open ? "user-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleOpenUserMenu}
-            endIcon={<KeyboardArrowDownIcon />}
-            startIcon={<AccountCircleIcon />}
-          >
-            {nombreUsuario}
-          </Button>
-          <Menu
-            id="user-menu"
-            anchorEl={anchorElUser}
-            open={Boolean(anchorElUser)}
-            onClose={handleCloseUserMenu}
-            MenuListProps={{
-              "aria-labelledby": "user-menu-button",
-            }}
-          >
-            <MenuItem onClick={handleCloseUserMenu}>Perfil</MenuItem>
-            <MenuItem onClick={handleCloseUserMenu}>Configuración</MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleLogout();
-                handleCloseUserMenu();
-              }}
-            >
-              Cerrar sesión
-            </MenuItem>
-          </Menu>
-        </Box>
-      </Box>
-
-      <AppBar position="static" sx={{ backgroundColor: "#1976d2", boxShadow: "none" }}>
+      <AppBar position="static" sx={{ backgroundColor: "#1976d2" }}>
         <Container maxWidth="xl">
-          <Toolbar disableGutters>
-            <Box
-              sx={{
-                flexGrow: 1,
-                display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
-              }}
-            >
+          <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+              <img
+                src="/colegioLogo.png"
+                alt="Logo"
+                style={{
+                  height: "80px",
+                  width: "auto",
+                  marginRight: "1rem"
+                }}
+              />
               <motion.div
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
@@ -187,6 +128,7 @@ export function NavBar(): ReactElement {
               </motion.div>
             </Box>
 
+            {/* Navigation Links */}
             <Box sx={{ display: "flex", justifyContent: "center", flexGrow: 1 }}>
               {pages.map((page, index) => (
                 <motion.div
@@ -212,11 +154,44 @@ export function NavBar(): ReactElement {
                 </motion.div>
               ))}
             </Box>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Button
+                id="user-menu-button"
+                aria-controls={Boolean(anchorElUser) ? "user-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={Boolean(anchorElUser) ? "true" : undefined}
+                onClick={handleOpenUserMenu}
+                endIcon={<KeyboardArrowDownIcon />}
+                startIcon={<AccountCircleIcon />}
+                sx={{ color: "white" }}
+              >
+                {nombreUsuario}
+              </Button>
+              <Menu
+                id="user-menu"
+                anchorEl={anchorElUser}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+                MenuListProps={{
+                  "aria-labelledby": "user-menu-button",
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleLogout();
+                    handleCloseUserMenu();
+                  }}
+                >
+                  Cerrar sesión
+                </MenuItem>
+              </Menu>
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>
 
       <PrestamosDialog open={openPrestamosDialog} onClose={() => setOpenPrestamosDialog(false)} />
+      {showMainSearch && <MainSearch />}
     </motion.nav>
   );
 }
