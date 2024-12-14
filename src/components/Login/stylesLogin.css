@@ -8,7 +8,7 @@ body {
     background-attachment: fixed;
     height: 100vh; /* Altura completa de la ventana */
     display: block; /* Asegura que el contenido no esté centrado por flex */
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 
