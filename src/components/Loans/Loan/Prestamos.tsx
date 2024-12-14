@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
-import './Prestamos.css';
+import React, { useState } from "react";
+import "./Prestamos.css";
 
 interface PrestamosProps {
   onSuccess: () => void;
-  onClose: () => void; // Asegúrate de pasar esta prop desde el componente principal
+  onClose: () => void;
+  idCopia?: string | null;
 }
 
-function Prestamos({ onSuccess, onClose }: PrestamosProps) {
-  const [codigoEstudiante, setCodigoEstudiante] = useState('');
-  const [codigoLibro, setCodigoLibro] = useState('');
+function Prestamos({ onSuccess, onClose, idCopia }: PrestamosProps) {
+  const [codigoEstudiante, setCodigoEstudiante] = useState("");
+  const [codigoLibro, setCodigoLibro] = useState(idCopia || "");
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log('Registrar préstamo:', { codigoEstudiante, codigoLibro });
+    console.log("Registrar préstamo:", { codigoEstudiante, codigoLibro });
     onSuccess();
+  };
+
+  const handleClose = () => {
+    onClose();
   };
 
   return (
@@ -35,10 +40,11 @@ function Prestamos({ onSuccess, onClose }: PrestamosProps) {
           placeholder="Código del libro"
           value={codigoLibro}
           onChange={(e) => setCodigoLibro(e.target.value)}
+          disabled={!!idCopia}
         />
         <div className="form-actions">
           <input className="login-button" type="submit" value="Registrar" />
-          <button type="button" className="login-button" onClick={onClose}>
+          <button type="button" className="login-button" onClick={handleClose}>
             Cerrar
           </button>
         </div>

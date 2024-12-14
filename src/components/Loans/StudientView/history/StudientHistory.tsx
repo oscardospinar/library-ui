@@ -15,19 +15,18 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import Loading from "../Loading/Loading";
-import "./historial.css";
+import Loading from "../../Loading/Loading"; // Asegúrate de que la ruta sea correcta
+
+import "./StudientHistory.css";
 
 interface Prestamo {
-  codigoEstudiante: string;
-  codigoLibro: string;
   nombreEstudiante: string;
   nombreLibro: string;
-  fechaPrestamo: string;
-  fechaDevolucion: string;
+  fecha: string;
+  estado: string;
 }
 
-const HistorialPrestamos = ({
+const StudientHistory = ({
   open,
   onClose,
 }: {
@@ -38,37 +37,32 @@ const HistorialPrestamos = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const obtenerHistorialPrestamos = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(
-        "https://bibliosoftloanback-ahecc7fydjdze0ar.canadacentral-01.azurewebsites.net/loans"
-      );
-      if (!response.ok) {
-        throw new Error("No se pudieron cargar los préstamos del historial.");
-      }
-      const data = await response.json();
-      setPrestamos(data);
-    } catch (err) {
-      setError(
-        "Error al cargar los préstamos del historial. Intenta nuevamente más tarde."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const obtenerEstadoPrestamo = (fechaDevolucion: string) => {
-    const fechaActual = new Date();
-    const fechaDevolucionDate = new Date(fechaDevolucion);
-
-    return fechaDevolucionDate < fechaActual ? "Vencido" : "Activo";
-  };
+  // Datos de ejemplo
+  const prestamosEjemplo: Prestamo[] = [
+    {
+      nombreEstudiante: "Juan Pérez",
+      nombreLibro: "Introducción a React",
+      fecha: "2024-11-01",
+      estado: "Activo",
+    },
+    {
+      nombreEstudiante: "Ana Gómez",
+      nombreLibro: "Aprendiendo TypeScript",
+      fecha: "2024-11-05",
+      estado: "Vencido",
+    },
+    {
+      nombreEstudiante: "Carlos Martínez",
+      nombreLibro: "Mastering JavaScript",
+      fecha: "2024-11-10",
+      estado: "Activo",
+    },
+  ];
 
   useEffect(() => {
     if (open) {
-      obtenerHistorialPrestamos();
+      // Usar los datos de ejemplo en lugar de hacer la llamada a la API
+      setPrestamos(prestamosEjemplo);
     }
   }, [open]);
 
@@ -110,20 +104,23 @@ const HistorialPrestamos = ({
                 <TableHead>
                   <TableRow>
                     <TableCell className="table-header-cell" align="center">
-                      Nombre
+                      Estudiante
+                    </TableCell>
+                    <TableCell className="table-header-cell" align="center">
+                      Libro
+                    </TableCell>
+                    <TableCell className="table-header-cell" align="center">
+                      Fecha
                     </TableCell>
                     <TableCell className="table-header-cell" align="center">
                       Estado
-                    </TableCell>
-                    <TableCell className="table-header-cell" align="center">
-                      Fecha Préstamo
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {prestamos.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} align="center">
+                      <TableCell colSpan={4} align="center">
                         No hay historial.
                       </TableCell>
                     </TableRow>
@@ -136,9 +133,8 @@ const HistorialPrestamos = ({
                         <TableCell align="center">
                           {prestamo.nombreLibro}
                         </TableCell>
-                        <TableCell align="center">
-                          {prestamo.fechaPrestamo}
-                        </TableCell>
+                        <TableCell align="center">{prestamo.fecha}</TableCell>
+                        <TableCell align="center">{prestamo.estado}</TableCell>
                       </TableRow>
                     ))
                   )}
@@ -157,4 +153,4 @@ const HistorialPrestamos = ({
   );
 };
 
-export default HistorialPrestamos;
+export default StudientHistory;
