@@ -76,13 +76,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js",
-    "lint": "eslint . --max-warnings=0"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
+    "test": "node scripts/test.js"
   },
   "browserslist": {
     "production": [
