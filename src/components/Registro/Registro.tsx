@@ -7,12 +7,13 @@ import './style.css';
 import Cookies from 'js-cookie';
 
 interface Formulario {
-  codigoEstudiante: string;
-  nombreEstudiante: string;
-  curso: string;
+  nombreUsuario: string;
   contrasena: string;
-  confirmacionContrasena: string;
+  nombreEstudiante: string;
+  codigoEstudiante: string;
+  curso: string;  
   anoAcademico: string;
+  responsableId: string;
 }
 
 
@@ -22,34 +23,20 @@ const FormularioRegistro: React.FC = () => {
   
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Obtener el correo del responsable desde el estado de navegación
-  const { responsableId } = location.state || {};
+  const responsableIdFromState = location.state?.responsableId || '';
 
   const [formulario, setFormulario] = useState<Formulario>({
     codigoEstudiante: '',
-    nombreEstudiante: '',
     curso: '',
+    responsableId: responsableIdFromState,
+    nombreUsuario: '',
     contrasena: '',
-    confirmacionContrasena: '',
-    anoAcademico: new Date().getFullYear().toString(), // Año académico actual
+    nombreEstudiante: '',
+    anoAcademico: ''
   });
 
   const [opcionesCurso, setOpcionesCurso] = useState<string[]>([
-    'Pre-jardín',
-    'Jardín',
-    'Transición',
-    'Primero',
-    'Segundo',
-    'Tercero',
-    'Cuarto',
-    'Quinto',
-    'Sexto',
-    'Séptimo',
-    'Octavo',
-    'Noveno',
-    'Décimo',
-    'Once'
+    'Pre-Jardín','Jardín', 'Transición', '101', '201', '202', '301', '401', '402', '501', '502', '601', '701', '702','801', '802', '901', '902', '903', '1001','1002', '1003','1101', '1102', '1103'
   ]);
 
   const [captchaValido, setCaptchaValido] = useState<boolean>(false);
@@ -72,11 +59,6 @@ const FormularioRegistro: React.FC = () => {
       return;
     }
 
-    if (formulario.contrasena !== formulario.confirmacionContrasena) {
-      alert('Las contraseñas no coinciden');
-      return;
-    }
-
     try {
       const response = await fetch(
         'https://cvds-project-cnb6c0cuddfyc9fe.mexicocentral-01.azurewebsites.net/usuario/registrarEstudiante',
@@ -87,11 +69,13 @@ const FormularioRegistro: React.FC = () => {
             Authorization: `Bearer ${token}`, // Agrega el token al encabezado.
           },
           body: JSON.stringify({
+            nombreUsuario: formulario.nombreUsuario,
+            contrasena: formulario.contrasena,
+            nombreEstudiante:formulario.nombreEstudiante,            
             codigoEstudiante: formulario.codigoEstudiante,
             curso: formulario.curso,
-            anoAcademico: formulario.anoAcademico,
-            nombreUsuario: formulario.codigoEstudiante,
-            contrasena: formulario.contrasena
+            responsableId: formulario.responsableId,
+            anoAcademico: formulario.anoAcademico
           }),
         }
       );
@@ -128,6 +112,7 @@ const FormularioRegistro: React.FC = () => {
   
     fetchCursos();
   }, []); 
+
   
 
   return (
@@ -138,7 +123,7 @@ const FormularioRegistro: React.FC = () => {
           alt="Imagen izquierda"
           className="titulo-imagen"
         />
-        <h2 className="titulo-texto">Registro de Estudiante</h2>
+        <h2 style={{ color: 'white', fontSize: '1.8rem', textAlign: 'center' }} className="titulo-texto">Registro de Estudiante</h2>
         <img
           src="logoColegio.png"
           alt="Imagen derecha"
@@ -152,21 +137,28 @@ const FormularioRegistro: React.FC = () => {
         onChange={manejarCambio}
         required
       />
-      <CampoTexto
-        label="Nombre del Estudiante"
-        name="nombreEstudiante"
-        value={formulario.nombreEstudiante}
+      <ListaDesplegable
+        label="Curso"
+        name="curso"
+        opciones={opcionesCurso}
+        value={formulario.curso}
         onChange={manejarCambio}
         required
       />
-        <ListaDesplegable
-          label="Curso"
-          name="curso"
-          opciones={opcionesCurso}
-          value={formulario.curso}
-          onChange={manejarCambio}
-          required
-        />
+      <CampoTexto
+        label="Correo responsable"
+        name="responsableId"
+        value={formulario.responsableId}
+        onChange={manejarCambio}
+        required
+      />
+      <CampoTexto
+        label="Nombre de usuario"
+        name="nombreUsuario"
+        value={formulario.nombreUsuario}
+        onChange={manejarCambio}
+        required
+      />
       <CampoTexto
         label="Contraseña"
         name="contrasena"
@@ -176,10 +168,16 @@ const FormularioRegistro: React.FC = () => {
         required
       />
       <CampoTexto
-        label="Confirmación de Contraseña"
-        name="confirmacionContrasena"
-        type="password"
-        value={formulario.confirmacionContrasena}
+        label="Nombre del Estudiante"
+        name="nombreEstudiante"
+        value={formulario.nombreEstudiante}
+        onChange={manejarCambio}
+        required
+      />
+      <CampoTexto
+        label="Año académico"
+        name="anoAcademico"
+        value={formulario.anoAcademico}
         onChange={manejarCambio}
         required
       />
