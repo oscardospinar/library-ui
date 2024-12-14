@@ -15,6 +15,7 @@ import {NavBarEstudiantes} from './components/NavBarEstudiantes/NavBarEstudiante
 // Layouts
 import LayoutWithNavBar from "./components/Layouts/LayoutWithNavBar";
 import LayoutWithoutNavBar from "./components/Layouts/LayoutWithoutNavBar";
+import AdminSearchResults from "./components/AdminSearchResults/AdminSearchResults";
 
 // Definición de rutas
 export const routes = [
@@ -68,6 +69,10 @@ export const routes = [
         path: "/Responsable",
         element: <EmailValidation />,
       },
+      {
+        path: "/admin-results",
+        element: <AdminSearchResults />,
+      }
     ],
   },
   // Ruta para 404

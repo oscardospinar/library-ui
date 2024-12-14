@@ -1,14 +1,13 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:80/BookModule/getAllBooks';
-
+import { getAllBooks as fetchBooksFromService } from '../../pages/Hook/BookService';
 
 export interface Book {
   descripcion: string;
   titulo: string;
   autor: string;
   isbn: string;
-  [key: string]: any; 
+  [key: string]: any;
 }
 
 const cleanJsonData = (data: any): any => {
@@ -16,7 +15,7 @@ const cleanJsonData = (data: any): any => {
 
   const cleanString = (value: any): any => {
     if (typeof value === 'string') {
-      return value.replace(softHyphenRegex, ''); 
+      return value.replace(softHyphenRegex, '');
     }
     return value;
   };
@@ -37,12 +36,9 @@ const cleanJsonData = (data: any): any => {
 
 export const getAllBooks = async (): Promise<Book[]> => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await fetchBooksFromService();
     let { body } = response.data;
-
     body = cleanJsonData(body);
-
-
     return Array.isArray(body)
       ? body.map((book) => ({
           ...book,
