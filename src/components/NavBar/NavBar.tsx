@@ -22,7 +22,6 @@ import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
 import { motion } from "framer-motion";
-import Cookies from 'js-cookie';
 import MainSearch from '../Mainsearch/Mainsearch';
 
 const pages = [
@@ -30,11 +29,11 @@ const pages = [
   { name: "Libros", color: "#ffd700" },
   { name: "Estudiantes", color: "#32cd32" },
 
-  { name: "Registro", color: "#ffffff" }
+  { name: "Registro", color: "#ffffff" },
 
   {name : "Búsqueda", color: "#8A9597"}
 
-
+];
 export function NavBar(): ReactElement {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [openPrestamosDialog, setOpenPrestamosDialog] = useState(false);
@@ -109,10 +108,6 @@ export function NavBar(): ReactElement {
     animate: { opacity: 1 },
     hover: { scale: 1.1 },
   };
-
-  const userCookie = Cookies.get('user');
-  const user = userCookie ? JSON.parse(userCookie) : null;
-  const nombreUsuario = user ? user.nombreUsuario : 'Invitado';
 
   return (
     <motion.nav
@@ -272,7 +267,7 @@ export function NavBar(): ReactElement {
               >
                 <MenuItem
                   onClick={() => {
-                    handleLogout();
+                    handleLogout('logout');
                     handleCloseUserMenu();
                   }}
                 >
