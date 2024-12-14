@@ -22,3 +22,21 @@ button:active {
   box-shadow: none;
   transform: scale(0.98);
 }
+.table-wrapper {
+  max-height: 400px; /* Ajusta esta altura según lo necesites */
+  overflow-y: auto;
+}
+
+.table-row {
+  height: 50px; /* Ajusta esta altura según lo necesites */
+}
+
+.table-cell {
+  padding: 10px; /* Asegura que el contenido no quede demasiado pegado */
+}
+
+.table-header-cell,
+.table-row td {
+  padding: 10px; /* Aumenta el espacio para hacer las celdas más legibles */
+  text-align: center;
+}
