@@ -73,6 +73,8 @@ export function LoadBooks(): ReactElement  {
   }
  
     return (
+      <Container  maxWidth={false} sx={{ backgroundColor: "white",  width: "100vw", 
+        height: "100vh", position: "fixed", overflow: "auto" }}>
       <Container maxWidth="lg" sx={{ py: 4, backgroundColor : "white"}}>
         {validateUser()&&<AdministrationPanel />}
         <AutoStoriesOutlinedIcon color='primary' sx={{ 
@@ -110,6 +112,7 @@ export function LoadBooks(): ReactElement  {
       </Box>
       <LoadCategories type = {filter}  showBook={getABook}/>
       <Book selectedBook={selectedBook} open={dialogOpen} onClose={closeDialog} copies={numberCopies}/>
+      </Container>
       </Container>
     );
         

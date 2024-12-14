@@ -19,6 +19,7 @@ export const getCategories = async () => {
             },
           });
         if(answer.data.status !== 200) Error(`Error: ${answer.data.message}`);
+        if(answer.status === 403 || answer.status === 401) console.log("hola no autorizhe");
         return answer;
     } catch (error) {
         throw error;
