@@ -1,14 +1,14 @@
 import axios, { AxiosResponse } from "axios";
 import { BookResponse } from "../BooksModule/Services/BookResponse"
-import { handleError } from "../BooksModule/Error/ErrorHandler";
+
 
 const API = "http://localhost:80/BookModule/";
 
 
 export const getBook = async (idBook:string) => {
     try{
-        const answer: AxiosResponse<BookResponse> = await axios.get<BookResponse>(`${API}getBook?id=${idBook}`);
-        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+        const answer = await axios.get<BookResponse>(`${API}getBook?id=${idBook}`);
+        if(answer.data.status !== 200) Error(`Error: ${answer.data.message}`);
         return answer;
     } catch (error) {
         throw error;
@@ -17,8 +17,8 @@ export const getBook = async (idBook:string) => {
 
 export const getAllBooks= async () => {
     try{
-        const answer: AxiosResponse<BookResponse> = await axios.get<BookResponse>(API+'getAllBooks'); 
-        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);      
+        const answer = await axios.get<BookResponse>(API+'getAllBooks'); 
+        if(answer.data.status !== 200) Error(`Error: ${answer.data.message}`);      
         return answer;
     } catch (error) {
         throw error;
@@ -43,8 +43,8 @@ export const updateBook = async (bookId: string | undefined, isbn: string, descr
             categoryIds: categoryIds,
             subcategoryIds: subcategoryIds
         }
-        const answer: AxiosResponse<BookResponse> = await axios.patch<BookResponse>(API+'updateBook',requestBody); 
-        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+        const answer = await axios.patch<BookResponse>(API+'updateBook',requestBody); 
+        if(answer.data.status !== 200) Error(`Error: ${answer.data.message}`);
         return answer;
         } catch (error) {
             throw error;
@@ -67,18 +67,19 @@ export const saveBook = async (isbn: string, description: string, title: string,
                 categoryIds: categoryIds,
                 subcategoryIds: subcategoryIds
             }
-            const answer: AxiosResponse<BookResponse> = await axios.post<BookResponse>(API+'saveBook',requestBody); 
-            if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+            const answer = await axios.post<BookResponse>(API+'saveBook',requestBody); 
+            if(answer.data.status !== 200) Error(`Error: ${answer.data.message}`);
             return answer;
             } catch (error) {
+                console.log(error);
                 throw error;
     } 
 }
 
 export const deleteBook = async (idBook:string) => {
     try{
-        const answer: AxiosResponse<BookResponse> = await axios.delete<BookResponse>(API+'deleteBook?id='+idBook); 
-        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+        const answer = await axios.delete<BookResponse>(API+'deleteBook?id='+idBook); 
+        if(answer.data.status !== 200) Error(`Error: ${answer.data.message}`);
         return answer;
     } catch (error) {
         throw error;
@@ -90,12 +91,12 @@ export const uploadBookImage = async (file: File, bookId: string) => {
     try {
       const formData = new FormData();
       formData.append("file", file); 
-      const answer: AxiosResponse<BookResponse> = await axios.post(API+'uploadImg?bookId='+bookId,formData, {
+      const answer = await axios.post(API+'uploadImg?bookId='+bookId,formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       }); 
-        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+      if(answer.data.status !== 200) Error(`Error: ${answer.data.message}`);
       return answer.data; 
     } catch (error) {
         throw error;
@@ -104,8 +105,8 @@ export const uploadBookImage = async (file: File, bookId: string) => {
 
 export const getCopiesByBook = async (id:string) => {
     try{
-        const answer: AxiosResponse<BookResponse> = await axios.get<BookResponse>(API+'getCopies?bookId='+id); 
-        if(answer.status !== 200) throw new Error(`Error: ${answer.statusText}`);
+        const answer = await axios.get<BookResponse>(API+'getCopies?bookId='+id); 
+        if(answer.data.status !== 200) Error(`Error: ${answer.data.message}`);
         return answer;
     } catch (error) {
         throw error;

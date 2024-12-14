@@ -1,7 +1,7 @@
 import { Category } from "./category";
 
 export type BookResponse = {
-    status: string;
+    status: number;
     message: string;
     body: any | any[];
 }

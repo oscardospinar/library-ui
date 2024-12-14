@@ -19,6 +19,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Copy } from '../Services/Copy';
 import { deleteCopy } from "../../Hook/CopyService";
 import { PaginationTable } from '../../../components/BookPagination/PaginationTable';
+import { useBooks } from '../../../components/BookContext/useBooks';
 
 export const emptyCopy: Copy = {
     id: "",
@@ -34,6 +35,7 @@ interface Props {
   bookId: string;
 }
 export default function CopyAdministration(props: Props) {
+  const { setShowErrorMessageB, setShowSuccessMessageB } = useBooks();
   const {bookId} = props;
   const [openEditor, setOpenEditor] = useState(false);
   const [selectedCopy, setSelectedCopy] = useState<Copy>(emptyCopy);
@@ -52,21 +54,25 @@ export default function CopyAdministration(props: Props) {
     }, []); 
 
   const getCopies = async () => {
-    const answer = await getCopiesByBook(bookId);
-    if (answer) {
-      if(answer.data){
-        setCopies(answer.data.body);
-        }
-      }
+    try{
+      const answer = await getCopiesByBook(bookId);
+      setCopies(answer.data.body);
+      }catch(error){
+        setShowErrorMessageB("Error al cargar las copias "+error);
+    }
   };
   
   const getACopy = async (id: string)  => {
-    const answer = await getCopy(id);
-    if (answer && answer.data.body.length === 1) {
-        setSelectedCopy(answer.data.body[0]); 
-        setTitle("Editar Copia");
-        setEdit(true);
-        setOpenEditor(true); 
+    try{
+      const answer = await getCopy(id);
+      if (answer && answer.data.body.length === 1) {
+          setSelectedCopy(answer.data.body[0]); 
+          setTitle("Editar Copia");
+          setEdit(true);
+          setOpenEditor(true); 
+      }
+    }catch(error){
+      setShowErrorMessageB("Error al obtener la copia "+error);
     }
   };
 
@@ -82,11 +88,13 @@ export default function CopyAdministration(props: Props) {
   };
 
   const deleteACopy= async (id: string ) => {
-    if(id){
-      const answer = await deleteCopy(id);
-      if (answer) {
-        console.log(answer);
+    try{
+      if(id){
+        const answer = await deleteCopy(id);
+        setShowSuccessMessageB("Copia eliminada correctamente "+answer?.data.message);
       }
+    }catch(error){
+      setShowErrorMessageB("Error al eliminar la copia "+error);
     }
   };
 
@@ -116,22 +124,22 @@ export default function CopyAdministration(props: Props) {
                   <TableCell>Id</TableCell>
                   <TableCell>Estado</TableCell>
                   <TableCell>Ubicacion</TableCell>
-                  <TableCell>Disponibilidad</TableCell>
                   <TableCell align="right">Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedBooks.map((row) => (
+                {paginatedBooks
+                .filter((row) => row.active)
+                .map((row) => (
                   <TableRow
                     key={row.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: row.disponibility === 'AVAILABLE' ? 'inherit' : 'rgba(255, 235, 59, 0.3)' ,}} 
                   >
                     <TableCell component="th" scope="row">
                       {row.id}
                     </TableCell>
                     <TableCell>{row.state}</TableCell>
                     <TableCell>{row.ubication}</TableCell>
-                    <TableCell>{row.disponibility}</TableCell>
                     <TableCell align="right">
                       <ButtonGroup variant="outlined" aria-label="crud button group">
                         <Button startIcon={<EditIcon />} onClick={() => handleEdit(row.id)}>

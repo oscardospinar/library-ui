@@ -18,6 +18,7 @@ import { getCategories, getCategory, deleteCategory } from '../../Hook/CategoryS
 import { Typography } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { PaginationTable } from '../../../components/BookPagination/PaginationTable';
+import { useBooks } from '../../../components/BookContext/useBooks';
 
 export const emptyCategory: Category = {
   categoryId: "",
@@ -27,6 +28,7 @@ export const emptyCategory: Category = {
 
 
 export default function CategoryAdministration() {
+  const { setShowErrorMessageB, setShowSuccessMessageB } = useBooks();
   const [openEditor, setOpenEditor] = useState(false);
   const [title, setTitle] = useState<string>("Añadir Categoría");
   const [edit, setEdit] = useState<boolean>(false);
@@ -38,13 +40,13 @@ export default function CategoryAdministration() {
     }, []); 
 
     const getAllCategories = async () => {
+      try{
         const answer = await getCategories();
-        if (answer) {
-          if(answer.data){
-            setCategories(answer.data.body);
-          }
-        }
-    };
+        setCategories(answer.data.body);
+      }catch(error){
+        setShowErrorMessageB("Error al cargar las categorías "+error);
+      }
+    }
 
   const handleEdit = async (categoryId: string | undefined) => {
     if (categoryId) {
@@ -54,18 +56,22 @@ export default function CategoryAdministration() {
 
   
   const getACategory = async (id: string) => {
-    const answer = await getCategory(id);
-    if (answer) {
-      const category: Category | undefined = answer.data.body && answer.data.body.length === 1 
-          ? answer.data.body[0] 
-          : undefined;
-        if (category) {
-          console.log(category);
-          setSelectedCategory(category);
-          setTitle("Editar Categoría");
-          setEdit(true);
-          setOpenEditor(true); 
-        }
+    try{
+      const answer = await getCategory(id);
+      if (answer) {
+        const category: Category | undefined = answer.data.body && answer.data.body.length === 1 
+            ? answer.data.body[0] 
+            : undefined;
+          if (category) {
+            console.log(category);
+            setSelectedCategory(category);
+            setTitle("Editar Categoría");
+            setEdit(true);
+            setOpenEditor(true); 
+          }
+      }
+    }catch(error){
+      setShowErrorMessageB("Error al obtener la categoría "+error);
     }
   };
 
@@ -81,11 +87,13 @@ export default function CategoryAdministration() {
   };
 
   const deleteACategory = async (id: string ) => {
-    if(id){
-      const answer = await deleteCategory(id);
-      if (answer) {
-        console.log(answer);
+    try{
+      if(id){
+        const answer = await deleteCategory(id);
+        setShowSuccessMessageB("Categorías eliminada correctamente "+answer?.data.message);
       }
+    }catch(error){
+      setShowErrorMessageB("Error al eliminar la categoría "+error);
     }
   };
 
@@ -118,7 +126,8 @@ export default function CategoryAdministration() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedBooks.map((row) => (
+                {paginatedBooks.
+                filter((row) => row.active).map((row) => (
                   <TableRow
                     key={row.categoryId}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
