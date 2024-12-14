@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Paper,
@@ -20,6 +20,7 @@ import BusquedaLibro from "../../components/Loans/BookSearch/BusquedaLibro";
 import PrestamosActivos from "../../components/Loans/ActiveLoan/PrestamosActivos";
 import HistorialPrestamos from "../../components/Loans/History/historial";
 import Register from "../../components/Loans/RegisterLoans/Register";
+import jwt_decode from "jwt-decode";
 
 enum Option {
   RegistrarPréstamo = "RegistrarPréstamo",
@@ -35,7 +36,20 @@ type PrestamosPageProps = {
 const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [openPrestamoDialog, setOpenPrestamoDialog] = useState(false);
+  
 
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken'); 
+    if (token) {
+      try {
+        const decoded: any = jwt_decode(token);
+        console.log(decoded); 
+      } catch (error) {
+        console.error("Error al decodificar el token:", error);
+      }
+    }
+  }, []);
+  
   const handleClose = () => {
     setSelectedOption(null);
   };
