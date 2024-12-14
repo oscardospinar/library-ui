@@ -32,7 +32,7 @@ const Loans = ({ open, onClose, onSuccess }: LoansProps) => {
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Registrar Préstamo</DialogTitle>
       <DialogContent>
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 3, width: "100%" }}>
           <Typography variant="h6" sx={{ mb: 3 }}>
             Gestión de Préstamos
           </Typography>

@@ -15,7 +15,7 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import Loading from "../../Loading/Loading"; // Asegúrate de que la ruta sea correcta
+import Loading from "../../Loading/Loading";
 
 import "./StudientHistory.css";
 
@@ -37,32 +37,53 @@ const StudientHistory = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Datos de ejemplo
-  const prestamosEjemplo: Prestamo[] = [
-    {
-      nombreEstudiante: "Juan Pérez",
-      nombreLibro: "Introducción a React",
-      fecha: "2024-11-01",
-      estado: "Activo",
-    },
-    {
-      nombreEstudiante: "Ana Gómez",
-      nombreLibro: "Aprendiendo TypeScript",
-      fecha: "2024-11-05",
-      estado: "Vencido",
-    },
-    {
-      nombreEstudiante: "Carlos Martínez",
-      nombreLibro: "Mastering JavaScript",
-      fecha: "2024-11-10",
-      estado: "Activo",
-    },
-  ];
+  const obtenerHistorialPrestamos = async () => {
+    setLoading(true);
+    setError(null);
+
+    const studentId = "2024123456";
+
+    try {
+      const response = await fetch(
+        `https://bibliosoftloanback-ahecc7fydjdze0ar.canadacentral-01.azurewebsites.net/loans/getHistoryByStudent/${studentId}`
+      );
+
+      if (!response.ok) {
+        throw new Error("No se pudieron cargar los préstamos del historial.");
+      }
+
+      const data = await response.json();
+
+      // Verificamos si la respuesta es un array
+      const prestamosData = Array.isArray(data)
+        ? data.map((item: any) => ({
+            nombreEstudiante: item.studentName,
+            nombreLibro: item.nameBook,
+            fecha: item.loanDate,
+            estado: item.loanState,
+          }))
+        : [
+            {
+              nombreEstudiante: data.studentName,
+              nombreLibro: data.nameBook,
+              fecha: data.loanDate,
+              estado: data.loanState,
+            },
+          ]; 
+
+      setPrestamos(prestamosData);
+    } catch (err) {
+      setError(
+        "Error al cargar los préstamos del historial. Intenta nuevamente más tarde."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (open) {
-      // Usar los datos de ejemplo en lugar de hacer la llamada a la API
-      setPrestamos(prestamosEjemplo);
+      obtenerHistorialPrestamos();
     }
   }, [open]);
 
@@ -78,18 +99,12 @@ const StudientHistory = ({
       maxWidth="md"
       disableEscapeKeyDown
       BackdropProps={{
-        onClick: (e) => e.stopPropagation(), // Evita que el clic en el fondo cierre el diálogo
+        onClick: (e) => e.stopPropagation(),
       }}
     >
       <DialogTitle className="dialog-title">Historial de Préstamos</DialogTitle>
       <DialogContent className="dialog-content">
         <Box>
-          <Typography
-            variant="h6"
-            sx={{ marginBottom: 2, textAlign: "center" }}
-          >
-            Historial Completo de Préstamos
-          </Typography>
           {loading ? (
             <Box className="table-loading">
               <Loading />

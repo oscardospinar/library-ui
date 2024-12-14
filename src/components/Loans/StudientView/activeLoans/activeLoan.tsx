@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogActions,
@@ -18,40 +18,12 @@ import {
 import "./active.css";
 
 interface Prestamo {
-  codigoEstudiante: string;
-  codigoLibro: string;
-  nombreEstudiante: string;
-  nombreLibro: string;
-  fechaPrestamo: string;
-  fechaDevolucion: string;
+  studentName: string;
+  nameBook: string;
+  loanDate: string;
+  maxReturnDate: string;
+  loanState: string;
 }
-
-const prestamosData: Prestamo[] = [
-  {
-    codigoEstudiante: "E001",
-    codigoLibro: "L001",
-    nombreEstudiante: "Juan Pérez",
-    nombreLibro: "Introducción a React",
-    fechaPrestamo: "2024-11-01",
-    fechaDevolucion: "2024-12-01",
-  },
-  {
-    codigoEstudiante: "E002",
-    codigoLibro: "L002",
-    nombreEstudiante: "María Gómez",
-    nombreLibro: "JavaScript Avanzado",
-    fechaPrestamo: "2024-11-10",
-    fechaDevolucion: "2024-12-10",
-  },
-  {
-    codigoEstudiante: "E003",
-    codigoLibro: "L003",
-    nombreEstudiante: "Carlos Ruiz",
-    nombreLibro: "Fundamentos de CSS",
-    fechaPrestamo: "2024-11-15",
-    fechaDevolucion: "2024-12-15",
-  },
-];
 
 const ActiveLoan = ({
   open,
@@ -60,7 +32,46 @@ const ActiveLoan = ({
   open: boolean;
   onClose: () => void;
 }) => {
-  const [prestamos, setPrestamos] = useState<Prestamo[]>(prestamosData);
+  const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      // Cargar préstamos activos solo cuando se abre el diálogo
+      const fetchPrestamos = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          // ID del estudiante estático
+          const studentId = "2024123456"; // ID de estudiante estático
+          const url = `https://bibliosoftloanback-ahecc7fydjdze0ar.canadacentral-01.azurewebsites.net/loans/getLoans/state/${studentId}?state=Loaned`;
+
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+          }
+          const data = await response.json();
+
+          // Mapeamos la respuesta a los datos de la tabla
+          const prestamosMapped = data.map((item: any) => ({
+            studentName: item.studentName, // Usamos el nombre del estudiante
+            nameBook: item.nameBook,
+            loanDate: item.loanDate,
+            maxReturnDate: item.maxReturnDate,
+            loanState: item.loanState,
+          }));
+          setPrestamos(prestamosMapped);
+        } catch (err: any) {
+          setError(err.message || "Error al cargar los datos");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchPrestamos();
+    }
+  }, [open]);
 
   return (
     <Dialog
@@ -86,52 +97,67 @@ const ActiveLoan = ({
           >
             Lista de Préstamos Activos Del estudiante
           </Typography>
-          <TableContainer component={Paper} className="table-wrapper">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell className="table-header-cell" align="center">
-                    Estudiante
-                  </TableCell>
-                  <TableCell className="table-header-cell" align="center">
-                    Libro
-                  </TableCell>
-                  <TableCell className="table-header-cell" align="center">
-                    Fecha de Prestamo
-                  </TableCell>
-                  <TableCell className="table-header-cell" align="center">
-                    Fecha de Devolucion
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {prestamos.length === 0 ? (
+          {loading ? (
+            <Typography align="center">Cargando préstamos...</Typography>
+          ) : error ? (
+            <Typography align="center" color="error">
+              {error}
+            </Typography>
+          ) : (
+            <TableContainer component={Paper} className="table-wrapper">
+              <Table>
+                <TableHead>
                   <TableRow>
-                    <TableCell colSpan={5} align="center">
-                      No hay préstamos activos.
+                    <TableCell className="table-header-cell" align="center">
+                      Estudiante
+                    </TableCell>
+                    <TableCell className="table-header-cell" align="center">
+                      Libro
+                    </TableCell>
+                    <TableCell className="table-header-cell" align="center">
+                      Fecha de Prestamo
+                    </TableCell>
+                    <TableCell className="table-header-cell" align="center">
+                      Fecha de Devolucion
+                    </TableCell>
+                    <TableCell className="table-header-cell" align="center">
+                      Estado del Préstamo
                     </TableCell>
                   </TableRow>
-                ) : (
-                  prestamos.map((prestamo, index) => (
-                    <TableRow key={index} className="table-row">
-                      <TableCell align="center">
-                        {prestamo.nombreEstudiante}
-                      </TableCell>
-                      <TableCell align="center">
-                        {prestamo.nombreLibro}
-                      </TableCell>
-                      <TableCell align="center">
-                        {prestamo.fechaPrestamo}
-                      </TableCell>
-                      <TableCell align="center">
-                        {prestamo.fechaDevolucion}
+                </TableHead>
+                <TableBody>
+                  {prestamos.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={5} align="center">
+                        No hay préstamos activos.
                       </TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  ) : (
+                    prestamos.map((prestamo, index) => (
+                      <TableRow key={index} className="table-row">
+                        <TableCell align="center">
+                          {prestamo.studentName}{" "}
+                          {/* Mostramos el nombre del estudiante */}
+                        </TableCell>
+                        <TableCell align="center">
+                          {prestamo.nameBook}
+                        </TableCell>
+                        <TableCell align="center">
+                          {prestamo.loanDate}
+                        </TableCell>
+                        <TableCell align="center">
+                          {prestamo.maxReturnDate}
+                        </TableCell>
+                        <TableCell align="center">
+                          {prestamo.loanState}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </Box>
       </DialogContent>
       <DialogActions className="dialog-actions">
