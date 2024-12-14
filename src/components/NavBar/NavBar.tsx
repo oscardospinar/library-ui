@@ -116,67 +116,6 @@ export function NavBar(): ReactElement {
       transition={{ duration: 0.5 }}
     >
 
-      <Box
-        sx={{
-          width: "100%",
-          height: "50px",
-          backgroundColor: "white",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          px: 2,
-        }}
-      >
-        <img
-          src="/colegioLogo.png"
-          style={{
-            height: "53px", 
-            width: "auto",  
-          }}
-        />
-        <Box sx={{ flex: 1, maxWidth: "400px", mx: 3 }}>
-          <TextField
-            type="search"
-            placeholder="Buscar..."
-            fullWidth
-            size="small"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center", marginRight: "2rem" }}>
-          <Button
-            id="user-menu-button"
-            aria-controls={open ? "user-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleClick}
-            endIcon={<KeyboardArrowDownIcon />}
-            startIcon={<AccountCircleIcon />}
-          >
-            {nombreUsuario}
-          </Button>
-          <Menu
-            id="user-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              "aria-labelledby": "user-menu-button",
-            }}
-          >
-            <MenuItem onClick={handleClose}>Perfil</MenuItem>
-            <MenuItem onClick={handleClose}>Configuración</MenuItem>
-            <MenuItem onClick={() => { handleLogout('Logout'); handleClose(); }}>Cerrar sesión</MenuItem>
-          </Menu>
-        </Box>
-      </Box>
-
       <AppBar position="static" sx={{ backgroundColor: "#1976d2", boxShadow: "none" }}>
 
         <Container maxWidth="xl">
@@ -191,25 +130,6 @@ export function NavBar(): ReactElement {
                   marginRight: "1rem"
                 }}
               />
-              <motion.div
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <BookIcon sx={{ fontSize: 40, color: "white" }} />
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontFamily: "monospace",
-                    fontWeight: 700,
-                    letterSpacing: ".3rem",
-                    color: "white",
-                    marginLeft: "0.5rem",
-                  }}
-                >
-                  Bienvenido!
-                </Typography>
-              </motion.div>
             </Box>
 
 
@@ -243,7 +163,33 @@ export function NavBar(): ReactElement {
               ))}
             </Box>
 
-
+          <Box sx={{ display: "flex", alignItems: "center", marginRight: "2rem"}}>
+          <Button
+            id="user-menu-button"
+            aria-controls={open ? "user-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+            endIcon={<KeyboardArrowDownIcon />}
+            startIcon={<AccountCircleIcon />}
+            sx={{color:"white"}}
+          >
+            {nombreUsuario}
+          </Button>
+          <Menu
+            id="user-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "user-menu-button",
+            }}
+          >
+            <MenuItem onClick={handleClose}>Perfil</MenuItem>
+            <MenuItem onClick={handleClose}>Configuración</MenuItem>
+            <MenuItem onClick={() => { handleLogout('Logout'); handleClose(); }}>Cerrar sesión</MenuItem>
+          </Menu>
+        </Box>
 
           </Toolbar>
         </Container>
