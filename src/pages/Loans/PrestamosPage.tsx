@@ -23,7 +23,6 @@ import Register from "../../components/Loans/RegisterLoans/Register";
 
 import ActiveLoansStudent from "../../components/Loans/StudientView/activeLoans/activeLoan";
 import StudientHisto from "../../components/Loans/StudientView/history/StudientHistory";
-import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
 
 
@@ -35,11 +34,11 @@ enum Option {
   Historial = "Historial",
 }
 
-type PrestamosPageProps = {
+type PrestamosDialogProps = {
   onClose: () => void;
 };
 
-const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
+const PrestamosPage: React.FC<PrestamosDialogProps> = ({ onClose }) => {
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [openPrestamoDialog, setOpenPrestamoDialog] = useState(false);
 
@@ -83,29 +82,14 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
         default:
           return null;
       }
-
-
+    }
+  }
   const handleLoanSuccess = () => {
     console.log("El préstamo fue exitoso");
     setOpenPrestamoDialog(false);
   };
 
-  const renderSelectedOption = () => {
-    switch (selectedOption) {
-      case Option.RegistrarPréstamo:
-        return <Register open={true} onClose={onClose}/>;
-      case Option.BuscarDisponibilidad:
-        return <BusquedaLibro open={true} onClose={onClose} />;
-      case Option.MirarPrestamosActivos:
-        return <PrestamosActivos open={true} onClose={onClose} />;
-      case Option.Historial:
-        return <HistorialPrestamos open={true} onClose={onClose} />;
-      default:
-        return null;
 
-    }
-    return <Typography variant="h6">No autorizado.</Typography>; // Manejo de acceso no autorizado
-  };
 
   if (loading) {
     return <Typography variant="h6">Cargando...</Typography>; // Mensaje de carga mientras se obtiene el rol
@@ -275,164 +259,11 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
               </>
             )}
           </Grid>
-
-            {/* Cards for different options */}
-            <Grid item xs={12} sm={6} md={3}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
-                  <CardContent>
-                    <Typography variant="h6" component="div">
-                      Registrar Préstamo
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 2 }}
-                    >
-                      Realiza nuevos prestamos para Estudiantes
-                    </Typography>
-                    <IconButton color="primary" sx={{ fontSize: 50 }}>
-                      <Assignment />
-                    </IconButton>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      onClick={() => {
-                        setSelectedOption(Option.RegistrarPréstamo);
-                        setOpenPrestamoDialog(true);
-                      }}
-                    >
-                      Ir a Registrar
-                    </Button>
-                  </CardActions>
-                </Card>
-              </motion.div>
-            </Grid>
-
-            {/* Other grid items for different actions */}
-            <Grid item xs={12} sm={6} md={3}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
-                  <CardContent>
-                    <Typography variant="h6" component="div">
-                      Historial de Préstamos
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 2 }}
-                    >
-                      Consulta el historial completo de préstamos de libros.
-                    </Typography>
-                    <IconButton color="primary" sx={{ fontSize: 50 }}>
-                      <Assignment />
-                    </IconButton>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      onClick={() => setSelectedOption(Option.Historial)}
-                    >
-                      Ver Historial
-                    </Button>
-                  </CardActions>
-                </Card>
-              </motion.div>
-            </Grid>
-
-            {/* Additional cards for other options */}
-            <Grid item xs={12} sm={6} md={3}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
-                  <CardContent>
-                    <Typography variant="h6" component="div">
-                      Buscar Disponibilidad
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 2 }}
-                    >
-                      Consulta la disponibilidad de libros para préstamo.
-                    </Typography>
-                    <IconButton color="primary" sx={{ fontSize: 50 }}>
-                      <Search />
-                    </IconButton>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      onClick={() =>
-                        setSelectedOption(Option.BuscarDisponibilidad)
-                      }
-                    >
-                      Buscar Disponibilidad
-                    </Button>
-                  </CardActions>
-                </Card>
-              </motion.div>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={3}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
-                  <CardContent>
-                    <Typography variant="h6" component="div">
-                      Ver Préstamos Activos
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 2 }}
-                    >
-                      Consulta los préstamos activos y su estado actual.
-                    </Typography>
-                    <IconButton color="primary" sx={{ fontSize: 50 }}>
-                      <AccessTime />
-                    </IconButton>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      onClick={() =>
-                        setSelectedOption(Option.MirarPrestamosActivos)
-                      }
-                    >
-                      Ver Activos
-                    </Button>
-                  </CardActions>
-                </Card>
-              </motion.div>
-            </Grid>
-          </Grid>
-
-
           {renderSelectedOption()}
         </Box>
       </DialogContent>
     </Dialog>
   );
-};
-
+}
+    
 export default PrestamosPage;

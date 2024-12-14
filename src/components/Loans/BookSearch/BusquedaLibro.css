@@ -73,10 +73,7 @@
   overflow-y: auto; 
 }
 
-  min-height: 20vh; /* Altura mínima relativa al viewport */
-  max-height: 80vh; /* Altura máxima para prevenir que crezca demasiado */
-  overflow-y: auto; /* Habilita scroll si el contenido excede */
-}
+
 
 
 

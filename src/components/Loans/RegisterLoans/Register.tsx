@@ -59,5 +59,3 @@ const Register: React.FC<RegisterProps> = ({ open, onClose }) => {
 
 export default Register;
 
-export default Register;
-
