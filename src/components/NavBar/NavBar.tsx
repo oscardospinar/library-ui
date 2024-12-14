@@ -243,38 +243,7 @@ export function NavBar(): ReactElement {
               ))}
             </Box>
 
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Button
-                id="user-menu-button"
-                aria-controls={Boolean(anchorElUser) ? "user-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={Boolean(anchorElUser) ? "true" : undefined}
-                onClick={handleOpenUserMenu}
-                endIcon={<KeyboardArrowDownIcon />}
-                startIcon={<AccountCircleIcon />}
-                sx={{ color: "white" }}
-              >
-                {nombreUsuario}
-              </Button>
-              <Menu
-                id="user-menu"
-                anchorEl={anchorElUser}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-                MenuListProps={{
-                  "aria-labelledby": "user-menu-button",
-                }}
-              >
-                <MenuItem
-                  onClick={() => {
-                    handleLogout('logout');
-                    handleCloseUserMenu();
-                  }}
-                >
-                  Cerrar sesión
-                </MenuItem>
-              </Menu>
-            </Box>
+
 
           </Toolbar>
         </Container>
