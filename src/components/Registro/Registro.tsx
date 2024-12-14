@@ -183,7 +183,7 @@ const FormularioRegistro: React.FC = () => {
       />
       <div className="captcha-container">
         <ReCAPTCHA
-          sitekey="6LcD-YQqAAAAAKmisLvpnV7EHvNoN7w-ZDUYpJsA"
+          sitekey="6LfyrpsqAAAAAF-1-ojgfHSRnUKNEA_Z4kqzLTDp"
           onChange={manejarCaptcha}
         />
       </div>
