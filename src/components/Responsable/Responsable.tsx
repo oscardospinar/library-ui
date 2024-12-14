@@ -46,10 +46,10 @@ function EmailValidation() {
 
                 if (!responsableExiste) {
                     setMensaje('El correo es válido y el responsable existe.');
-                    navigate('/Registro', { state: { email } }); // Enviar el correo a la ruta `/Registro`.
+                    navigate('/Registro', { state: { responsableId: email } });
                 } else {
                     setMensaje('El responsable no existe. Por favor, ingresa los datos del nuevo responsable.');
-                    setResponsableNoExiste(true); // Activa el formulario para nuevo responsable.
+                    setResponsableNoExiste(true);
                 }
             } catch (error: any) {
                 setMensaje('Error al enviar los datos al servidor.');
@@ -87,7 +87,7 @@ function EmailValidation() {
             }
 
             setMensaje('Responsable registrado con éxito.');
-            navigate('/Registro', { state: { email } }); // Enviar el correo al registrar al responsable.
+            navigate('/Registro', { state: { responsableId: nuevoResponsable.correoElectronico } }); // Enviar el correo al registrar al responsable.
         } catch (error: any) {
             setMensaje('Error al registrar el nuevo responsable.');
             console.error('Error:', error.message || error);
@@ -97,7 +97,7 @@ function EmailValidation() {
     return (
         <div className="container">
             <div className="info">
-                <h1 style={{ color: '#ffffff', fontSize: '2rem', textAlign: 'center' }}>Validador de Correo</h1>
+                <h1 style={{ color: 'black', fontSize: '2rem', textAlign: 'center' }}>Validador de Correo</h1>
             </div>
             <div className="form">
                 <form onSubmit={handleSubmit}>
