@@ -44,6 +44,10 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
   const [openPrestamoDialog, setOpenPrestamoDialog] = useState(false);
   const [userRole, setUserRole] = useState<"admin" | "estudiante" | null>(null);
 
+  const handleClose = () => {
+    setSelectedOption(null);
+  };
+
   const handleRoleChange = (
     event: SelectChangeEvent<"admin" | "estudiante">
   ) => {
@@ -78,23 +82,23 @@ const PrestamosPage: React.FC<PrestamosPageProps> = ({ onClose }) => {
               }}
             >
               <Box sx={{ width: "100%", maxWidth: 600 }}>
-                <Prestamos onSuccess={handleLoanSuccess} onClose={onClose} />
+                <Prestamos onSuccess={handleLoanSuccess} onClose={handleClose} />
               </Box>
             </DialogContent>
           </Dialog>
         );
       case Option.BuscarDisponibilidad:
-        return <BusquedaLibro open={true} onClose={onClose} />;
+        return <BusquedaLibro open={true} onClose={handleClose} />;
       case Option.MirarPrestamosActivos:
         if (userRole === "admin") {
-          return <PrestamosActivos open={true} onClose={onClose} />;
+          return <PrestamosActivos open={true} onClose={handleClose} />;
         }
-        return <ActiveLoansStudent open={true} onClose={onClose} />;
+        return <ActiveLoansStudent open={true} onClose={handleClose} />;
       case Option.Historial:
         if (userRole === "estudiante") {
-          return <StudientHisto open={true} onClose={onClose} />;
+          return <StudientHisto open={true} onClose={handleClose} />;
         }
-        return <HistorialPrestamos open={true} onClose={onClose} />;
+        return <HistorialPrestamos open={true} onClose={handleClose} />;
 
       default:
         return null;
