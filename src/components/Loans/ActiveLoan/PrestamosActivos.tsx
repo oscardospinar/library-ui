@@ -35,40 +35,38 @@ const PrestamosActivos = ({
   open: boolean;
   onClose: () => void;
 }) => {
-  const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
+  const [prestamos, setPrestamos] = useState<Prestamo[]>([
+    {
+      codigoEstudiante: "E001",
+      codigoLibro: "L001",
+      nombreEstudiante: "Juan Pérez",
+      nombreLibro: "JavaScript Avanzado",
+      fechaPrestamo: "2024-11-01",
+      fechaDevolucion: "2024-12-01",
+    },
+    {
+      codigoEstudiante: "E002",
+      codigoLibro: "L002",
+      nombreEstudiante: "Ana Gómez",
+      nombreLibro: "React para Principiantes",
+      fechaPrestamo: "2024-11-05",
+      fechaDevolucion: "2024-12-05",
+    },
+    {
+      codigoEstudiante: "E003",
+      codigoLibro: "L003",
+      nombreEstudiante: "Carlos Rodríguez",
+      nombreLibro: "Node.js y Express",
+      fechaPrestamo: "2024-11-10",
+      fechaDevolucion: "2024-12-10",
+    },
+  ]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false);
   const [selectedPrestamo, setSelectedPrestamo] = useState<Prestamo | null>(
     null
   );
-
-  const obtenerPrestamosActivos = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(
-        "https://bibliosoftloanback-ahecc7fydjdze0ar.canadacentral-01.azurewebsites.net/loans"
-      );
-      if (!response.ok) {
-        throw new Error("No se pudieron cargar los préstamos activos.");
-      }
-      const data = await response.json();
-      setPrestamos(data);
-    } catch (err) {
-      setError(
-        "Error al cargar los préstamos activos. Intenta nuevamente más tarde."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (open) {
-      obtenerPrestamosActivos();
-    }
-  }, [open]);
 
   const handleOpenReturnDialog = (prestamo: Prestamo) => {
     setSelectedPrestamo(prestamo);
@@ -93,7 +91,7 @@ const PrestamosActivos = ({
         maxWidth="md"
         disableEscapeKeyDown
         BackdropProps={{
-          onClick: (e) => e.stopPropagation(), // Evita que el clic en el fondo cierre el diálogo
+          onClick: (e) => e.stopPropagation(),
         }}
       >
         <DialogTitle className="dialog-title">Préstamos Activos</DialogTitle>
@@ -119,10 +117,10 @@ const PrestamosActivos = ({
                   <TableHead>
                     <TableRow>
                       <TableCell className="table-header-cell" align="center">
-                        Código Estudiante
+                        estudiante
                       </TableCell>
                       <TableCell className="table-header-cell" align="center">
-                        Código Libro
+                        libro
                       </TableCell>
                       <TableCell className="table-header-cell" align="center">
                         Fecha Préstamo
@@ -146,10 +144,10 @@ const PrestamosActivos = ({
                       prestamos.map((prestamo, index) => (
                         <TableRow key={index} className="table-row">
                           <TableCell align="center">
-                            {prestamo.codigoEstudiante}
+                            {prestamo.nombreEstudiante}
                           </TableCell>
                           <TableCell align="center">
-                            {prestamo.codigoLibro}
+                            {prestamo.nombreLibro}
                           </TableCell>
                           <TableCell align="center">
                             {prestamo.fechaPrestamo}
@@ -187,6 +185,8 @@ const PrestamosActivos = ({
           open={openReturnDialog}
           onClose={handleCloseReturnDialog}
           onSuccess={handleCloseReturnDialog}
+          nombreEstudiante={selectedPrestamo.nombreEstudiante}
+          nombreLibro={selectedPrestamo.nombreLibro}
         />
       )}
     </>

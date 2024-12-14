@@ -17,6 +17,10 @@ function Prestamos({ onSuccess, onClose, idCopia }: PrestamosProps) {
     onSuccess();
   };
 
+  const handleClose = () => {
+    onClose();
+  };
+
   return (
     <div className="container">
       <div className="heading">Registrar un préstamo</div>
@@ -40,7 +44,7 @@ function Prestamos({ onSuccess, onClose, idCopia }: PrestamosProps) {
         />
         <div className="form-actions">
           <input className="login-button" type="submit" value="Registrar" />
-          <button type="button" className="login-button" onClick={onClose}>
+          <button type="button" className="login-button" onClick={handleClose}>
             Cerrar
           </button>
         </div>
