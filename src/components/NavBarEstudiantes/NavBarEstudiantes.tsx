@@ -22,6 +22,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
 import { motion } from "framer-motion";
+import Cookies from 'js-cookie';
 
 const pages = [
   { name: "Prestamos", color: "#ff69b4" },
@@ -89,6 +90,9 @@ export function NavBarEstudiantes(): ReactElement {
     animate: { opacity: 1 },
     hover: { scale: 1.1 },
   };
+  const userCookie = Cookies.get('user');
+  const user = userCookie ? JSON.parse(userCookie) : null;
+  const nombreUsuario = user ? user.nombreUsuario : 'Usuario12321'; // Default to 'Usuario' if not found
 
   return (
     <motion.nav
@@ -139,7 +143,7 @@ export function NavBarEstudiantes(): ReactElement {
             endIcon={<KeyboardArrowDownIcon />}
             startIcon={<AccountCircleIcon />}
           >
-            user123
+            {nombreUsuario}
           </Button>
           <Menu
             id="user-menu"

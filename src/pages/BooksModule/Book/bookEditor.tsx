@@ -19,6 +19,7 @@ import { getSubcategories } from "../../Hook/SubcategoryService";
 import { Category } from "../Services/category";
 import { Subcategory } from "../Services/Subcategory";
 import ClassIcon from '@mui/icons-material/Class';
+import { useBooks } from "../../../components/BookContext/useBooks";
 
 export default function BookEditor({
   book,
@@ -33,6 +34,7 @@ export default function BookEditor({
   title: string
   isEdit: boolean
 }) {
+  const { setShowErrorMessageB, setShowSuccessMessageB, setShowWarningMessageB } = useBooks();
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoriesIds, setCategoriesIds] = useState<string[]>([]);
@@ -61,7 +63,7 @@ export default function BookEditor({
   const handleSave = () => {
     if (!editedBook.title.trim() || !editedBook.author.trim() || !editedBook.collection.trim() || !editedBook.editorial.trim() || !editedBook.recommendedAges.trim()
     || !editedBook.edition.trim() || !editedBook.description.trim() || !editedBook.isbn.trim() || !editedBook.language.trim()) {
-      alert("Complete todos los campos.");
+      setShowWarningMessageB("Complete todos los campos");
       return;
     }
     if(isEdit){
@@ -72,44 +74,41 @@ export default function BookEditor({
   }
 
   const uploadImage = async (bookId: string | undefined) => {
-    if (selectedImage) {
-      if(book.bookId){
-        try {
-          const imagePath = await uploadBookImage(selectedImage, book.bookId);
-          console.log(imagePath);
-          //editedBook.imgPath = imagePath;
-        } catch (error) {
-          alert("Error al cargar imagen");
-          return;
+    try{
+      if (selectedImage) {
+        if(bookId){
+          const imagePath = await uploadBookImage(selectedImage, bookId);
+          setShowSuccessMessageB("Imagen cargada correctamente "+imagePath.message);
         }
       }
-    }
+    }catch(error){
+      setShowErrorMessageB("No se puedo cargar la imagen "+error);
+    } 
   }
 
   const updateABook = async () => {
+    try{
       const response = await updateBook(editedBook.bookId, editedBook.isbn, editedBook.description, editedBook.title, editedBook.author, editedBook.collection, editedBook.editorial, editedBook.edition,
         editedBook.recommendedAges, editedBook.language, categoriesIds, subcategoriesIds);
-      if (response) {
-        console.log(response);
-        alert("Libro actualizado correctamente");
-        uploadImage(book.bookId);
-        onClose();
-      } else {
-        alert("Error al cargar el libro");
-      }
+      setShowSuccessMessageB("Libro actualizado correctamente " + response.data.message);
+      uploadImage(book.bookId);
+      onClose();
+  
+    }catch(error){
+      setShowErrorMessageB("No se puedo actualizar el libro "+error);
+    } 
   }
 
   const createABook = async () => {
-    console.log(editedBook);
+    try{
       const response = await saveBook(editedBook.isbn, editedBook.description, editedBook.title, editedBook.author, editedBook.collection, editedBook.editorial, editedBook.edition,
         editedBook.recommendedAges, editedBook.language, categoriesIds, subcategoriesIds);
-      if (response) {
-        alert("Libro creado correctamente");
-        uploadImage(response.data.body);
-        onClose();
-      } else {
-        alert("Error al crear el libro");
-      }
+      uploadImage(response.data.body);
+      setShowSuccessMessageB("Libro actualizado correctamente " + response.data.message);
+      onClose();
+    }catch(error){
+      setShowErrorMessageB("No se puedo crear libro "+error);
+    } 
   }
 
 
@@ -148,17 +147,21 @@ export default function BookEditor({
   }, []);
 
   const getAllCategories = async () => {
-    const answer = await getCategories();
-    if (answer) {
+    try{
+      const answer = await getCategories();
       setCategories(answer.data.body);
-    }
+    }catch(error){
+      setShowErrorMessageB("No se puedo cargar las categorías "+error);
+    } 
   };
 
   const getAllSubcategories = async () => {
-    const answer = await getSubcategories();
-    if (answer) {
+    try{
+      const answer = await getSubcategories();
       setSubcategories(answer.data.body);
-    }
+    }catch(error){
+      setShowErrorMessageB("No se puedo cargar las subcategorías "+error);
+    } 
   };
   
   return (

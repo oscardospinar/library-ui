@@ -22,17 +22,23 @@ import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
 import { motion } from "framer-motion";
+import Cookies from 'js-cookie';
+import MainSearch from '../Mainsearch/Mainsearch';
 
 const pages = [
-  { name: "Prestamos", color: "#ff69b4" },
+  { name: "Préstamos", color: "#ff69b4" },
   { name: "Libros", color: "#ffd700" },
   { name: "Estudiantes", color: "#32cd32" },
+
   { name: "Registro", color: "#ffffff" }
-];
+
+  {name : "Búsqueda", color: "#8A9597"}
+
 
 export function NavBar(): ReactElement {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [openPrestamosDialog, setOpenPrestamosDialog] = useState(false);
+  const [showMainSearch, setShowMainSearch] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -45,12 +51,16 @@ export function NavBar(): ReactElement {
   const nombreUsuario = user ? user.nombreUsuario : 'Invitado';
 
   const handleSectionClick = (section: string): void => {
-    if (section === "Prestamos") {
+    if (section === "Préstamos") {
       setOpenPrestamosDialog(true);
     } else if (section === "Libros") {
       navigate("/libros");
     } else if (section === "Registro") {
       navigate("/Responsable");
+    }else if (section === "Búsqueda") {
+      setShowMainSearch(true); 
+    } else {
+      setShowMainSearch(false);
     }
     setActiveSection((prevSection) => (section === prevSection ? null : section));
   };
@@ -79,6 +89,7 @@ export function NavBar(): ReactElement {
     setAnchorElUser(null);
   };
 
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -90,6 +101,7 @@ export function NavBar(): ReactElement {
   const handleLogout = (setting: string) => {
       document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
       navigate('/');
+
   };
 
   const linkVariants = {
@@ -98,12 +110,17 @@ export function NavBar(): ReactElement {
     hover: { scale: 1.1 },
   };
 
+  const userCookie = Cookies.get('user');
+  const user = userCookie ? JSON.parse(userCookie) : null;
+  const nombreUsuario = user ? user.nombreUsuario : 'Invitado';
+
   return (
     <motion.nav
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
+
       <Box
         sx={{
           width: "100%",
@@ -166,16 +183,19 @@ export function NavBar(): ReactElement {
       </Box>
 
       <AppBar position="static" sx={{ backgroundColor: "#1976d2", boxShadow: "none" }}>
+
         <Container maxWidth="xl">
-          <Toolbar disableGutters>
-            <Box
-              sx={{
-                flexGrow: 1,
-                display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
-              }}
-            >
+          <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+              <img
+                src="/colegioLogo.png"
+                alt="Logo"
+                style={{
+                  height: "80px",
+                  width: "auto",
+                  marginRight: "1rem"
+                }}
+              />
               <motion.div
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
@@ -196,7 +216,10 @@ export function NavBar(): ReactElement {
                 </Typography>
               </motion.div>
             </Box>
-            
+
+
+            {/* Navigation Links */}
+
             <Box sx={{ display: "flex", justifyContent: "center", flexGrow: 1 }}>
               {pages.map((page, index) => (
                 (page.name !== "Registro" || userRole === "Bibliotecario") && (
@@ -224,11 +247,46 @@ export function NavBar(): ReactElement {
                 )
               ))}
             </Box>
+
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Button
+                id="user-menu-button"
+                aria-controls={Boolean(anchorElUser) ? "user-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={Boolean(anchorElUser) ? "true" : undefined}
+                onClick={handleOpenUserMenu}
+                endIcon={<KeyboardArrowDownIcon />}
+                startIcon={<AccountCircleIcon />}
+                sx={{ color: "white" }}
+              >
+                {nombreUsuario}
+              </Button>
+              <Menu
+                id="user-menu"
+                anchorEl={anchorElUser}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+                MenuListProps={{
+                  "aria-labelledby": "user-menu-button",
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleLogout();
+                    handleCloseUserMenu();
+                  }}
+                >
+                  Cerrar sesión
+                </MenuItem>
+              </Menu>
+            </Box>
+
           </Toolbar>
         </Container>
       </AppBar>
 
       <PrestamosDialog open={openPrestamosDialog} onClose={() => setOpenPrestamosDialog(false)} />
+      {showMainSearch && <MainSearch />}
     </motion.nav>
   );
 }

@@ -17,6 +17,7 @@ import { getSubcategories, getSubcategory, deleteSubcategory } from '../../Hook/
 import React, { useState, useEffect } from 'react';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { PaginationTable } from '../../../components/BookPagination/PaginationTable';
+import { useBooks } from '../../../components/BookContext/useBooks';
 
 export const emptySubcategory: Subcategory = {
   subcategoryId: "",
@@ -26,6 +27,7 @@ export const emptySubcategory: Subcategory = {
 
 
 export default function SubategoryAdministration() {
+  const { setShowErrorMessageB, setShowSuccessMessageB, setShowWarningMessageB } = useBooks();
   const [openEditor, setOpenEditor] = useState(false);
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>(emptySubcategory);
   const [title, setTitle] = useState<string>("Añadir Subcategoría");
@@ -43,23 +45,27 @@ export default function SubategoryAdministration() {
       }, []); 
 
   const getAllSubcategories = async () => {
-    const answer = await getSubcategories();
-    if (answer) {
-      if(answer.data){
-          setSubcategories(answer.data.body);
-        }
-      }
+    try{
+      const answer = await getSubcategories();
+      setSubcategories(answer.data.body);
+     } catch(error){
+      setShowErrorMessageB("Error al cargar las subcategorías "+error);
+    };
   };
   
   const getASubcategory = async (id: string)  => {
-    const answer = await getSubcategory(id);
-    if (answer && answer.data.body.length === 1) {
-      setSelectedSubcategory(answer.data.body[0]); 
-      setTitle("Editar Subcategoría");
-      setEdit(true);
-      setOpenEditor(true); 
+    try{
+      const answer = await getSubcategory(id);
+      if (answer && answer.data.body.length === 1) {
+        setSelectedSubcategory(answer.data.body[0]); 
+        setTitle("Editar Subcategoría");
+        setEdit(true);
+        setOpenEditor(true); 
+      }
     }
-    
+    catch(error){
+      setShowErrorMessageB("Error al cargar las subcategorías "+error);
+    }
   };
 
   const handleCloseEditor = () => {
@@ -74,11 +80,14 @@ export default function SubategoryAdministration() {
   };
 
   const deleteASubcategory = async (id: string ) => {
-    if(id){
-      const answer = await deleteSubcategory(id);
-      if (answer) {
-        console.log(answer);
+    try{
+      if(id){
+        const answer = await deleteSubcategory(id);
+        setShowSuccessMessageB("Subcategoría eliminada correctamente "+answer?.data.message);
       }
+    }
+    catch(error){
+      setShowErrorMessageB("No se pudo eliminar la subcategoría "+error);
     }
   };
 
@@ -111,7 +120,7 @@ export default function SubategoryAdministration() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedBooks.map((row) => (
+                {paginatedBooks.filter((row) => row.active).map((row) => (
                   <TableRow
                     key={row.subcategoryId}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Typography,
   Chip,
@@ -15,7 +15,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { Close, Category } from '@mui/icons-material';
 import { BookObj } from '../Services/BookObj';
-import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+
 
 interface Props {
   selectedBook: BookObj | null;

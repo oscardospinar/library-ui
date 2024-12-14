@@ -2,7 +2,8 @@ import { Box, TextField, Button, IconButton, Dialog, DialogTitle, DialogContent,
 import { Close } from '@mui/icons-material';
 import { Category } from '../Services/category';
 import { updateCategory, saveCategory } from '../../Hook/CategoryService'; 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useBooks } from '../../../components/BookContext/useBooks';
 
 export default function CategoryEditor({
   category,
@@ -17,7 +18,7 @@ export default function CategoryEditor({
   title: string;
   isEdit: boolean;
 }) {
-
+  const { setShowErrorMessageB, setShowSuccessMessageB, setShowWarningMessageB } = useBooks();
   const [editedCategory, setEditedCategory] = useState<Category>({
     ...category
   });
@@ -34,7 +35,7 @@ export default function CategoryEditor({
 
   const handleSave = async () => {
     if (!editedCategory.description.trim()) {
-      alert('La descripción no puede ser vacía');
+      setShowWarningMessageB("El nombre no puede ser vacío");
       return;
     }
     if(isEdit){
@@ -46,23 +47,24 @@ export default function CategoryEditor({
   };
 
   const updateACategory = async () => {
-    const response = await updateCategory(editedCategory.categoryId,editedCategory.description);
-    if (response) {
-      alert('Categoría actualizada correctamente');
+    try{
+      const response = await updateCategory(editedCategory.categoryId,editedCategory.description);
+      setShowSuccessMessageB('Categoría actualizada correctamente '+response?.data.message);
       onClose();
-    } else {
-      alert('Error al actualizar categoria');
-    }
+      
+    }catch(error){
+      setShowErrorMessageB("No se pudo actualizar la categoría "+error);
+    } 
   }
 
   const createACategory = async () => {
+    try{
       const response = await saveCategory(editedCategory.description);
-      if (response) {
-        alert("Categoría creada correctamente");
-        onClose();
-      } else {
-        alert("Error al crear la categoría");
-      }
+      setShowSuccessMessageB('Categoría creada correctamente '+response?.data.message);
+      onClose();
+    }catch(error){
+      setShowErrorMessageB("No se pudo crear la categoría "+error);
+    } 
   }
 
 
@@ -94,7 +96,7 @@ export default function CategoryEditor({
             padding: 3,
           }}>
           <TextField
-            label="Descripción"
+            label="Nombre"
             name="description"
             value={editedCategory.description}
             onChange={handleChange}
