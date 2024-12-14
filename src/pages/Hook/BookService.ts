@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from "axios";
 import { BookResponse } from "../BooksModule/Services/BookResponse"
 import Cookies from "js-cookie";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const API = "https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/BookModule/";
-
 
 export const getBook = async (idBook:string) => {
     try{
@@ -19,6 +19,7 @@ export const getBook = async (idBook:string) => {
             },
           });
         if(answer.data.status !== 200) Error(`Error: ${answer.data.message}`);
+        if(answer.status === 403 || answer.status === 404) console.log("hola");
         return answer;
     } catch (error) {
         throw error;
@@ -37,7 +38,8 @@ export const getAllBooks= async () => {
               Authorization: `Bearer ${token}`,
             },
         });
-        if(answer.data.status !== 200) Error(`Error: ${answer.data.message}`);      
+        if(answer.data.status !== 200) Error(`Error: ${answer.data.message}`);   
+        if(answer.status === 403 || answer.status === 401) console.log("hola no autorizhe");
         return answer;
     } catch (error) {
         throw error;
