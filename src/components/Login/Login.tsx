@@ -50,7 +50,7 @@ function Login() {
                     if (data.rol === 'Bibliotecario') {
                         navigate('/navar');
                     } else {
-                        navigate('/navar2');
+                        navigate('/navar');
                     }
                 } else {
                     alert('Error en el inicio de sesión. Código: ' + response.status);
