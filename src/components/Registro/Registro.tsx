@@ -7,13 +7,13 @@ import './style.css';
 import Cookies from 'js-cookie';
 
 interface Formulario {
+  nombreUsuario: string;
+  contrasena: string;
+  nombreEstudiante: string;
   codigoEstudiante: string;
   curso: string;  
   anoAcademico: string;
   responsableId: string;
-  nombreUsuario: string;
-  contrasena: string;
-  nombreEstudiante: string;
 }
 
 
@@ -32,7 +32,7 @@ const FormularioRegistro: React.FC = () => {
     nombreUsuario: '',
     contrasena: '',
     nombreEstudiante: '',
-    anoAcademico: new Date().getFullYear().toString(),
+    anoAcademico: ''
   });
 
   const [opcionesCurso, setOpcionesCurso] = useState<string[]>([
@@ -69,12 +69,13 @@ const FormularioRegistro: React.FC = () => {
             Authorization: `Bearer ${token}`, // Agrega el token al encabezado.
           },
           body: JSON.stringify({
+            nombreUsuario: formulario.nombreUsuario,
+            contrasena: formulario.contrasena,
+            nombreEstudiante:formulario.nombreEstudiante,            
             codigoEstudiante: formulario.codigoEstudiante,
             curso: formulario.curso,
             responsableId: formulario.responsableId,
-            nombreUsuario: formulario.nombreUsuario,
-            contrasena: formulario.contrasena,
-            nombreEstudiante:formulario.nombreEstudiante,
+            anoAcademico: formulario.anoAcademico
           }),
         }
       );
@@ -170,6 +171,13 @@ const FormularioRegistro: React.FC = () => {
         label="Nombre del Estudiante"
         name="nombreEstudiante"
         value={formulario.nombreEstudiante}
+        onChange={manejarCambio}
+        required
+      />
+      <CampoTexto
+        label="Año académico"
+        name="anoAcademico"
+        value={formulario.anoAcademico}
         onChange={manejarCambio}
         required
       />

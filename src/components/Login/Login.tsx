@@ -11,7 +11,7 @@ function Login() {
 
     const navigate = useNavigate();
 
-    const manejarCaptcha = (value: string | null) => {
+    const manejarCaptcha = (value: string | null) => { 
         if (value) {
             setCaptchaValido(true);
         }
