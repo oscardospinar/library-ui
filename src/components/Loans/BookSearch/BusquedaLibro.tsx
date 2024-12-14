@@ -89,7 +89,7 @@ const BusquedaLibro = ({ open, onClose }: BusquedaLibroProps) => {
 
   return (
     <>
-      <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
         <DialogContent className="dialog-content">
           <Box className="container">
             {tipoBusqueda === null ? (

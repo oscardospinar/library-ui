@@ -8,6 +8,7 @@
   align-items: center;
   justify-content: center;
   width: 90%;
+  height: 100%;
 }
 
 .typography-header {
@@ -66,6 +67,9 @@
   justify-content: center;
   text-align: center;
   padding: 15px;
+  min-height: 20vh; /* Altura mínima relativa al viewport */
+  max-height: 80vh; /* Altura máxima para prevenir que crezca demasiado */
+  overflow-y: auto; /* Habilita scroll si el contenido excede */
 }
 
 
