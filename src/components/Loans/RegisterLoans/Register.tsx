@@ -1,53 +1,43 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
-import "../../styles/Loans.css";
+import React, { useState } from 'react';
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Box } from '@mui/material';
 
-interface LoansProps {
+interface RegisterProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: () => void;
 }
 
-const Loans = ({ open, onClose, onSuccess }: LoansProps) => {
-  const [codigoEstudiante, setCodigoEstudiante] = useState("");
-  const [codigoLibro, setCodigoLibro] = useState("");
+const Register: React.FC<RegisterProps> = ({ open, onClose }) => {
+  const [codigoEstudiante, setCodigoEstudiante] = useState('');
+  const [codigoLibro, setCodigoLibro] = useState('');
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log("Registrar préstamo:", { codigoEstudiante, codigoLibro });
-    onSuccess();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Aquí puedes manejar el envío de los datos, por ejemplo, enviarlos a una API.
+    console.log('Código Estudiante:', codigoEstudiante);
+    console.log('Código Libro:', codigoLibro);
+    // Cerrar el diálogo al enviar el formulario
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Registrar Préstamo</DialogTitle>
+      <DialogTitle className="dialog-title">Registrar Préstamo</DialogTitle>
       <DialogContent>
-        <Box sx={{ p: 3, width: "100%" }}>
-          <Typography variant="h6" sx={{ mb: 3 }}>
-            Gestión de Préstamos
-          </Typography>
+        <Box sx={{ p: 3 }}>
           <form onSubmit={handleSubmit}>
             <TextField
               label="Código del Estudiante"
               variant="outlined"
-              sx={{ mb: 2, width: "100%" }}
+              fullWidth
+              sx={{ mb: 2 }}
               value={codigoEstudiante}
               onChange={(e) => setCodigoEstudiante(e.target.value)}
             />
             <TextField
               label="Código del Libro"
               variant="outlined"
-              sx={{ mb: 2, width: "100%" }}
+              fullWidth
+              sx={{ mb: 2 }}
               value={codigoLibro}
               onChange={(e) => setCodigoLibro(e.target.value)}
             />
@@ -66,4 +56,4 @@ const Loans = ({ open, onClose, onSuccess }: LoansProps) => {
   );
 };
 
-export default Loans;
+export default Register;

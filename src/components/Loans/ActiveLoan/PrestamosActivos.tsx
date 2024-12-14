@@ -20,8 +20,8 @@ import ReturnLoan from "../ReturnLoan/ReturnLoan";
 import Loading from "../Loading/Loading";
 
 interface Prestamo {
-  codigoEstudiante: string;
-  codigoLibro: string;
+  studentId: string;
+  copyId: string;
   nombreEstudiante: string;
   nombreLibro: string;
   fechaPrestamo: string;
@@ -35,38 +35,48 @@ const PrestamosActivos = ({
   open: boolean;
   onClose: () => void;
 }) => {
-  const [prestamos, setPrestamos] = useState<Prestamo[]>([
-    {
-      codigoEstudiante: "E001",
-      codigoLibro: "L001",
-      nombreEstudiante: "Juan Pérez",
-      nombreLibro: "JavaScript Avanzado",
-      fechaPrestamo: "2024-11-01",
-      fechaDevolucion: "2024-12-01",
-    },
-    {
-      codigoEstudiante: "E002",
-      codigoLibro: "L002",
-      nombreEstudiante: "Ana Gómez",
-      nombreLibro: "React para Principiantes",
-      fechaPrestamo: "2024-11-05",
-      fechaDevolucion: "2024-12-05",
-    },
-    {
-      codigoEstudiante: "E003",
-      codigoLibro: "L003",
-      nombreEstudiante: "Carlos Rodríguez",
-      nombreLibro: "Node.js y Express",
-      fechaPrestamo: "2024-11-10",
-      fechaDevolucion: "2024-12-10",
-    },
-  ]);
+  const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [openReturnDialog, setOpenReturnDialog] = useState<boolean>(false);
   const [selectedPrestamo, setSelectedPrestamo] = useState<Prestamo | null>(
     null
   );
+
+  // Llamada a la API
+  useEffect(() => {
+    const fetchPrestamos = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(
+          "https://bibliosoftloanback-ahecc7fydjdze0ar.canadacentral-01.azurewebsites.net/loans/getLoans/state?state=Loaned"
+        );
+        if (!response.ok) {
+          throw new Error("Error al obtener los datos de préstamos");
+        }
+        const data = await response.json();
+
+        
+        const prestamosFiltrados = data.map((item: any) => ({
+          studentId: item.studentId,
+          copyId: item.copyId,
+          nombreEstudiante: item.studentName,
+          nombreLibro: item.nameBook,
+          fechaPrestamo: item.loanDate,
+          fechaDevolucion: item.maxReturnDate,
+        }));
+
+        setPrestamos(prestamosFiltrados);
+      } catch (error: any) {
+        setError(error.message || "Ocurrió un error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrestamos();
+  }, []);
 
   const handleOpenReturnDialog = (prestamo: Prestamo) => {
     setSelectedPrestamo(prestamo);
@@ -117,10 +127,10 @@ const PrestamosActivos = ({
                   <TableHead>
                     <TableRow>
                       <TableCell className="table-header-cell" align="center">
-                        estudiante
+                        Estudiante
                       </TableCell>
                       <TableCell className="table-header-cell" align="center">
-                        libro
+                        Libro
                       </TableCell>
                       <TableCell className="table-header-cell" align="center">
                         Fecha Préstamo
@@ -185,6 +195,8 @@ const PrestamosActivos = ({
           open={openReturnDialog}
           onClose={handleCloseReturnDialog}
           onSuccess={handleCloseReturnDialog}
+          studentId={selectedPrestamo.studentId}
+          copyId={selectedPrestamo.copyId}
           nombreEstudiante={selectedPrestamo.nombreEstudiante}
           nombreLibro={selectedPrestamo.nombreLibro}
         />

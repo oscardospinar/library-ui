@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
-  TextField,
   Typography,
   Dialog,
   DialogActions,
@@ -19,6 +18,8 @@ interface ReturnLoanProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  studentId: string;
+  copyId: string;
   nombreEstudiante: string;
   nombreLibro: string;
 }
@@ -27,19 +28,53 @@ const ReturnLoan = ({
   open,
   onClose,
   onSuccess,
+  studentId,
+  copyId,
   nombreEstudiante,
   nombreLibro,
 }: ReturnLoanProps) => {
   const [estadoLibro, setEstadoLibro] = useState<string>("buenEstado");
 
-  const handleSubmit = (event: React.FormEvent) => {
+  // useEffect para imprimir studentId y copyId cuando el componente se abre
+  useEffect(() => {
+    if (open) {
+      console.log("Componente abierto con los datos:", { studentId, copyId });
+    }
+  }, [open, studentId, copyId]);
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log("Registrar devolución:", {
-      nombreEstudiante,
-      nombreLibro,
-      estadoLibro,
-    });
-    onSuccess();
+
+    const payload = {
+      studentId,
+      copyId,
+      state: estadoLibro,
+    };
+
+    console.log("Enviando datos a la API:", payload);
+
+    try {
+      const response = await fetch(
+        "https://bibliosoftloanback-ahecc7fydjdze0ar.canadacentral-01.azurewebsites.net/loans/returnLoan",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Devolución registrada con éxito");
+        onSuccess();
+      } else {
+        console.error("Error al registrar la devolución:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+    }
+
     onClose();
   };
 
