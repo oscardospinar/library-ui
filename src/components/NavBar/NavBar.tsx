@@ -30,9 +30,9 @@ export function NavBar(): ReactElement {
   const [openPrestamosDialog, setOpenPrestamosDialog] = useState(false);
   const [showMainSearch, setShowMainSearch] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [, setAnchorElUser] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
@@ -63,23 +63,6 @@ export function NavBar(): ReactElement {
       setUserRole(user.rol); // Extraer el rol del usuario
     }
   }, []);
-  
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

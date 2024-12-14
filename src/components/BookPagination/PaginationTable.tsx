@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode, useEffect, useMemo, useState } from "react";
+import React, { ReactElement, ReactNode, useMemo, useState } from "react";
 import {
     Box,
     Pagination,

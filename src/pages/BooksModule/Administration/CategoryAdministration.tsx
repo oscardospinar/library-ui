@@ -126,8 +126,8 @@ export default function CategoryAdministration() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedBooks.
-                filter((row) => row.active).map((row) => (
+                {paginatedBooks
+                .filter((row) => row.active).map((row) => (
                   <TableRow
                     key={row.categoryId}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

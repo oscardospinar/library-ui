@@ -41,7 +41,7 @@ export function BookPagination(props: Props): ReactElement {
     useEffect(() => {
       setBooks(books.slice(page.from, page.to));
       setPage({...page, count: books.length})
-    },[page.from, page.to]);
+    },[books, page, page.from, page.to]);
       
 
 return (<Box p={2}>

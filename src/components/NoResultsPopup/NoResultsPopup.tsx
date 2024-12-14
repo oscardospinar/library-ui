@@ -9,8 +9,7 @@ interface NoResultsPopupProps {
 }
 
 const NoResultsPopup: React.FC<NoResultsPopupProps> = ({ onClose, clearFields }) => {
-  const navigate = useNavigate();
-
+  useNavigate();
   const handleOk = () => {
     clearFields();
     onClose();

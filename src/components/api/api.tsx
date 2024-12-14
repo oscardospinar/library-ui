@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { getAllBooks as fetchBooksFromService } from '../../pages/Hook/BookService';
 
 export interface Book {

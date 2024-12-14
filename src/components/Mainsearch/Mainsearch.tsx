@@ -25,11 +25,9 @@ const MainSearch: React.FC = () => {
   });
   
   const navigate = useNavigate();
-
-  const token = Cookies.get('token');
+  Cookies.get('token');
   const userCookie = Cookies.get('user');
   const user = userCookie ? JSON.parse(userCookie) : null;
-  const username = user ? user.nombreUsuario : 'Invitado';
   const rol = user ? user.rol : null;
 
   useEffect(() => {

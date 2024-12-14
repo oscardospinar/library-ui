@@ -18,7 +18,6 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import BookIcon from "@mui/icons-material/Book";
-import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
 import { motion } from "framer-motion";
@@ -36,7 +35,6 @@ export function NavBarEstudiantes(): ReactElement {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [openPrestamosDialog, setOpenPrestamosDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -51,19 +49,9 @@ export function NavBarEstudiantes(): ReactElement {
     }
     setActiveSection((prevSection) => (section === prevSection ? null : section));
   };
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };

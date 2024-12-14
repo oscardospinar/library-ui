@@ -7,8 +7,7 @@ interface IncompleteSearchPopupProps {
 }
 
 const IncompleteSearchPopup: React.FC<IncompleteSearchPopupProps> = ({ onClose }) => {
-  const navigate = useNavigate();
-
+  useNavigate();
   const handleOk = () => {
     onClose();
   };

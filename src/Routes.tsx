@@ -1,6 +1,5 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
-import App from "./App";
 import { Home } from "./pages/Home";
 import MainSearch from "./components/Mainsearch/Mainsearch";
 import SearchResults from "./components/SearchResults/SearchResults";

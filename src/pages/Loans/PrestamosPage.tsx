@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { AccessTime, Search, Assignment } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import Prestamos from "../../components/Loans/Loan/Prestamos";  // Importación del componente Prestamos
+// Importación del componente Prestamos
 import BusquedaLibro from "../../components/Loans/BookSearch/BusquedaLibro";
 import PrestamosActivos from "../../components/Loans/ActiveLoan/PrestamosActivos";
 import HistorialPrestamos from "../../components/Loans/History/historial";

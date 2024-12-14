@@ -1,8 +1,7 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement } from "react";
 import { Box, Typography } from "@mui/material";
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import Button from '@mui/material/Button';
-import OpenBarcode from "./OpenBarcode";
 
 interface Props {
   bookId: string;

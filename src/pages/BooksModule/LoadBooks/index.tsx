@@ -16,10 +16,8 @@ import { BookObj } from "../Services/BookObj";
 import { Copy } from "../Services/Copy";
 import Book from "../Book";
 import AdministrationPanel from "../Administration/AdministrationPanel";
-import { BookProvider } from "../../../components/BookContext/useBooks";
 import { useBooks } from '../../../components/BookContext/useBooks';
 import Cookies from "js-cookie";
-import { BakeryDining } from "@mui/icons-material";
 
 
 export function LoadBooks(): ReactElement  {
@@ -66,10 +64,9 @@ export function LoadBooks(): ReactElement  {
     const userCookie = Cookies.get('user');
     const user = userCookie ? JSON.parse(userCookie) : null;
     const rol = user ? user.rol : null;
-    if(rol == "Bibliotecario"){
-      return true;
-    }
-    return false;
+    // eslint-disable-next-line eqeqeq
+    return rol == "Bibliotecario";
+
   }
  
     return (

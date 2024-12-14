@@ -1,7 +1,6 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { BookResponse } from "../BooksModule/Services/BookResponse"
 import Cookies from "js-cookie";
-import { Navigate, useNavigate } from "react-router-dom";
 
 const API = "https://booksmodule-cxazc8etgtd5cwea.eastus2-01.azurewebsites.net/BookModule/";
 

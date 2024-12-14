@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
@@ -43,7 +43,7 @@ export const emptyBook: BookObj = {
 
 
 export default function BookAdministration() {
-  const { setShowErrorMessageB, setShowSuccessMessageB, setShowWarningMessageB } = useBooks();
+  const { setShowErrorMessageB, setShowSuccessMessageB} = useBooks();
   const [openEditor, setOpenEditor] = useState(false);
   const [book, setBook] = useState<BookObj>(emptyBook);
   const [title, setTitle] = useState<string>("Añadir libro");
@@ -55,7 +55,7 @@ export default function BookAdministration() {
 
   useEffect(() => {
     getBooks();
-  }, []); 
+  }, []);
 
   const handleEdit = (bookId: string | undefined) => {
     if(bookId){
