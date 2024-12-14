@@ -5,19 +5,11 @@ import {
   Button,
   Container,
   Toolbar,
-  Typography,
-  TextField,
-  InputAdornment,
   Menu,
   MenuItem,
-  IconButton,
-  Tooltip,
-  Avatar
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import BookIcon from "@mui/icons-material/Book";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import PrestamosDialog from "../../pages/Loans/PrestamosDialog";
